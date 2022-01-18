@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WGU Course Commander</string>
+    <string name="wgu_logo">WGU Logo</string>
+    <string name="terms">Terms</string>
+    <string name="courses">Courses</string>
+    <string name="assessments">Assessments</string>
+    <string name="add_term">Add Term</string>
+    <string name="add_course">Add Course</string>
+    <string name="add_assessment">Add Assessment</string>
+</resources>
