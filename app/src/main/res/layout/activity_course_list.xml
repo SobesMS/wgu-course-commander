@@ -4,19 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.TermList">
+    tools:context=".ui.CourseList">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addTerm"
+        android:id="@+id/addCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:clickable="true"
+        android:onClick="goToAddCourse"
         android:src="@drawable/ic_baseline_add_24"
         android:backgroundTint="#2EA1C3"
         app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_term" />
+        android:contentDescription="@string/add_course" />
+
+    <!--TODO: DELETE THIS BUTTON-->
+    <Button
+        android:id="@+id/courseTestButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="TEST Course Detail"
+        android:onClick="testCourseDetail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

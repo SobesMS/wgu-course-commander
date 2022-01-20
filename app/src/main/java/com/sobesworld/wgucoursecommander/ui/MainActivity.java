@@ -16,17 +16,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void goToTerms(View view) {
+    public void goToTermList(View view) {
         Intent intent= new Intent(MainActivity.this, TermList.class);
         startActivity(intent);
     }
 
-    public void goToCourses(View view) {
+    public void goToCourseList(View view) {
         Intent intent= new Intent(MainActivity.this, CourseList.class);
         startActivity(intent);
     }
 
-    public void goToAssessments(View view) {
+    public void goToAssessmentList(View view) {
         Intent intent= new Intent(MainActivity.this, AssessmentList.class);
         startActivity(intent);
     }

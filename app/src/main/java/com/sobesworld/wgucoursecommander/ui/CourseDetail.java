@@ -8,22 +8,20 @@ import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
 
-public class AssessmentList extends AppCompatActivity {
+public class CourseDetail extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_assessment_list);
+        setContentView(R.layout.activity_course_detail);
     }
 
     public void goToAddAssessment(View view) {
-        Intent intent=new Intent(AssessmentList.this, AddAssessment.class);
+        Intent intent=new Intent(CourseDetail.this, AddAssessment.class);
         startActivity(intent);
     }
 
-    // TODO: DELETE THIS CODE (Test Assessment Detail)
-    public void testAssessmentDetail(View view) {
-        Intent intent=new Intent(AssessmentList.this, AssessmentDetail.class);
-        startActivity(intent);
+    public void editCourse(View view) {
+        // TODO: write edit course function
     }
 }
