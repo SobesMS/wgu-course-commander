@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/add_course" />
 
-    <!--TODO: DELETE THIS BUTTON-->
+    <!--TODO: DELETE THIS BUTTON (test button for course detail view)-->
     <Button
         android:id="@+id/courseTestButton"
         android:layout_width="wrap_content"
