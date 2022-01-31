@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.database.Repository;
 import com.sobesworld.wgucoursecommander.entities.Assessment;
 import com.sobesworld.wgucoursecommander.entities.Course;
 import com.sobesworld.wgucoursecommander.entities.Term;
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void goToTermList(View view) {
+    /*public void goToTermList(View view) {
         Intent intent= new Intent(MainActivity.this, TermList.class);
         startActivity(intent);
         Repository repo = new Repository(getApplication());
@@ -69,5 +68,5 @@ public class MainActivity extends AppCompatActivity {
         Assessment assessment3 = new Assessment(3,"Braise short ribs","Objective","06/30/2022",
                 true,3);
         repo.insert(assessment3);
-    }
+    }*/
 }

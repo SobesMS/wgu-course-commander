@@ -1,18 +1,19 @@
 package com.sobesworld.wgucoursecommander.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "terms")
+@Entity(tableName = "term_table")
 public class Term {
+
     @PrimaryKey(autoGenerate = true)
     private int termID;
-
     private String termTitle;
     private String termStartDate;
     private String termEndDate;
 
-    public Term(int termID, String termTitle, String termStartDate, String termEndDate) {
+    public Term(int termID, @NonNull String termTitle, @NonNull String termStartDate, @NonNull String termEndDate) {
         this.termID = termID;
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;
