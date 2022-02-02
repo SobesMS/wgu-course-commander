@@ -2,14 +2,12 @@ package com.sobesworld.wgucoursecommander.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.entities.Assessment;
-import com.sobesworld.wgucoursecommander.entities.Course;
-import com.sobesworld.wgucoursecommander.entities.Term;
+// import com.sobesworld.wgucoursecommander.database.Repository;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    /*public void goToTermList(View view) {
-        Intent intent= new Intent(MainActivity.this, TermList.class);
+    public void goToTermList(View view) {
+        /*Intent intent= new Intent(MainActivity.this, TermList.class);
         startActivity(intent);
         Repository repo = new Repository(getApplication());
 
@@ -30,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
         Term term2 = new Term(2,"Term 2", "01/01/2022","06/30/2022");
         repo.insert(term2);
         Term term3 = new Term(3,"Term 3", "01/01/2022","06/30/2022");
-        repo.insert(term3);
+        repo.insert(term3);*/
     }
 
     public void goToCourseList(View view) {
-        Intent intent= new Intent(MainActivity.this, CourseList.class);
+        /*Intent intent= new Intent(MainActivity.this, CourseList.class);
         startActivity(intent);
         Repository repo = new Repository(getApplication());
 
@@ -50,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         Course course3 = new Course(3,"C789", "01/01/2022",false,"06/30/2022",
                 false,"in progress","John Doe","216-555-5555",
                 "john.doe@wgu.edu","These are course notes",3);
-        repo.insert(course3);
+        repo.insert(course3);*/
     }
 
     public void goToAssessmentList(View view) {
-        Intent intent= new Intent(MainActivity.this, AssessmentList.class);
+        /*Intent intent= new Intent(MainActivity.this, AssessmentList.class);
         startActivity(intent);
         Repository repo = new Repository(getApplication());
 
@@ -67,6 +65,6 @@ public class MainActivity extends AppCompatActivity {
         repo.insert(assessment2);
         Assessment assessment3 = new Assessment(3,"Braise short ribs","Objective","06/30/2022",
                 true,3);
-        repo.insert(assessment3);
-    }*/
+        repo.insert(assessment3);*/
+    }
 }

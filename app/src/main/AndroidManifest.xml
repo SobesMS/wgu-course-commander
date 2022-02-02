@@ -11,6 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
         <activity
+            android:name=".ui.AssessmentList"
+            android:exported="false" />
+        <activity
+            android:name=".ui.CourseList"
+            android:exported="false" />
+        <activity
+            android:name=".ui.TermList"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>

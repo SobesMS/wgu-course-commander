@@ -1,4 +1,4 @@
-package com.sobesworld.wgucoursecommander.entities;
+package com.sobesworld.wgucoursecommander.database.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
