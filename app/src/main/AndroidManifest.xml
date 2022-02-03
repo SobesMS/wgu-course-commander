@@ -12,13 +12,19 @@
         android:theme="@style/Theme.WGUCourseCommander">
         <activity
             android:name=".ui.AssessmentList"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/assessment_list"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.CourseList"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/course_list"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.TermList"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/term_list"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">

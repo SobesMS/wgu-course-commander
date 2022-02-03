@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.sobesworld.wgucoursecommander.database.entity.Term;
+import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.util.List;
 
@@ -16,14 +16,17 @@ import java.util.List;
 public interface TermDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Term term);
+    void insert(TermEntity termEntity);
 
     @Update
-    void update(Term term);
+    void update(TermEntity termEntity);
 
     @Delete
-    void delete(Term term);
+    void delete(TermEntity termEntity);
 
     @Query("SELECT * FROM term_table ORDER BY termID ASC")
-    LiveData<List<Term>> getAllTerms();
+    LiveData<List<TermEntity>> getAllTerms();
+
+    @Query("DELETE FROM term_table")
+    void deleteAll();
 }

@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "course_table")
-public class Course {
+public class CourseEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int courseID;
@@ -21,9 +21,9 @@ public class Course {
     private String courseNotes;
     private int termID;
 
-    public Course(int courseID, @NonNull String courseTitle, @NonNull String courseStartDate, boolean courseStartAlert,
-                  @NonNull String courseProjectedEndDate, boolean courseEndAlert, @NonNull String courseStatus, @NonNull String courseMentorsName,
-                  @NonNull String courseMentorsPhone, @NonNull String courseMentorsEmail, @NonNull String courseNotes, int termID) {
+    public CourseEntity(int courseID, @NonNull String courseTitle, @NonNull String courseStartDate, boolean courseStartAlert,
+                        @NonNull String courseProjectedEndDate, boolean courseEndAlert, @NonNull String courseStatus, @NonNull String courseMentorsName,
+                        @NonNull String courseMentorsPhone, @NonNull String courseMentorsEmail, @NonNull String courseNotes, int termID) {
         this.courseID = courseID;
         this.courseTitle = courseTitle;
         this.courseStartDate = courseStartDate;

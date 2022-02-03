@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "term_table")
-public class Term {
+public class TermEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int termID;
@@ -13,7 +13,7 @@ public class Term {
     private String termStartDate;
     private String termEndDate;
 
-    public Term(int termID, @NonNull String termTitle, @NonNull String termStartDate, @NonNull String termEndDate) {
+    public TermEntity(int termID, @NonNull String termTitle, @NonNull String termStartDate, @NonNull String termEndDate) {
         this.termID = termID;
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;

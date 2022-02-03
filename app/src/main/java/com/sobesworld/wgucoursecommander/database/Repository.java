@@ -7,22 +7,22 @@ import androidx.lifecycle.LiveData;
 import com.sobesworld.wgucoursecommander.database.dao.AssessmentDAO;
 import com.sobesworld.wgucoursecommander.database.dao.CourseDAO;
 import com.sobesworld.wgucoursecommander.database.dao.TermDAO;
-import com.sobesworld.wgucoursecommander.database.entity.Assessment;
-import com.sobesworld.wgucoursecommander.database.entity.Course;
-import com.sobesworld.wgucoursecommander.database.entity.Term;
+import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
+import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
+import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.util.List;
 
-class Repository {
+public class Repository {
 
     private final TermDAO mTermDAO;
     private final CourseDAO mCourseDAO;
     private final AssessmentDAO mAssessmentDAO;
-    private final LiveData<List<Term>> mAllTerms;
-    private final LiveData<List<Course>> mAllCourses;
-    private final LiveData<List<Assessment>> mAllAssessments;
+    private final LiveData<List<TermEntity>> mAllTerms;
+    private final LiveData<List<CourseEntity>> mAllCourses;
+    private final LiveData<List<AssessmentEntity>> mAllAssessments;
 
-    Repository(Application application) {
+    public Repository(Application application) {
         CourseCommDatabase db = CourseCommDatabase.getDatabase(application);
         mTermDAO = db.termDAO();
         mCourseDAO = db.courseDAO();
@@ -32,63 +32,63 @@ class Repository {
         mAllAssessments = mAssessmentDAO.getAllAssessments();
     }
 
-    LiveData<List<Term>> getAllTerms() { return mAllTerms; }
+    public LiveData<List<TermEntity>> getAllTerms() { return mAllTerms; }
 
-    LiveData<List<Course>> getAllCourses() { return mAllCourses; }
+    public LiveData<List<CourseEntity>> getAllCourses() { return mAllCourses; }
 
-    LiveData<List<Assessment>> getAllAssessments() { return mAllAssessments; }
+    public LiveData<List<AssessmentEntity>> getAllAssessments() { return mAllAssessments; }
 
-    void insert(Term term) {
+    public void insert(TermEntity termEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mTermDAO.insert(term);
+            mTermDAO.insert(termEntity);
         });
     }
 
-    void insert(Course course) {
+    public void insert(CourseEntity courseEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.insert(course);
+            mCourseDAO.insert(courseEntity);
         });
     }
 
-    void insert(Assessment assessment) {
+    public void insert(AssessmentEntity assessmentEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.insert(assessment);
+            mAssessmentDAO.insert(assessmentEntity);
         });
     }
 
-    void update(Term term) {
+    public void update(TermEntity termEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mTermDAO.update(term);
+            mTermDAO.update(termEntity);
         });
     }
 
-    void update(Course course) {
+    public void update(CourseEntity courseEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.update(course);
+            mCourseDAO.update(courseEntity);
         });
     }
 
-    void update(Assessment assessment) {
+    public void update(AssessmentEntity assessmentEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.update(assessment);
+            mAssessmentDAO.update(assessmentEntity);
         });
     }
 
-    void delete(Term term) {
+    public void delete(TermEntity termEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mTermDAO.delete(term);
+            mTermDAO.delete(termEntity);
         });
     }
 
-    void delete(Course course) {
+    public void delete(CourseEntity courseEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.delete(course);
+            mCourseDAO.delete(courseEntity);
         });
     }
 
-    void delete(Assessment assessment) {
+    public void delete(AssessmentEntity assessmentEntity) {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.delete(assessment);
+            mAssessmentDAO.delete(assessmentEntity);
         });
     }
 }

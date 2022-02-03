@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "assessment_table")
-public class Assessment {
+public class AssessmentEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int assessmentID;
@@ -15,8 +15,8 @@ public class Assessment {
     private boolean assessmentGoalAlert;
     private int courseID;
 
-    public Assessment(int assessmentID, @NonNull String assessmentTitle, @NonNull String assessmentType, @NonNull String assessmentGoalDate,
-                      boolean assessmentGoalAlert, int courseID) {
+    public AssessmentEntity(int assessmentID, @NonNull String assessmentTitle, @NonNull String assessmentType, @NonNull String assessmentGoalDate,
+                            boolean assessmentGoalAlert, int courseID) {
         this.assessmentID = assessmentID;
         this.assessmentTitle = assessmentTitle;
         this.assessmentType = assessmentType;
