@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
@@ -32,8 +30,8 @@ public class TermList extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.terms_fab_add);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(TermList.this, TermAddEdit.class);
-            intent.putExtra("is new record", true);
+            Intent intent = new Intent(TermList.this, TermDetail.class);
+            intent.putExtra(getString(R.string.is_new_record), true);
             startActivity(intent);
         });
     }

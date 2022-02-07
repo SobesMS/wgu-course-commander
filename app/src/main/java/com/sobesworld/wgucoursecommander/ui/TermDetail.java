@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.sobesworld.wgucoursecommander.R;
 
-public class AssessmentAddEdit extends AppCompatActivity {
+public class TermDetail extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_assessment_add_edit);
+        setContentView(R.layout.activity_term_detail);
     }
 }

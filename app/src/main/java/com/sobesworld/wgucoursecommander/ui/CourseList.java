@@ -28,7 +28,7 @@ public class CourseList extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.courses_fab_add);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(CourseList.this, CourseAddEdit.class);
+            Intent intent = new Intent(CourseList.this, CourseDetail.class);
             intent.putExtra("is new record", true);
             startActivity(intent);
         });

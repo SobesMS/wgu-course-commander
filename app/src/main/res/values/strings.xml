@@ -14,4 +14,11 @@
     <string name="course_list">Course List</string>
     <string name="term_list">Term List</string>
     <string name="refresh">Refresh</string>
+    <string name="assessment_detail">Assessment Detail</string>
+    <string name="course_detail">Course Detail</string>
+    <string name="term_detail">Term Detail</string>
+    <string name="is_new_record">is new record</string>
+    <string name="no_term_title">-- no term title --</string>
+    <string name="no_course_title">-- no course title --</string>
+    <string name="no_assessment_title">-- no assessment title --</string>
 </resources>

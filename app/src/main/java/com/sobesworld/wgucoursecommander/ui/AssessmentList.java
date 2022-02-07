@@ -28,7 +28,7 @@ public class AssessmentList extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.assessments_fab_add);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(AssessmentList.this, AssessmentAddEdit.class);
+            Intent intent = new Intent(AssessmentList.this, AssessmentDetail.class);
             intent.putExtra("is new record", true);
             startActivity(intent);
         });

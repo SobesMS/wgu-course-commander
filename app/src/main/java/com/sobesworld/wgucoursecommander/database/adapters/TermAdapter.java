@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
-import com.sobesworld.wgucoursecommander.ui.TermAddEdit;
+import com.sobesworld.wgucoursecommander.ui.TermDetail;
 
 import java.util.List;
 
@@ -37,8 +37,8 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     final TermEntity current = mTerms.get(position);
-                    Intent intent = new Intent(context, TermAddEdit.class);
-                    intent.putExtra("is new record", false);
+                    Intent intent = new Intent(context, TermDetail.class);
+                    intent.putExtra(context.getString(R.string.is_new_record), false);
                     intent.putExtra("id", current.getTermID());
                     intent.putExtra("title", current.getTermTitle());
                     intent.putExtra("start date", current.getTermStartDate());
@@ -63,7 +63,7 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
             String title = current.getTermTitle();
             holder.termItemView.setText(title);
         } else {
-            holder.termItemView.setText("No term title");
+            holder.termItemView.setText(R.string.no_term_title);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.sobesworld.wgucoursecommander.database.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
+import com.sobesworld.wgucoursecommander.ui.CourseDetail;
 
 import java.util.List;
 
@@ -23,13 +25,24 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         this.context = context;
     }
 
-    static class CourseViewHolder extends RecyclerView.ViewHolder {
+    class CourseViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView courseItemView;
 
         private CourseViewHolder(View itemView) {
             super(itemView);
             courseItemView = itemView.findViewById(R.id.item_view);
+            itemView.setOnClickListener((new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    final CourseEntity current = mCourses.get(position);
+                    Intent intent = new Intent(context, CourseDetail.class);
+                    intent.putExtra(context.getString(R.string.is_new_record), false);
+                    intent.putExtra("id", current.getCourseID());
+                    context.startActivity(intent);
+                }
+            }));
         }
     }
 
@@ -47,7 +60,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             String title = current.getCourseTitle();
             holder.courseItemView.setText(title);
         } else {
-            holder.courseItemView.setText("No course title");
+            holder.courseItemView.setText(R.string.no_course_title);
         }
     }
 

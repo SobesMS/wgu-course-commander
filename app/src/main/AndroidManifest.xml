@@ -11,14 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
         <activity
-            android:name=".ui.AssessmentAddEdit"
-            android:exported="false" />
+            android:name=".ui.AssessmentDetail"
+            android:exported="false"
+            android:label="@string/assessment_detail"
+            android:parentActivityName=".ui.AssessmentList" />
         <activity
-            android:name=".ui.CourseAddEdit"
-            android:exported="false" />
+            android:name=".ui.CourseDetail"
+            android:exported="false"
+            android:label="@string/course_detail"
+            android:parentActivityName=".ui.CourseList"/>
         <activity
-            android:name=".ui.TermAddEdit"
-            android:exported="false" />
+            android:name=".ui.TermDetail"
+            android:exported="false"
+            android:label="@string/term_detail"
+            android:parentActivityName=".ui.TermList"/>
         <activity
             android:name=".ui.AssessmentList"
             android:exported="false"
