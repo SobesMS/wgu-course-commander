@@ -1,6 +1,5 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,7 +24,7 @@ public interface CourseDAO {
     void delete(CourseEntity courseEntity);
 
     @Query("SELECT * FROM course_table ORDER BY courseID ASC")
-    LiveData<List<CourseEntity>> getAllCourses();
+    List<CourseEntity> getAllCourses();
 
     @Query("DELETE FROM course_table")
     void deleteAll();

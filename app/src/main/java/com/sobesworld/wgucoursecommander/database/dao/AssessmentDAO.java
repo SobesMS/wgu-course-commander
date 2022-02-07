@@ -1,6 +1,5 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,7 +24,7 @@ public interface AssessmentDAO {
     void delete(AssessmentEntity assessmente);
 
     @Query("SELECT * FROM assessment_table ORDER BY assessmentID ASC")
-    LiveData<List<AssessmentEntity>> getAllAssessments();
+    List<AssessmentEntity> getAllAssessments();
 
     @Query("DELETE FROM assessment_table")
     void deleteAll();

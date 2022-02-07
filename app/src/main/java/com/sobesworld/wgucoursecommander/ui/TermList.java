@@ -1,32 +1,30 @@
 package com.sobesworld.wgucoursecommander.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.viewmodel.TermViewModel;
+import com.sobesworld.wgucoursecommander.database.Repository;
+import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
+
+import java.util.List;
 
 public class TermList extends AppCompatActivity {
-
-    private TermViewModel mTermViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
-        final TermListAdapter adapter = new TermListAdapter(new TermListAdapter.TermDiff());
+        Repository repo = new Repository(getApplication());
+        List<TermEntity> terms = repo.getAllTerms();
+        TermAdapter adapter = new TermAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        mTermViewModel.getAllTerms().observe(this, terms -> {
-            adapter.submitList(terms);
-        });
+        adapter.setTerms(terms);
     }
 }

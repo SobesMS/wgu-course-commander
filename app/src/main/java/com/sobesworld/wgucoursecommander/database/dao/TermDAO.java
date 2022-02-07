@@ -1,6 +1,5 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,7 +24,7 @@ public interface TermDAO {
     void delete(TermEntity termEntity);
 
     @Query("SELECT * FROM term_table ORDER BY termID ASC")
-    LiveData<List<TermEntity>> getAllTerms();
+    List<TermEntity> getAllTerms();
 
     @Query("DELETE FROM term_table")
     void deleteAll();
