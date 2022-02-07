@@ -11,6 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
         <activity
+            android:name=".ui.AssessmentAddEdit"
+            android:exported="false" />
+        <activity
+            android:name=".ui.CourseAddEdit"
+            android:exported="false" />
+        <activity
+            android:name=".ui.TermAddEdit"
+            android:exported="false" />
+        <activity
             android:name=".ui.AssessmentList"
             android:exported="false"
             android:label="@string/assessment_list"

@@ -31,10 +31,11 @@ public class Repository {
         mCourseDAO = db.courseDAO();
         mAssessmentDAO = db.assessmentDAO();
 
-        // TODO: uncomment method to generate generic data
+        // uncomment method on next line to pre-populate an empty database
         //generateData();
     }
 
+    // TermEntity query methods
     public List<TermEntity> getAllTerms() {
         databaseExecutor.execute(()-> mAllTerms = mTermDAO.getAllTerms());
         try {
@@ -43,26 +44,6 @@ public class Repository {
             e.printStackTrace();
         }
         return mAllTerms;
-    }
-
-    public List<CourseEntity> getAllCourses() {
-        databaseExecutor.execute(()-> mAllCourses = mCourseDAO.getAllCourses());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return mAllCourses;
-    }
-
-    public List<AssessmentEntity> getAllAssessments() {
-        databaseExecutor.execute(()-> mAllAssessments = mAssessmentDAO.getAllAssessments());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return mAllAssessments;
     }
 
     public void insert(TermEntity term) {
@@ -74,6 +55,35 @@ public class Repository {
         }
     }
 
+    public void update(TermEntity term) {
+        databaseExecutor.execute(()-> mTermDAO.update(term));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(TermEntity term) {
+        databaseExecutor.execute(()-> mTermDAO.delete(term));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // CourseEntity query methods
+    public List<CourseEntity> getAllCourses() {
+        databaseExecutor.execute(()-> mAllCourses = mCourseDAO.getAllCourses());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mAllCourses;
+    }
+
     public void insert(CourseEntity course) {
         databaseExecutor.execute(()-> mCourseDAO.insert(course));
         try {
@@ -81,6 +91,35 @@ public class Repository {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void update(CourseEntity course) {
+        databaseExecutor.execute(()-> mCourseDAO.update(course));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(CourseEntity course) {
+        databaseExecutor.execute(()-> mCourseDAO.delete(course));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // AssessmentEntity query methods
+    public List<AssessmentEntity> getAllAssessments() {
+        databaseExecutor.execute(()-> mAllAssessments = mAssessmentDAO.getAllAssessments());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mAllAssessments;
     }
 
     public void insert(AssessmentEntity assessment) {
@@ -92,6 +131,25 @@ public class Repository {
         }
     }
 
+    public void update(AssessmentEntity assessment) {
+        databaseExecutor.execute(()-> mAssessmentDAO.update(assessment));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(AssessmentEntity assessment) {
+        databaseExecutor.execute(()-> mAssessmentDAO.delete(assessment));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // generic data generator; use to pre-populate an empty database
     public void generateData() {
         TermEntity term1 = new TermEntity(1,"Term 1", "01/01/2022","06/30/2022");
         TermEntity term2 = new TermEntity(2,"Term 2", "01/01/2022","06/30/2022");
@@ -132,41 +190,4 @@ public class Repository {
             e.printStackTrace();
         }
     }
-
-    /*
-    public void update(TermEntity termEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mTermDAO.update(termEntity);
-        });
-    }
-
-    public void update(CourseEntity courseEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.update(courseEntity);
-        });
-    }
-
-    public void update(AssessmentEntity assessmentEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.update(assessmentEntity);
-        });
-    }
-
-    public void delete(TermEntity termEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mTermDAO.delete(termEntity);
-        });
-    }
-
-    public void delete(CourseEntity courseEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.delete(courseEntity);
-        });
-    }
-
-    public void delete(AssessmentEntity assessmentEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.delete(assessmentEntity);
-        });
-    }*/
 }

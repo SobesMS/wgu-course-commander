@@ -13,4 +13,5 @@
     <string name="assessment_list">Assessment List</string>
     <string name="course_list">Course List</string>
     <string name="term_list">Term List</string>
+    <string name="refresh">Refresh</string>
 </resources>

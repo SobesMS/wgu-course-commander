@@ -1,4 +1,4 @@
-package com.sobesworld.wgucoursecommander.ui;
+package com.sobesworld.wgucoursecommander.database.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,14 +29,14 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.As
 
         private AssessmentViewHolder(View itemView) {
             super(itemView);
-            assessmentItemView = itemView.findViewById(R.id.assessment_item);
+            assessmentItemView = itemView.findViewById(R.id.item_view);
         }
     }
 
     @NonNull
     @Override
     public AssessmentAdapter.AssessmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assessment_recyclerview_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
         return new AssessmentAdapter.AssessmentViewHolder(itemView);
     }
 
