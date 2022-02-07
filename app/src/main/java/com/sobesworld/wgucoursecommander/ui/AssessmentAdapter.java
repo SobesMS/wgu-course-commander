@@ -10,49 +10,45 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.entities.Assessment;
+import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
 
 import java.util.List;
 
-public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.AssessmentViewHolder>{
-    class AssessmentViewHolder extends RecyclerView.ViewHolder {
-        private final TextView assessmentItemView;
-        private AssessmentViewHolder(View itemView) {
-            super(itemView);
-            assessmentItemView = itemView.findViewById(R.id.assessmentItem);
-        }
-    }
+public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.AssessmentViewHolder> {
 
-    private List<Assessment> mAssessments;
+    private List<AssessmentEntity> mAssessments;
     private final Context context;
-    private final LayoutInflater mInflator;
 
     public AssessmentAdapter(Context context) {
-        mInflator = LayoutInflater.from(context);
         this.context = context;
+    }
+
+    static class AssessmentViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView assessmentItemView;
+
+        private AssessmentViewHolder(View itemView) {
+            super(itemView);
+            assessmentItemView = itemView.findViewById(R.id.assessment_item);
+        }
     }
 
     @NonNull
     @Override
     public AssessmentAdapter.AssessmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflator.inflate(R.layout.assessment_list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.assessment_recyclerview_item, parent, false);
         return new AssessmentAdapter.AssessmentViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AssessmentAdapter.AssessmentViewHolder holder, int position) {
         if (mAssessments != null) {
-            Assessment current = mAssessments.get(position);
+            AssessmentEntity current = mAssessments.get(position);
             String title = current.getAssessmentTitle();
             holder.assessmentItemView.setText(title);
         } else {
             holder.assessmentItemView.setText("No course title");
         }
-    }
-
-    public void setAssessments(List<Assessment> assessments) {
-        mAssessments = assessments;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -62,5 +58,10 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.As
         } else {
             return 0;
         }
+    }
+
+    public void setAssessments(List<AssessmentEntity> assessments) {
+        mAssessments = assessments;
+        notifyDataSetChanged();
     }
 }

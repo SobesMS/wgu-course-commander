@@ -1,20 +1,22 @@
-package com.sobesworld.wgucoursecommander.entities;
+package com.sobesworld.wgucoursecommander.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "assessments")
-public class Assessment {
+@Entity(tableName = "assessment_table")
+public class AssessmentEntity {
+
     @PrimaryKey(autoGenerate = true)
     private int assessmentID;
-
     private String assessmentTitle;
     private String assessmentType;
     private String assessmentGoalDate;
     private boolean assessmentGoalAlert;
     private int courseID;
 
-    public Assessment(int assessmentID, String assessmentTitle, String assessmentType, String assessmentGoalDate, boolean assessmentGoalAlert, int courseID) {
+    public AssessmentEntity(int assessmentID, @NonNull String assessmentTitle, @NonNull String assessmentType, @NonNull String assessmentGoalDate,
+                            boolean assessmentGoalAlert, int courseID) {
         this.assessmentID = assessmentID;
         this.assessmentTitle = assessmentTitle;
         this.assessmentType = assessmentType;

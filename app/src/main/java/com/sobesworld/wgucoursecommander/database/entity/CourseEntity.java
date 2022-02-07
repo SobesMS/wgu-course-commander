@@ -1,13 +1,14 @@
-package com.sobesworld.wgucoursecommander.entities;
+package com.sobesworld.wgucoursecommander.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "courses")
-public class Course {
+@Entity(tableName = "course_table")
+public class CourseEntity {
+
     @PrimaryKey(autoGenerate = true)
     private int courseID;
-
     private String courseTitle;
     private String courseStartDate;
     private boolean courseStartAlert;
@@ -20,7 +21,9 @@ public class Course {
     private String courseNotes;
     private int termID;
 
-    public Course(int courseID, String courseTitle, String courseStartDate, boolean courseStartAlert, String courseProjectedEndDate, boolean courseEndAlert, String courseStatus, String courseMentorsName, String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int termID) {
+    public CourseEntity(int courseID, @NonNull String courseTitle, @NonNull String courseStartDate, boolean courseStartAlert,
+                        @NonNull String courseProjectedEndDate, boolean courseEndAlert, @NonNull String courseStatus, @NonNull String courseMentorsName,
+                        @NonNull String courseMentorsPhone, @NonNull String courseMentorsEmail, @NonNull String courseNotes, int termID) {
         this.courseID = courseID;
         this.courseTitle = courseTitle;
         this.courseStartDate = courseStartDate;

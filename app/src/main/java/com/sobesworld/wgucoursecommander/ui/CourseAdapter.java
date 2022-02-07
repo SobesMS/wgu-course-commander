@@ -10,49 +10,45 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.entities.Course;
+import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.util.List;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-    class CourseViewHolder extends RecyclerView.ViewHolder {
-        private final TextView courseItemView;
-        private CourseViewHolder(View itemView) {
-            super(itemView);
-            courseItemView = itemView.findViewById(R.id.courseItem);
-        }
-    }
 
-    private List<Course> mCourses;
+    private List<CourseEntity> mCourses;
     private final Context context;
-    private final LayoutInflater mInflator;
 
     public CourseAdapter(Context context) {
-        mInflator = LayoutInflater.from(context);
         this.context = context;
+    }
+
+    static class CourseViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView courseItemView;
+
+        private CourseViewHolder(View itemView) {
+            super(itemView);
+            courseItemView = itemView.findViewById(R.id.course_item);
+        }
     }
 
     @NonNull
     @Override
     public CourseAdapter.CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflator.inflate(R.layout.course_list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.course_recyclerview_item, parent, false);
         return new CourseAdapter.CourseViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CourseAdapter.CourseViewHolder holder, int position) {
         if (mCourses != null) {
-            Course current = mCourses.get(position);
+            CourseEntity current = mCourses.get(position);
             String title = current.getCourseTitle();
             holder.courseItemView.setText(title);
         } else {
             holder.courseItemView.setText("No course title");
         }
-    }
-
-    public void setCourses(List<Course> courses) {
-        mCourses = courses;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -62,5 +58,10 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         } else {
             return 0;
         }
+    }
+
+    public void setCourses(List<CourseEntity> courses) {
+        mCourses = courses;
+        notifyDataSetChanged();
     }
 }

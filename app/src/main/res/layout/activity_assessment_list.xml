@@ -6,41 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".ui.AssessmentList">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addAssessment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:clickable="true"
-        android:onClick="goToAddAssessment"
-        android:src="@drawable/ic_baseline_add_24"
-        android:backgroundTint="#2EA1C3"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_assessment" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerviewAssessments"
+        android:id="@+id/assessments_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
-        tools:listitem="@layout/assessment_list_item"
+        tools:listitem="@layout/assessment_recyclerview_item"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <!--TODO: DELETE THIS BUTTON (test button for assessment detail view)-->
-    <!--<Button
-        android:id="@+id/assessmentTestButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/assessments_fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="TEST Assessment Detail"
-        android:onClick="testAssessmentDetail"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_assessment"
+        android:src="@drawable/ic_baseline_add_24"
+        android:backgroundTint="@color/dkBlue_100"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

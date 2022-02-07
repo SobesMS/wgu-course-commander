@@ -10,4 +10,7 @@
     <string name="edit_course">Edit Course</string>
     <string name="edit_term">Edit Term</string>
     <string name="edit_assessment">Edit Assessment</string>
+    <string name="assessment_list">Assessment List</string>
+    <string name="course_list">Course List</string>
+    <string name="term_list">Term List</string>
 </resources>

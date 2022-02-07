@@ -11,46 +11,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
         <activity
-            android:name=".ui.AssessmentDetail"
-            android:exported="false"
-            android:label="Assessment Details"
-            android:parentActivityName=".ui.AssessmentList" />
-        <activity
-            android:name=".ui.CourseDetail"
-            android:exported="false"
-            android:label="Course Details"
-            android:parentActivityName=".ui.CourseList" />
-        <activity
-            android:name=".ui.TermDetail"
-            android:exported="false"
-            android:label="Term Details"
-            android:parentActivityName=".ui.TermList" />
-        <activity
-            android:name=".ui.AddAssessment"
-            android:exported="false"
-            android:label="@string/add_assessment" />
-        <activity
-            android:name=".ui.AddCourse"
-            android:exported="false"
-            android:label="@string/add_course" />
-        <activity
-            android:name=".ui.AddTerm"
-            android:exported="false"
-            android:label="@string/add_term" />
-        <activity
             android:name=".ui.AssessmentList"
             android:exported="false"
-            android:label="Assessment List"
+            android:label="@string/assessment_list"
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.CourseList"
             android:exported="false"
-            android:label="Course List"
+            android:label="@string/course_list"
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.TermList"
             android:exported="false"
-            android:label="Term List"
+            android:label="@string/term_list"
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.MainActivity"
