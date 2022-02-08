@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
@@ -41,11 +42,21 @@ public class AssessmentList extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh_menu, menu);
+        getMenuInflater().inflate(R.menu.list_refresh_menu, menu);
         return true;
     }
 
-    // TODO: add assessment refresh button method
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.refresh_menu) {
+            // TODO: create assessment refresh button method
+            System.out.println("Hi, you just pressed refresh!");
+        }
+        if (item.getItemId() == R.id.home_refresh_menu) {
+            Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(homeButton);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void fillRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.assessments_recyclerview);

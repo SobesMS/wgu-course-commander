@@ -21,4 +21,11 @@
     <string name="no_term_title">-- no term title --</string>
     <string name="no_course_title">-- no course title --</string>
     <string name="no_assessment_title">-- no assessment title --</string>
+    <string name="home">Home</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="abort">ABORT</string>
+
+    <string name="term_delete_alert_title">CONFIRM TERM DELETION</string>
+    <string name="term_delete_alert_message">Select CONFIRM to delete the term record and all associated courses.
+        \n\nSelect ABORT to cancel. \n\n(records are not recoverable)</string>
 </resources>

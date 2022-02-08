@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
@@ -43,14 +44,21 @@ public class TermList extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh_menu, menu);
+        getMenuInflater().inflate(R.menu.list_refresh_menu, menu);
         return true;
     }
 
-    /*public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: create term refresh button method
-        return super.onOptionsItemSelected(item);
-    }*/
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.refresh_menu) {
+            // TODO: create term refresh button method
+            System.out.println("Hi, you just pressed refresh!");
+        }
+        if (item.getItemId() == R.id.home_refresh_menu) {
+            Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(homeButton);
+        }
+        return super.onOptionsItemSelected(item); // TODO: ask instructor what this return statement does
+    }
 
     private void fillRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
