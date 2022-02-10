@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.database.Repository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,6 +15,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Repository repo = new Repository(getApplication());
+
+        // uncomment method on next line to pre-populate an empty database
+        //repo.generateData();
     }
 
     public void goToTermList(View view) {

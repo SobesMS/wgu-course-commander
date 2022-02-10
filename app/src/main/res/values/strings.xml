@@ -24,8 +24,15 @@
     <string name="home">Home</string>
     <string name="confirm">CONFIRM</string>
     <string name="abort">ABORT</string>
-
     <string name="term_delete_alert_title">CONFIRM TERM DELETION</string>
     <string name="term_delete_alert_message">Select CONFIRM to delete the term record and all associated courses.
         \n\nSelect ABORT to cancel. \n\n(records are not recoverable)</string>
+    <string name="title">Title:</string>
+    <string name="enter_a_term_title">enter a term title</string>
+    <string name="start_date">Start Date:</string>
+    <string name="enter_a_start_date">enter a start date</string>
+    <string name="end_date">End Date:</string>
+    <string name="enter_an_end_date">enter an end date</string>
+    <string name="save_record">Save Record</string>
+    <string name="delete_record">Delete Record</string>
 </resources>

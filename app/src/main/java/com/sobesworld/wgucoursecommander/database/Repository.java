@@ -18,9 +18,9 @@ public class Repository {
     private final TermDAO mTermDAO;
     private final CourseDAO mCourseDAO;
     private final AssessmentDAO mAssessmentDAO;
-    private List<TermEntity> mAllTerms;
-    private List<CourseEntity> mAllCourses;
-    private List<AssessmentEntity> mAllAssessments;
+    private List<TermEntity> mTermList;
+    private List<CourseEntity> mCourseList;
+    private List<AssessmentEntity> mAssessmentList;
 
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -30,20 +30,17 @@ public class Repository {
         mTermDAO = db.termDAO();
         mCourseDAO = db.courseDAO();
         mAssessmentDAO = db.assessmentDAO();
-
-        // uncomment method on next line to pre-populate an empty database
-        //generateData();
     }
 
     // TermEntity query methods
     public List<TermEntity> getAllTerms() {
-        databaseExecutor.execute(()-> mAllTerms = mTermDAO.getAllTerms());
+        databaseExecutor.execute(()-> mTermList = mTermDAO.getAllTerms());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return mAllTerms;
+        return mTermList;
     }
 
     public void insert(TermEntity term) {
@@ -75,13 +72,23 @@ public class Repository {
 
     // CourseEntity query methods
     public List<CourseEntity> getAllCourses() {
-        databaseExecutor.execute(()-> mAllCourses = mCourseDAO.getAllCourses());
+        databaseExecutor.execute(()-> mCourseList = mCourseDAO.getAllCourses());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return mAllCourses;
+        return mCourseList;
+    }
+
+    public List<CourseEntity> getLinkedCourses(int i) {
+        databaseExecutor.execute(()-> mCourseList = mCourseDAO.getLinkedCourses(i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mCourseList;
     }
 
     public void insert(CourseEntity course) {
@@ -111,15 +118,34 @@ public class Repository {
         }
     }
 
-    // AssessmentEntity query methods
-    public List<AssessmentEntity> getAllAssessments() {
-        databaseExecutor.execute(()-> mAllAssessments = mAssessmentDAO.getAllAssessments());
+    public void deleteLinkedCourses(int i) {
+        databaseExecutor.execute(()-> mCourseDAO.deleteLinkedCourses(i));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return mAllAssessments;
+    }
+
+    // AssessmentEntity query methods
+    public List<AssessmentEntity> getAllAssessments() {
+        databaseExecutor.execute(()-> mAssessmentList = mAssessmentDAO.getAllAssessments());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mAssessmentList;
+    }
+
+    public List<AssessmentEntity> getLinkedAssessments(int i) {
+        databaseExecutor.execute(()-> mAssessmentList = mAssessmentDAO.getLinkedAssessments(i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mAssessmentList;
     }
 
     public void insert(AssessmentEntity assessment) {
@@ -149,28 +175,37 @@ public class Repository {
         }
     }
 
+    public void deleteLinkedAssessments(int i) {
+        databaseExecutor.execute(()-> mAssessmentDAO.deleteLinkedAssessments(i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     // generic data generator; use to pre-populate an empty database
     public void generateData() {
-        TermEntity term1 = new TermEntity(1,"Term 1", "01/01/2022","06/30/2022");
-        TermEntity term2 = new TermEntity(2,"Term 2", "01/01/2022","06/30/2022");
-        TermEntity term3 = new TermEntity(3,"Term 3", "01/01/2022","06/30/2022");
+        TermEntity term1 = new TermEntity(1,"Term 1", "01/01/22","06/30/22");
+        TermEntity term2 = new TermEntity(2,"Term 2", "01/01/22","06/30/22");
+        TermEntity term3 = new TermEntity(3,"Term 3", "01/01/22","06/30/22");
 
-        CourseEntity course1 = new CourseEntity(1,"C123", "01/01/2022",false,
-                "06/30/2022", false,"in progress","John Doe",
+        CourseEntity course1 = new CourseEntity(1,"C123", "01/01/22",
+                "06/30/22", false,-1, "in progress","John Doe",
                 "216-555-5555", "john.doe@wgu.edu","These are course notes",1);
-        CourseEntity course2 = new CourseEntity(2,"C456", "01/01/2022",false,
-                "06/30/2022", false,"in progress","John Doe",
+        CourseEntity course2 = new CourseEntity(2,"C456", "01/01/22",
+                "06/30/22", false,-1, "in progress","John Doe",
                 "216-555-5555", "john.doe@wgu.edu","These are course notes",2);
-        CourseEntity course3 = new CourseEntity(3,"C789", "01/01/2022",false,
-                "06/30/2022", false,"in progress","John Doe",
+        CourseEntity course3 = new CourseEntity(3,"C789", "01/01/22",
+                "06/30/22", false,-1, "in progress","John Doe",
                 "216-555-5555", "john.doe@wgu.edu","These are course notes",3);
 
         AssessmentEntity assessment1 = new AssessmentEntity(1,"Bake a cake","Objective",
-                "06/30/2022", true,1);
+                "06/30/22", true, -1, 1);
         AssessmentEntity assessment2 = new AssessmentEntity(2,"Build a model","Objective",
-                "06/30/2022", true,2);
+                "06/30/22", true, -1,2);
         AssessmentEntity assessment3 = new AssessmentEntity(3,"Braise short ribs","Objective",
-                "06/30/2022", true,3);
+                "06/30/22", true, -1,3);
 
         databaseExecutor.execute(()-> {
             mTermDAO.insert(term1);

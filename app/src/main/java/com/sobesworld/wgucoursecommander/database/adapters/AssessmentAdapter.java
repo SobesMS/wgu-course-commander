@@ -32,16 +32,13 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.As
         private AssessmentViewHolder(View itemView) {
             super(itemView);
             assessmentItemView = itemView.findViewById(R.id.item_view);
-            itemView.setOnClickListener((new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    final AssessmentEntity current = mAssessments.get(position);
-                    Intent intent = new Intent(context, AssessmentDetail.class);
-                    intent.putExtra(context.getString(R.string.is_new_record), false);
-                    intent.putExtra("id", current.getAssessmentID());
-                    context.startActivity(intent);
-                }
+            itemView.setOnClickListener((view -> {
+                int position = getAdapterPosition();
+                final AssessmentEntity current = mAssessments.get(position);
+                Intent intent = new Intent(context, AssessmentDetail.class);
+                intent.putExtra(context.getString(R.string.is_new_record), false);
+                intent.putExtra("id", current.getAssessmentID());
+                context.startActivity(intent);
             }));
         }
     }

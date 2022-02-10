@@ -2,6 +2,7 @@ package com.sobesworld.wgucoursecommander.database.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "course_table")
@@ -11,9 +12,9 @@ public class CourseEntity {
     private int courseID;
     private String courseTitle;
     private String courseStartDate;
-    private boolean courseStartAlert;
     private String courseProjectedEndDate;
     private boolean courseEndAlert;
+    private int courseAlertID;
     private String courseStatus;
     private String courseMentorsName;
     private String courseMentorsPhone;
@@ -21,15 +22,15 @@ public class CourseEntity {
     private String courseNotes;
     private int termID;
 
-    public CourseEntity(int courseID, @NonNull String courseTitle, @NonNull String courseStartDate, boolean courseStartAlert,
-                        @NonNull String courseProjectedEndDate, boolean courseEndAlert, @NonNull String courseStatus, @NonNull String courseMentorsName,
-                        @NonNull String courseMentorsPhone, @NonNull String courseMentorsEmail, @NonNull String courseNotes, int termID) {
-        this.courseID = courseID;
+    // this constructor is for new database entries; auto-generates primary key
+    public CourseEntity(@NonNull String courseTitle, String courseStartDate, String courseProjectedEndDate,
+                        boolean courseEndAlert, int courseAlertID, String courseStatus, String courseMentorsName,
+                        String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int termID) {
         this.courseTitle = courseTitle;
         this.courseStartDate = courseStartDate;
-        this.courseStartAlert = courseStartAlert;
         this.courseProjectedEndDate = courseProjectedEndDate;
         this.courseEndAlert = courseEndAlert;
+        this.courseAlertID = courseAlertID;
         this.courseStatus = courseStatus;
         this.courseMentorsName = courseMentorsName;
         this.courseMentorsPhone = courseMentorsPhone;
@@ -38,15 +39,35 @@ public class CourseEntity {
         this.termID = termID;
     }
 
+    // this constructor is for updating existing database entries; carries over primary key
+    @Ignore
+    public CourseEntity(int courseID, @NonNull String courseTitle, String courseStartDate, String courseProjectedEndDate,
+                        boolean courseEndAlert, int courseAlertID, String courseStatus, String courseMentorsName,
+                        String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int termID) {
+        this.courseID = courseID;
+        this.courseTitle = courseTitle;
+        this.courseStartDate = courseStartDate;
+        this.courseProjectedEndDate = courseProjectedEndDate;
+        this.courseEndAlert = courseEndAlert;
+        this.courseAlertID = courseAlertID;
+        this.courseStatus = courseStatus;
+        this.courseMentorsName = courseMentorsName;
+        this.courseMentorsPhone = courseMentorsPhone;
+        this.courseMentorsEmail = courseMentorsEmail;
+        this.courseNotes = courseNotes;
+        this.termID = termID;
+    }
+
+    @NonNull
     @Override
     public String toString() {
-        return "Course{" +
+        return "CourseEntity{" +
                 "courseID=" + courseID +
                 ", courseTitle='" + courseTitle + '\'' +
                 ", courseStartDate='" + courseStartDate + '\'' +
-                ", courseStartAlert=" + courseStartAlert +
                 ", courseProjectedEndDate='" + courseProjectedEndDate + '\'' +
                 ", courseEndAlert=" + courseEndAlert +
+                ", courseAlertID=" + courseAlertID +
                 ", courseStatus='" + courseStatus + '\'' +
                 ", courseMentorsName='" + courseMentorsName + '\'' +
                 ", courseMentorsPhone='" + courseMentorsPhone + '\'' +
@@ -80,14 +101,6 @@ public class CourseEntity {
         this.courseStartDate = courseStartDate;
     }
 
-    public boolean isCourseStartAlert() {
-        return courseStartAlert;
-    }
-
-    public void setCourseStartAlert(boolean courseStartAlert) {
-        this.courseStartAlert = courseStartAlert;
-    }
-
     public String getCourseProjectedEndDate() {
         return courseProjectedEndDate;
     }
@@ -102,6 +115,14 @@ public class CourseEntity {
 
     public void setCourseEndAlert(boolean courseEndAlert) {
         this.courseEndAlert = courseEndAlert;
+    }
+
+    public int getCourseAlertID() {
+        return courseAlertID;
+    }
+
+    public void setCourseAlertID(int courseAlertID) {
+        this.courseAlertID = courseAlertID;
     }
 
     public String getCourseStatus() {

@@ -2,6 +2,7 @@ package com.sobesworld.wgucoursecommander.database.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "term_table")
@@ -13,13 +14,23 @@ public class TermEntity {
     private String termStartDate;
     private String termEndDate;
 
-    public TermEntity(int termID, @NonNull String termTitle, @NonNull String termStartDate, @NonNull String termEndDate) {
+    // this constructor is for new database entries; auto-generates primary key
+    public TermEntity(@NonNull String termTitle, String termStartDate, String termEndDate) {
+        this.termTitle = termTitle;
+        this.termStartDate = termStartDate;
+        this.termEndDate = termEndDate;
+    }
+
+    // this constructor is for updating existing database entries; carries over primary key
+    @Ignore
+    public TermEntity(int termID, @NonNull String termTitle, String termStartDate, String termEndDate) {
         this.termID = termID;
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;
         this.termEndDate = termEndDate;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Term{" +

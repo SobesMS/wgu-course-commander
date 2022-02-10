@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
@@ -38,7 +39,7 @@ public class AssessmentList extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        fillRecyclerView();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,8 +49,9 @@ public class AssessmentList extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.refresh_menu) {
-            // TODO: create assessment refresh button method
-            System.out.println("Hi, you just pressed refresh!");
+            fillRecyclerView();
+            Toast toast = Toast.makeText(getApplicationContext(), "Assessment list refreshed.", Toast.LENGTH_LONG);
+            toast.show();
         }
         if (item.getItemId() == R.id.home_refresh_menu) {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
