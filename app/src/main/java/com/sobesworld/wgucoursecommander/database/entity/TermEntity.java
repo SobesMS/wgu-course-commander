@@ -13,31 +13,34 @@ public class TermEntity {
     private String termTitle;
     private String termStartDate;
     private String termEndDate;
+    String termNotes;
 
     // this constructor is for new database entries; auto-generates primary key
-    public TermEntity(@NonNull String termTitle, String termStartDate, String termEndDate) {
+    public TermEntity(@NonNull String termTitle, String termStartDate, String termEndDate, String termNotes) {
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;
         this.termEndDate = termEndDate;
+        this.termNotes = termNotes;
     }
 
     // this constructor is for updating existing database entries; carries over primary key
     @Ignore
-    public TermEntity(int termID, @NonNull String termTitle, String termStartDate, String termEndDate) {
+    public TermEntity(int termID, @NonNull String termTitle, String termStartDate, String termEndDate, String termNotes) {
         this.termID = termID;
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;
         this.termEndDate = termEndDate;
+        this.termNotes = termNotes;
     }
 
-    @NonNull
     @Override
     public String toString() {
-        return "Term{" +
+        return "TermEntity{" +
                 "termID=" + termID +
                 ", termTitle='" + termTitle + '\'' +
                 ", termStartDate='" + termStartDate + '\'' +
                 ", termEndDate='" + termEndDate + '\'' +
+                ", termNotes='" + termNotes + '\'' +
                 '}';
     }
 
@@ -71,5 +74,13 @@ public class TermEntity {
 
     public void setTermEndDate(String termEndDate) {
         this.termEndDate = termEndDate;
+    }
+
+    public String getTermNotes() {
+        return termNotes;
+    }
+
+    public void setTermNotes(String termNotes) {
+        this.termNotes = termNotes;
     }
 }

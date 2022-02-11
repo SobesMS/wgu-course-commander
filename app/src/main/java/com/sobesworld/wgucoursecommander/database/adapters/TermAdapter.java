@@ -37,10 +37,11 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
                 final TermEntity current = mTerms.get(position);
                 Intent intent = new Intent(context, TermDetail.class);
                 intent.putExtra(context.getString(R.string.is_new_record), false);
-                intent.putExtra("id", current.getTermID());
-                intent.putExtra("title", current.getTermTitle());
-                intent.putExtra("start date", current.getTermStartDate());
-                intent.putExtra("end date", current.getTermEndDate());
+                intent.putExtra(context.getString(R.string.idnum), current.getTermID());
+                intent.putExtra(context.getString(R.string.title), current.getTermTitle());
+                intent.putExtra(context.getString(R.string.start_date), current.getTermStartDate());
+                intent.putExtra(context.getString(R.string.end_date), current.getTermEndDate());
+                intent.putExtra(context.getString(R.string.notes), current.getTermNotes());
                 context.startActivity(intent);
             }));
         }

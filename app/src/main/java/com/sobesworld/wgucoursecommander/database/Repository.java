@@ -186,9 +186,9 @@ public class Repository {
 
     // generic data generator; use to pre-populate an empty database
     public void generateData() {
-        TermEntity term1 = new TermEntity(1,"Term 1", "01/01/22","06/30/22");
-        TermEntity term2 = new TermEntity(2,"Term 2", "01/01/22","06/30/22");
-        TermEntity term3 = new TermEntity(3,"Term 3", "01/01/22","06/30/22");
+        TermEntity term1 = new TermEntity(1,"Term 1", "01/01/22","06/30/22", "These are term notes.");
+        TermEntity term2 = new TermEntity(2,"Term 2", "01/01/22","06/30/22", "These are term notes.");
+        TermEntity term3 = new TermEntity(3,"Term 3", "01/01/22","06/30/22", "These are term notes.");
 
         CourseEntity course1 = new CourseEntity(1,"C123", "01/01/22",
                 "06/30/22", false,-1, "in progress","John Doe",
@@ -201,11 +201,11 @@ public class Repository {
                 "216-555-5555", "john.doe@wgu.edu","These are course notes",3);
 
         AssessmentEntity assessment1 = new AssessmentEntity(1,"Bake a cake","Objective",
-                "06/30/22", true, -1, 1);
+                "06/30/22", true, -1, "These are assessment notes.",1);
         AssessmentEntity assessment2 = new AssessmentEntity(2,"Build a model","Objective",
-                "06/30/22", true, -1,2);
+                "06/30/22", true, -1, "These are assessment notes.",2);
         AssessmentEntity assessment3 = new AssessmentEntity(3,"Braise short ribs","Objective",
-                "06/30/22", true, -1,3);
+                "06/30/22", true, -1, "These are assessment notes.",3);
 
         databaseExecutor.execute(()-> {
             mTermDAO.insert(term1);

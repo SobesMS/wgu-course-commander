@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
 
@@ -28,10 +29,12 @@ public class AssessmentDetail extends AppCompatActivity {
             startActivity(homeButton);
         }
         if (item.getItemId() == R.id.share_detail_menu) {
-            System.out.println("Hi, you just pressed share!");
+            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed share!", Toast.LENGTH_LONG);
+            toast.show();
         }
-        if (item.getItemId() == R.id.notify_detail_menu) {
-            System.out.println("Hi, you just pressed notify!");
+        if (item.getItemId() == R.id.note_detail_menu) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed note!", Toast.LENGTH_LONG);
+            toast.show();
         }
         return super.onOptionsItemSelected(item);
     }

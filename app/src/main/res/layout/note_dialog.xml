@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="220dp"
+    android:layout_height="220dp"
+    android:background="@color/yellow_note_body">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@color/yellow_note_header"
+        android:gravity="center"
+        android:text="Notes"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/noteBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:fadeScrollbars="true"
+        android:gravity="start"
+        android:hint="enter notes here"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:padding="12dp"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="false"
+        android:text="asdfhkj kajsdfh as lkajhf als asjhf lakjsh dfl laljhd flas flajkshd flakajhs dfla"
+        android:textAlignment="textStart"
+        android:textSize="14sp" />
+</LinearLayout>

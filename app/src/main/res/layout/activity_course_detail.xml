@@ -1,9 +1,335 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CourseDetail">
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/coursesLinearBtns"
+        android:layout_marginBottom="12dp"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="true" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/courseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/title"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/courseTitleEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/courseTitle"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/courseTitle"
+                android:hint="@string/enter_a_course_title"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/courseStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/courseTitle"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/start_date"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/courseStartDateEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/courseStartDate"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/courseStartDate"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/select_a_start_date"
+                android:importantForAutofill="no"
+                android:inputType="date"
+                android:longClickable="false"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/courseEndDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/courseStartDate"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/end_date"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/courseEndDateEdit"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/courseEndDate"
+                android:layout_alignStart="@+id/courseStartDateEdit"
+                android:layout_marginEnd="16dp"
+                android:layout_toStartOf="@id/courseNotifySwitch"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/select_an_end_date"
+                android:importantForAutofill="no"
+                android:inputType="date"
+                android:longClickable="false"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/courseNotifySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/courseEndDateEdit"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:gravity="end"
+                android:minWidth="48dp"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/courseNotifySwitch"
+                android:layout_alignStart="@+id/courseNotifySwitch"
+                android:layout_alignEnd="@id/courseNotifySwitch"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="-20dp"
+                android:layout_marginEnd="0dp"
+                android:text="@string/notify_switch"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/courseStatusTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/courseEndDate"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="5dp"
+                android:text="Course Status:"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/courseStatus"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_below="@+id/courseStatusTitle"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:contentDescription="Course Status:" />
+
+            <TextView
+                android:id="@+id/linkedTermTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/courseStatusTitle"
+                android:layout_alignStart="@id/linkedTerm"
+                android:text="Term Enrolled:"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/linkedTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/linkedTermTitle"
+                android:layout_toEndOf="@id/courseStatus"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Term Enrolled:" />
+
+            <TextView
+                android:id="@+id/mentorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/courseStatus"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="5dp"
+                android:text="Mentor:"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/mentorNameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/mentorName"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/mentorName"
+                android:hint="enter mentor's name"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/mentorPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mentorName"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="5dp"
+                android:text="Phone:"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/mentorPhoneEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/mentorPhone"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/mentorName"
+                android:hint="enter mentor's phone number"
+                android:importantForAutofill="no"
+                android:inputType="phone"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/mentorEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mentorPhone"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="5dp"
+                android:text="Email:"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/mentorEmailEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/mentorEmail"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/mentorName"
+                android:hint="enter mentor's email address"
+                android:importantForAutofill="no"
+                android:inputType="phone"
+                android:textColorHint="#757575"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/assessmentListHead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/mentorEmail"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20sp"
+                android:layout_marginBottom="5dp"
+                android:text="Assessment List"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/courseAssessmentList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_below="@id/assessmentListHead"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                tools:listitem="@layout/recyclerview_item_small" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/coursesLinearBtns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/courseSaveButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            android:text="@string/save_record"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/courseDeleteButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:backgroundTint="@color/red"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            android:text="@string/delete_record"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
