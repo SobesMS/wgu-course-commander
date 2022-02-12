@@ -25,4 +25,7 @@ public interface TermDAO {
 
     @Query("SELECT * FROM term_table ORDER BY termID ASC")
     List<TermEntity> getAllTerms();
+
+    @Query("UPDATE term_table SET termNotes = :n WHERE termID = :i")
+    void updateTermNotes(String n, int i);
 }

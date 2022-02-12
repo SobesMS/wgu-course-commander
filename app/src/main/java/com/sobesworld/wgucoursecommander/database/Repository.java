@@ -70,6 +70,15 @@ public class Repository {
         }
     }
 
+    public void updateTermNotes(String n, int i) {
+        databaseExecutor.execute(()-> mTermDAO.updateTermNotes(n, i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     // CourseEntity query methods
     public List<CourseEntity> getAllCourses() {
         databaseExecutor.execute(()-> mCourseList = mCourseDAO.getAllCourses());
@@ -127,6 +136,15 @@ public class Repository {
         }
     }
 
+    public void updateCourseNotes(String n, int i) {
+        databaseExecutor.execute(()-> mCourseDAO.updateCourseNotes(n, i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     // AssessmentEntity query methods
     public List<AssessmentEntity> getAllAssessments() {
         databaseExecutor.execute(()-> mAssessmentList = mAssessmentDAO.getAllAssessments());
@@ -177,6 +195,15 @@ public class Repository {
 
     public void deleteLinkedAssessments(int i) {
         databaseExecutor.execute(()-> mAssessmentDAO.deleteLinkedAssessments(i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAssessmentNotes(String n, int i) {
+        databaseExecutor.execute(()-> mAssessmentDAO.updateAssessmentNotes(n, i));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

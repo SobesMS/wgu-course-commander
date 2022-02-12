@@ -134,24 +134,6 @@
                 android:layout_alignParentEnd="true"
                 tools:listitem="@layout/recyclerview_item_small" />
 
-            <EditText
-                android:id="@+id/termNoteEdit"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/termCourseList"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@null"
-                android:hint="notes here, foo"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine"
-                android:scrollHorizontally="false"
-                android:scrollbars="vertical"
-                android:fadeScrollbars="true"
-                android:textColorHint="#757575"
-                android:textSize="17sp" />
-
         </RelativeLayout>
 
     </ScrollView>

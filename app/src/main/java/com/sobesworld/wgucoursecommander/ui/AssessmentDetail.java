@@ -28,13 +28,8 @@ public class AssessmentDetail extends AppCompatActivity {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(homeButton);
         }
-        if (item.getItemId() == R.id.share_detail_menu) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed share!", Toast.LENGTH_LONG);
-            toast.show();
-        }
         if (item.getItemId() == R.id.note_detail_menu) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed note!", Toast.LENGTH_LONG);
-            toast.show();
+            Toast.makeText(getApplicationContext(), "Hi, you just pressed note!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }

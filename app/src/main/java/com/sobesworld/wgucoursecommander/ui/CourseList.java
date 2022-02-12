@@ -50,8 +50,7 @@ public class CourseList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.refresh_menu) {
             fillRecyclerView();
-            Toast toast = Toast.makeText(getApplicationContext(), "Course list refreshed.", Toast.LENGTH_LONG);
-            toast.show();
+            Toast.makeText(getApplicationContext(), "Course list refreshed.", Toast.LENGTH_LONG).show();
         }
         if (item.getItemId() == R.id.home_refresh_menu) {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);

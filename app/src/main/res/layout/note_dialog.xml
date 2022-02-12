@@ -1,35 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="220dp"
-    android:layout_height="220dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
     android:background="@color/yellow_note_body">
 
     <TextView
+        android:id="@+id/noteHeader"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:background="@color/yellow_note_header"
-        android:gravity="center"
         android:text="Notes"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/noteBody"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/noteHeader"
+        android:layout_above="@id/noteButtons"
+        android:gravity="top"
         android:background="@null"
         android:fadeScrollbars="true"
-        android:gravity="start"
         android:hint="enter notes here"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        android:padding="12dp"
+        android:padding="15dp"
         android:scrollbars="vertical"
         android:scrollHorizontally="false"
-        android:text="asdfhkj kajsdfh as lkajhf als asjhf lakjsh dfl laljhd flas flajkshd flakajhs dfla"
-        android:textAlignment="textStart"
-        android:textSize="14sp" />
-</LinearLayout>
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:id="@+id/noteButtons"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <Button
+            android:id="@+id/saveNoteButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="15dp"
+            android:backgroundTint="@color/yellow_note_header"
+            android:text="Save"
+            android:textColor="@color/black"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/shareNoteButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="15dp"
+            android:backgroundTint="@color/yellow_note_header"
+            android:text="Share"
+            android:textColor="@color/black"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
+</RelativeLayout>

@@ -31,4 +31,7 @@ public interface AssessmentDAO {
 
     @Query("DELETE FROM assessment_table WHERE courseID = :i")
     void deleteLinkedAssessments(int i);
+
+    @Query("UPDATE assessment_table SET assessmentNotes = :n WHERE assessmentID = :i")
+    void updateAssessmentNotes(String n, int i);
 }

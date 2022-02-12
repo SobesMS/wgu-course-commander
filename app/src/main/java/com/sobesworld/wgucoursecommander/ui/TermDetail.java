@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,7 +35,7 @@ public class TermDetail extends AppCompatActivity {
     EditText termTitle;
     EditText termStartDate;
     EditText termEndDate;
-    EditText termNotes;
+    String termNotes;
     final Calendar startCalendar = Calendar.getInstance();
     final Calendar endCalendar = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
@@ -49,7 +51,7 @@ public class TermDetail extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // shows
+        // displays course list for current term
         if (!recordStatusNew) {
             int i = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
             adapter.setCourses(repo.getLinkedCourses(i));
@@ -61,8 +63,7 @@ public class TermDetail extends AppCompatActivity {
         termStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
         termEndDate = findViewById(R.id.termEndDateEdit);
         termEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
-        termNotes = findViewById(R.id.termNoteEdit);
-        termNotes.setText(getIntent().getStringExtra(getResources().getString(R.string.notes)));
+        termNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
 
         // sets term end date from user's date picker selection
         DatePickerDialog.OnDateSetListener startDateDialog = (datePicker, year, month, dayOfMonth) -> {
@@ -108,31 +109,30 @@ public class TermDetail extends AppCompatActivity {
                     endCalendar.get(Calendar.MONTH), endCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
+        // save button functionality
         Button saveButton = findViewById(R.id.termSaveButton);
         saveButton.setOnClickListener(view -> {
             if (recordStatusNew) {
                 TermEntity term = new TermEntity(termTitle.getText().toString(), termStartDate.getText().toString(),
-                        termEndDate.getText().toString(), termNotes.getText().toString());
+                        termEndDate.getText().toString(), termNotes);
                 repo.insert(term);
                 finish();
-                Toast toast = Toast.makeText(getApplicationContext(), "New term record created.", Toast.LENGTH_LONG);
-                toast.show();
+                Toast.makeText(getApplicationContext(), "New term record created.", Toast.LENGTH_LONG).show();
             } else {
                 TermEntity term = new TermEntity(getIntent().getIntExtra(getResources().getString(R.string.idnum), -1),
                         termTitle.getText().toString(), termStartDate.getText().toString(), termEndDate.getText().toString(),
-                        termNotes.getText().toString());
+                        termNotes);
                 repo.update(term);
                 finish();
-                Toast toast = Toast.makeText(getApplicationContext(), "Term record updated.", Toast.LENGTH_LONG);
-                toast.show();
+                Toast.makeText(getApplicationContext(), "Term record updated.", Toast.LENGTH_LONG).show();
             }
         });
-        
+
+        // delete button functionality
         Button deleteButton = findViewById(R.id.termDeleteButton);
         deleteButton.setOnClickListener( view -> {
             if (recordStatusNew) {
-                Toast toast = Toast.makeText(getApplicationContext(), "New term entry. No saved record to delete.", Toast.LENGTH_LONG);
-                toast.show();
+                Toast.makeText(getApplicationContext(), "New term entry. No saved record to delete.", Toast.LENGTH_LONG).show();
             } else {
                 deleteTerm();
                 deleteDialog.show();
@@ -150,15 +150,46 @@ public class TermDetail extends AppCompatActivity {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(homeButton);
         }
-        if (item.getItemId() == R.id.share_detail_menu) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed share!", Toast.LENGTH_LONG);
-            toast.show();
-        }
         if (item.getItemId() == R.id.note_detail_menu) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Hi, you just pressed note!", Toast.LENGTH_LONG);
-            toast.show();
+            if (recordStatusNew) {
+                Toast.makeText(getApplicationContext(),
+                        "You are adding a new term. Term Record must be saved before creating notes.", Toast.LENGTH_LONG).show();
+            } else {
+                showNoteDialog();
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // handles editing and sharing of notes
+    void showNoteDialog() {
+        final Dialog dialog = new Dialog(TermDetail.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.note_dialog);
+        final EditText note = dialog.findViewById(R.id.noteBody);
+        note.setText(termNotes);
+        Button saveNoteButton = dialog.findViewById(R.id.saveNoteButton);
+        Button shareNoteButton = dialog.findViewById(R.id.shareNoteButton);
+
+        saveNoteButton.setOnClickListener(view -> {
+            termNotes = note.getText().toString();
+            repo.updateTermNotes(termNotes, getIntent().getIntExtra(getResources().getString(R.string.idnum), -1));
+            dialog.dismiss();
+        });
+
+        shareNoteButton.setOnClickListener(view -> {
+            String term = getIntent().getStringExtra(getResources().getString(R.string.title));
+            String notes = term + " notes: " + note.getText().toString();
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TITLE, "Notes from " + term);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, notes);
+            sendIntent.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+        });
+        dialog.show();
     }
 
     // creates a delete confirmation dialog and deletes course if confirmed
@@ -170,11 +201,10 @@ public class TermDetail extends AppCompatActivity {
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
             TermEntity term = new TermEntity(getIntent().getIntExtra(getResources().getString(R.string.idnum), -1),
                     termTitle.getText().toString(), termStartDate.getText().toString(), termEndDate.getText().toString(),
-                    termNotes.getText().toString());
+                    termNotes);
             repo.delete(term);
             repo.deleteLinkedCourses(getIntent().getIntExtra(getResources().getString(R.string.idnum), -1));
-            Toast toast = Toast.makeText(getApplicationContext(), "Term record permanently deleted.", Toast.LENGTH_LONG);
-            toast.show();
+            Toast.makeText(getApplicationContext(), "Term record permanently deleted.", Toast.LENGTH_LONG).show();
             finish();
         });
         deleteDialog = builder.create();

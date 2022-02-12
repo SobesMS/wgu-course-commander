@@ -31,4 +31,7 @@ public interface CourseDAO {
 
     @Query("DELETE FROM course_table WHERE termID = :i")
     void deleteLinkedCourses(int i);
+
+    @Query("UPDATE course_table SET courseNotes = :n WHERE courseID = :i")
+    void updateCourseNotes(String n, int i);
 }

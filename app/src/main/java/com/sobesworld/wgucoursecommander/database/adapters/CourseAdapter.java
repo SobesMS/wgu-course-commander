@@ -37,7 +37,18 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
                 final CourseEntity current = mCourses.get(position);
                 Intent intent = new Intent(context, CourseDetail.class);
                 intent.putExtra(context.getString(R.string.is_new_record), false);
-                intent.putExtra("id", current.getCourseID());
+                intent.putExtra(context.getString(R.string.idnum), current.getCourseID());
+                intent.putExtra(context.getString(R.string.title), current.getCourseTitle());
+                intent.putExtra(context.getString(R.string.start_date), current.getCourseStartDate());
+                intent.putExtra(context.getString(R.string.end_date), current.getCourseProjectedEndDate());
+                intent.putExtra(context.getString(R.string.end_alert), current.isCourseEndAlert());
+                intent.putExtra(context.getString(R.string.alert_id), current.getCourseAlertID());
+                intent.putExtra(context.getString(R.string.status), current.getCourseStatus());
+                intent.putExtra(context.getString(R.string.mentor), current.getCourseMentorsName());
+                intent.putExtra(context.getString(R.string.phone), current.getCourseMentorsPhone());
+                intent.putExtra(context.getString(R.string.email), current.getCourseMentorsEmail());
+                intent.putExtra(context.getString(R.string.notes), current.getCourseNotes());
+                intent.putExtra(context.getString(R.string.termID), current.getTermID());
                 context.startActivity(intent);
             }));
         }

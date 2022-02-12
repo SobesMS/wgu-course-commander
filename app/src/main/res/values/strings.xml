@@ -39,4 +39,11 @@
     <string name="notify_switch">NOTIFY</string>
     <string name="idnum">id</string>
     <string name="notes">notes</string>
+    <string name="end_alert">End Alert:</string>
+    <string name="alert_id">Alert ID:</string>
+    <string name="status">Course Status:</string>
+    <string name="mentor">Mentor:</string>
+    <string name="phone">Phone:</string>
+    <string name="email">Email:</string>
+    <string name="termID">term id</string>
 </resources>

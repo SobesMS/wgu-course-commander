@@ -144,7 +144,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="5dp"
-                android:text="Course Status:"
+                android:text="@string/status"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -156,7 +156,7 @@
                 android:layout_below="@+id/courseStatusTitle"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
-                android:contentDescription="Course Status:" />
+                android:contentDescription="@string/status" />
 
             <TextView
                 android:id="@+id/linkedTermTitle"
