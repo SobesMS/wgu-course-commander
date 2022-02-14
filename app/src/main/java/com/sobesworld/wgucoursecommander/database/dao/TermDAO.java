@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao

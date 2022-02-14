@@ -44,18 +44,10 @@ public class AssessmentEntity {
         this.courseID = courseID;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "AssessmentEntity{" +
-                "assessmentID=" + assessmentID +
-                ", assessmentTitle='" + assessmentTitle + '\'' +
-                ", assessmentType='" + assessmentType + '\'' +
-                ", assessmentGoalDate='" + assessmentGoalDate + '\'' +
-                ", assessmentGoalAlert=" + assessmentGoalAlert +
-                ", assessmentAlertID=" + assessmentAlertID +
-                ", assessmentNotes='" + assessmentNotes + '\'' +
-                ", courseID=" + courseID +
-                '}';
+        return assessmentTitle;
     }
 
     public int getAssessmentID() {

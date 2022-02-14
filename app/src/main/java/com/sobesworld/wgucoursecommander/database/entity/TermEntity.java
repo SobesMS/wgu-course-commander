@@ -33,15 +33,10 @@ public class TermEntity {
         this.termNotes = termNotes;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "TermEntity{" +
-                "termID=" + termID +
-                ", termTitle='" + termTitle + '\'' +
-                ", termStartDate='" + termStartDate + '\'' +
-                ", termEndDate='" + termEndDate + '\'' +
-                ", termNotes='" + termNotes + '\'' +
-                '}';
+        return termTitle;
     }
 
     public int getTermID() {
