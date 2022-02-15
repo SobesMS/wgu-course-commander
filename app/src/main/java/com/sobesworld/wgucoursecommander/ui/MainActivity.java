@@ -2,6 +2,8 @@ package com.sobesworld.wgucoursecommander.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
         Repository repo = new Repository(getApplication());
 
         // uncomment method on next line to pre-populate an empty database
@@ -34,5 +37,14 @@ public class MainActivity extends AppCompatActivity {
     public void goToAssessmentList(View view) {
         Intent intent= new Intent(MainActivity.this, AssessmentList.class);
         startActivity(intent);
+    }
+
+    private void createNotificationChannel() {
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CourseCommReceiver.channelID, CourseCommReceiver.channelName,
+                importance);
+        channel.setDescription(CourseCommReceiver.channelDescription);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 }

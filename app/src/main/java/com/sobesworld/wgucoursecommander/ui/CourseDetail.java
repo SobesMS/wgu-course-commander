@@ -1,13 +1,17 @@
 package com.sobesworld.wgucoursecommander.ui;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,6 +35,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -62,6 +67,8 @@ public class CourseDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
+        ActionBar actionBar = getSupportActionBar();
+        Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
         repo = new Repository(getApplication());
         AssessmentAdapter adapter = new AssessmentAdapter(this);
@@ -82,14 +89,12 @@ public class CourseDetail extends AppCompatActivity {
         courseEndDate = findViewById(R.id.courseEndDateEdit);
         courseEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
         courseEndAlert = getIntent().getBooleanExtra(getResources().getString(R.string.end_alert), false);
-        // TODO: courseAlertID from notification method
-        //courseAlertID = findViewById();
         courseAlertID = getIntent().getIntExtra(getResources().getString(R.string.alert_id), -1);
         courseStatus = getIntent().getStringExtra(getResources().getString(R.string.status));
         courseMentorsName = findViewById(R.id.mentorNameEdit);
         courseMentorsName.setText(getIntent().getStringExtra(getResources().getString(R.string.mentor)));
         courseMentorsPhone = findViewById(R.id.mentorPhoneEdit);
-        courseMentorsPhone.setText(getIntent().getStringExtra(getResources().getString(R.string.email)));
+        courseMentorsPhone.setText(getIntent().getStringExtra(getResources().getString(R.string.phone)));
         courseMentorsEmail = findViewById(R.id.mentorEmailEdit);
         courseMentorsEmail.setText(getIntent().getStringExtra(getResources().getString(R.string.email)));
         courseNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
@@ -143,11 +148,11 @@ public class CourseDetail extends AppCompatActivity {
         SwitchCompat notifySwitch = findViewById(R.id.courseNotifySwitch);
         notifySwitch.setChecked(courseEndAlert);
         notifySwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                courseEndAlert = true;
-                // TODO build notification method
+            if (courseEndDate.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "You must set an end date before turning on notify.", Toast.LENGTH_LONG).show();
+                notifySwitch.setChecked(courseEndAlert);
             } else {
-                courseEndAlert = false;
+                courseEndAlert = b;
             }
         });
 
@@ -181,7 +186,7 @@ public class CourseDetail extends AppCompatActivity {
 
         // set term spinner data
         termSpinner = findViewById(R.id.linkedTerm);
-        ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<TermEntity>(this, android.R.layout.simple_spinner_item,
+        ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
                 repo.getAllTerms());
         termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         termSpinner.setAdapter(termSpinnerAdapter);
@@ -206,27 +211,7 @@ public class CourseDetail extends AppCompatActivity {
 
         // save button functionality
         Button saveButton = findViewById(R.id.courseSaveButton);
-        saveButton.setOnClickListener(view -> {
-            if (recordStatusNew) {
-                // TODO: ensure courseEndAlert and courseAlertID are accurate
-                CourseEntity course = new CourseEntity(courseTitle.getText().toString(), courseStartDate.getText().toString(),
-                        courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
-                        courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
-                        courseMentorsEmail.getText().toString(), courseNotes, termID);
-                repo.insert(course);
-                finish();
-                Toast.makeText(getApplicationContext(), "New course record created.", Toast.LENGTH_LONG).show();
-            } else {
-                // TODO: ensure courseEndAlert and courseAlertID are accurate
-                CourseEntity course = new CourseEntity(courseID, courseTitle.getText().toString(), courseStartDate.getText().toString(),
-                        courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
-                        courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
-                        courseMentorsEmail.getText().toString(), courseNotes, termID);
-                repo.update(course);
-                finish();
-                Toast.makeText(getApplicationContext(), "Course record updated.", Toast.LENGTH_LONG).show();
-            }
-        });
+        saveButton.setOnClickListener(view -> saveCourse());
 
         // delete button functionality
         Button deleteButton = findViewById(R.id.courseDeleteButton);
@@ -246,17 +231,16 @@ public class CourseDetail extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            saveCourse();
+        }
         if (item.getItemId() == R.id.home_detail_menu) {
+            saveCourse();
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(homeButton);
         }
         if (item.getItemId() == R.id.note_detail_menu) {
-            if (recordStatusNew) {
-                Toast.makeText(getApplicationContext(),
-                        "You are adding a new course. Course Record must be saved before creating notes.", Toast.LENGTH_LONG).show();
-            } else {
-                showNoteDialog();
-            }
+            showNoteDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -274,7 +258,6 @@ public class CourseDetail extends AppCompatActivity {
 
         saveNoteButton.setOnClickListener(view -> {
             courseNotes = note.getText().toString();
-            repo.updateCourseNotes(courseNotes, courseID);
             dialog.dismiss();
         });
 
@@ -292,6 +275,70 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
+    // TODO: figure out why notifications don't work
+    private void createAlert() {
+        Date endDate = null;
+        try {
+            endDate=sdf.parse(courseEndDate.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String title = courseTitle + " Ending Today";
+        String text = courseTitle + " was scheduled to be completed today. Finish and submit any remaining assessments.";
+        long trigger = 0;
+        if (endDate != null) {
+            trigger = endDate.getTime();
+        }
+        Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
+        intent.putExtra("title", title);
+        intent.putExtra("text", text);
+        intent.putExtra("id", courseAlertID);
+        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+    }
+
+    private void deleteAlert() {
+        Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
+        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(sender);
+        sender.cancel();
+    }
+
+    private void saveCourse() {
+        if (courseAlertID == -1 && courseEndAlert) {
+            int maxID = repo.getMaxAlertID();
+            if (maxID >= 0) {
+                courseAlertID = maxID + 1;
+            } else {
+                courseAlertID = 1;
+            }
+            createAlert();
+        } else if (courseAlertID > -1 && !courseEndAlert) {
+            deleteAlert();
+            courseAlertID = -1;
+        }
+        if (recordStatusNew) {
+            CourseEntity course = new CourseEntity(courseTitle.getText().toString(), courseStartDate.getText().toString(),
+                    courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
+                    courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
+                    courseMentorsEmail.getText().toString(), courseNotes, termID);
+            repo.insert(course);
+            Toast.makeText(getApplicationContext(), "New course record created.", Toast.LENGTH_LONG).show();
+        } else {
+            CourseEntity course = new CourseEntity(courseID, courseTitle.getText().toString(), courseStartDate.getText().toString(),
+                    courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
+                    courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
+                    courseMentorsEmail.getText().toString(), courseNotes, termID);
+            repo.update(course);
+            Toast.makeText(getApplicationContext(), "Course record updated.", Toast.LENGTH_LONG).show();
+        }
+        finish();
+    }
+
     // creates a delete confirmation dialog and deletes course if confirmed
     private void deleteCourse() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -299,12 +346,10 @@ public class CourseDetail extends AppCompatActivity {
         builder.setNegativeButton(R.string.abort, (dialogInterface, i) -> {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
-            // TODO: ensure courseEndAlert, courseAlertID, courseStatus, and termID are accurate
-            CourseEntity course = new CourseEntity(courseID, courseTitle.getText().toString(), courseStartDate.getText().toString(),
-                    courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
-                    courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
-                    courseMentorsEmail.getText().toString(), courseNotes, termID);
-            repo.delete(course);
+            if (courseAlertID > -1) {
+                deleteAlert();
+            }
+            repo.deleteCourseByID(courseID);
             repo.deleteLinkedAssessments(courseID);
             Toast.makeText(getApplicationContext(), "Course record permanently deleted.", Toast.LENGTH_LONG).show();
             finish();

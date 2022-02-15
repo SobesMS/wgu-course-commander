@@ -28,6 +28,7 @@ public abstract class CourseCommDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), CourseCommDatabase.class,
                             "course_comm_database").fallbackToDestructiveMigration().build();
+
                 }
             }
         }

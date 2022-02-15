@@ -21,6 +21,8 @@ public class Repository {
     private List<TermEntity> mTermList;
     private List<CourseEntity> mCourseList;
     private List<AssessmentEntity> mAssessmentList;
+    private int courseMaxAlertID;
+    private int assessmentMaxAlertID;
 
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -127,6 +129,15 @@ public class Repository {
         }
     }
 
+    public void deleteCourseByID(int i) {
+        databaseExecutor.execute(()-> mCourseDAO.deleteCourseByID(i));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteLinkedCourses(int i) {
         databaseExecutor.execute(()-> mCourseDAO.deleteLinkedCourses(i));
         try {
@@ -136,13 +147,14 @@ public class Repository {
         }
     }
 
-    public void updateCourseNotes(String n, int i) {
-        databaseExecutor.execute(()-> mCourseDAO.updateCourseNotes(n, i));
+    public int getMaxAlertID() {
+        databaseExecutor.execute(()-> courseMaxAlertID = mCourseDAO.getMaxAlertID());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return courseMaxAlertID;
     }
 
     // AssessmentEntity query methods

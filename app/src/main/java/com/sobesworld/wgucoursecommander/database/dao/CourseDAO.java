@@ -29,9 +29,12 @@ public interface CourseDAO {
     @Query("SELECT * FROM course_table WHERE termID = :i ORDER BY courseID ASC")
     List<CourseEntity> getLinkedCourses(int i);
 
+    @Query("DELETE FROM course_table WHERE courseID = :i")
+    void deleteCourseByID(int i);
+
     @Query("DELETE FROM course_table WHERE termID = :i")
     void deleteLinkedCourses(int i);
 
-    @Query("UPDATE course_table SET courseNotes = :n WHERE courseID = :i")
-    void updateCourseNotes(String n, int i);
+    @Query("SELECT MAX(courseAlertID) from course_table")
+    int getMaxAlertID();
 }
