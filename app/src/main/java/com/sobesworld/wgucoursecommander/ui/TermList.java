@@ -56,7 +56,7 @@ public class TermList extends AppCompatActivity {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(homeButton);
         }
-        return super.onOptionsItemSelected(item); // TODO: ask instructor what this return statement does
+        return super.onOptionsItemSelected(item);
     }
 
     private void fillRecyclerView() {

@@ -228,7 +228,6 @@ public class AssessmentDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    // TODO: figure out why notifications don't work
     private void createAlert() {
         Date goalDate = null;
         try {

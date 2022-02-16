@@ -277,7 +277,6 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    // TODO: figure out why notifications don't work
     private void createAlert() {
         Date endDate = null;
         try {
