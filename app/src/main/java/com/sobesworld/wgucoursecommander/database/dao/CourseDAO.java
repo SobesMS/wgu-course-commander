@@ -1,7 +1,6 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -20,9 +19,6 @@ public interface CourseDAO {
     @Update
     void update(CourseEntity courseEntity);
 
-    @Delete
-    void delete(CourseEntity courseEntity);
-
     @Query("SELECT * FROM course_table ORDER BY courseID ASC")
     List<CourseEntity> getAllCourses();
 
@@ -36,5 +32,5 @@ public interface CourseDAO {
     void deleteLinkedCourses(int i);
 
     @Query("SELECT MAX(courseAlertID) from course_table")
-    int getMaxAlertID();
+    int getMaxCourseAlertID();
 }

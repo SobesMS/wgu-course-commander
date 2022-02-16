@@ -43,7 +43,6 @@ import java.util.Objects;
 public class CourseDetail extends AppCompatActivity {
 
     private Repository repo;
-    private AlertDialog deleteDialog;
     private boolean recordStatusNew;
     int courseID;
     EditText courseTitle;
@@ -82,20 +81,21 @@ public class CourseDetail extends AppCompatActivity {
             adapter.setAssessments(repo.getLinkedAssessments(courseID));
         }
 
+        // sets values of all fields upon record open
         courseTitle = findViewById(R.id.courseTitleEdit);
-        courseTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
         courseStartDate = findViewById(R.id.courseStartDateEdit);
-        courseStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
         courseEndDate = findViewById(R.id.courseEndDateEdit);
+        courseMentorsName = findViewById(R.id.mentorNameEdit);
+        courseMentorsPhone = findViewById(R.id.mentorPhoneEdit);
+        courseMentorsEmail = findViewById(R.id.mentorEmailEdit);
+        courseTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
+        courseStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
         courseEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
         courseEndAlert = getIntent().getBooleanExtra(getResources().getString(R.string.end_alert), false);
         courseAlertID = getIntent().getIntExtra(getResources().getString(R.string.alert_id), -1);
         courseStatus = getIntent().getStringExtra(getResources().getString(R.string.status));
-        courseMentorsName = findViewById(R.id.mentorNameEdit);
         courseMentorsName.setText(getIntent().getStringExtra(getResources().getString(R.string.mentor)));
-        courseMentorsPhone = findViewById(R.id.mentorPhoneEdit);
         courseMentorsPhone.setText(getIntent().getStringExtra(getResources().getString(R.string.phone)));
-        courseMentorsEmail = findViewById(R.id.mentorEmailEdit);
         courseMentorsEmail.setText(getIntent().getStringExtra(getResources().getString(R.string.email)));
         courseNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
         termID = getIntent().getIntExtra(getResources().getString(R.string.termID), -1);
@@ -180,7 +180,6 @@ public class CourseDetail extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -205,13 +204,16 @@ public class CourseDetail extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
         // save button functionality
         Button saveButton = findViewById(R.id.courseSaveButton);
-        saveButton.setOnClickListener(view -> saveCourse());
+        saveButton.setOnClickListener(view -> {
+            saveCourse();
+            Intent intent = new Intent(CourseDetail.this, CourseList.class);
+            startActivity(intent);
+        });
 
         // delete button functionality
         Button deleteButton = findViewById(R.id.courseDeleteButton);
@@ -219,8 +221,8 @@ public class CourseDetail extends AppCompatActivity {
             if (recordStatusNew) {
                 Toast.makeText(getApplicationContext(), "New course entry. No saved record to delete.", Toast.LENGTH_LONG).show();
             } else {
-                deleteCourse();
-                deleteDialog.show();
+                Intent intent = new Intent(CourseDetail.this, CourseList.class);
+                deleteCourse(intent);
             }
         });
     }
@@ -232,12 +234,12 @@ public class CourseDetail extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            saveCourse();
+            Intent intent = new Intent(CourseDetail.this, CourseList.class);
+            applyUnsavedChanges(intent);
         }
         if (item.getItemId() == R.id.home_detail_menu) {
-            saveCourse();
-            Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(homeButton);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            applyUnsavedChanges(intent);
         }
         if (item.getItemId() == R.id.note_detail_menu) {
             showNoteDialog();
@@ -283,8 +285,8 @@ public class CourseDetail extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String title = courseTitle + " Ending Today";
-        String text = courseTitle + " was scheduled to be completed today. Finish and submit any remaining assessments.";
+        String title = courseTitle.getText().toString() + " Ending Today";
+        String text = courseTitle.getText().toString() + " was scheduled to be completed today. Finish and submit any remaining assessments.";
         long trigger = 0;
         if (endDate != null) {
             trigger = endDate.getTime();
@@ -293,28 +295,40 @@ public class CourseDetail extends AppCompatActivity {
         intent.putExtra("title", title);
         intent.putExtra("text", text);
         intent.putExtra("id", courseAlertID);
-        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
     }
 
     private void deleteAlert() {
         Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
         sender.cancel();
     }
 
+    private void applyUnsavedChanges(Intent intent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("COMMIT CHANGES")
+                .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
+                .setCancelable(false);
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> startActivity(intent));
+        builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
+            saveCourse();
+            startActivity(intent);
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void saveCourse() {
         if (courseAlertID == -1 && courseEndAlert) {
-            int maxID = repo.getMaxAlertID();
-            if (maxID >= 0) {
+            int maxID = repo.getMaxCourseAlertID();
+            if (maxID >= 10000) {
                 courseAlertID = maxID + 1;
             } else {
-                courseAlertID = 1;
+                courseAlertID = 10000;
             }
             createAlert();
         } else if (courseAlertID > -1 && !courseEndAlert) {
@@ -336,13 +350,14 @@ public class CourseDetail extends AppCompatActivity {
             repo.update(course);
             Toast.makeText(getApplicationContext(), "Course record updated.", Toast.LENGTH_LONG).show();
         }
-        finish();
     }
 
     // creates a delete confirmation dialog and deletes course if confirmed
-    private void deleteCourse() {
+    private void deleteCourse(Intent intent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.course_delete_alert_title).setMessage(R.string.course_delete_alert_message);
+        builder.setTitle(R.string.course_delete_alert_title)
+                .setMessage(R.string.course_delete_alert_message)
+                .setCancelable(false);
         builder.setNegativeButton(R.string.abort, (dialogInterface, i) -> {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
@@ -352,8 +367,9 @@ public class CourseDetail extends AppCompatActivity {
             repo.deleteCourseByID(courseID);
             repo.deleteLinkedAssessments(courseID);
             Toast.makeText(getApplicationContext(), "Course record permanently deleted.", Toast.LENGTH_LONG).show();
-            finish();
+            startActivity(intent);
         });
-        deleteDialog = builder.create();
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

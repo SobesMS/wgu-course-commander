@@ -63,17 +63,8 @@ public class Repository {
         }
     }
 
-    public void delete(TermEntity term) {
-        databaseExecutor.execute(()-> mTermDAO.delete(term));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateTermNotes(String n, int i) {
-        databaseExecutor.execute(()-> mTermDAO.updateTermNotes(n, i));
+    public void deleteTermByID(int i) {
+        databaseExecutor.execute(()-> mTermDAO.deleteTermByID(i));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -120,15 +111,6 @@ public class Repository {
         }
     }
 
-    public void delete(CourseEntity course) {
-        databaseExecutor.execute(()-> mCourseDAO.delete(course));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void deleteCourseByID(int i) {
         databaseExecutor.execute(()-> mCourseDAO.deleteCourseByID(i));
         try {
@@ -147,8 +129,8 @@ public class Repository {
         }
     }
 
-    public int getMaxAlertID() {
-        databaseExecutor.execute(()-> courseMaxAlertID = mCourseDAO.getMaxAlertID());
+    public int getMaxCourseAlertID() {
+        databaseExecutor.execute(()-> courseMaxAlertID = mCourseDAO.getMaxCourseAlertID());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -196,8 +178,8 @@ public class Repository {
         }
     }
 
-    public void delete(AssessmentEntity assessment) {
-        databaseExecutor.execute(()-> mAssessmentDAO.delete(assessment));
+    public void deleteAssessmentByID(int i) {
+        databaseExecutor.execute(()-> mAssessmentDAO.deleteAssessmentByID(i));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -214,13 +196,14 @@ public class Repository {
         }
     }
 
-    public void updateAssessmentNotes(String n, int i) {
-        databaseExecutor.execute(()-> mAssessmentDAO.updateAssessmentNotes(n, i));
+    public int getMaxAssessmentAlertID() {
+        databaseExecutor.execute(()-> assessmentMaxAlertID = mAssessmentDAO.getMaxCourseAlertID());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return assessmentMaxAlertID;
     }
 
     // generic data generator; use to pre-populate an empty database
@@ -239,12 +222,12 @@ public class Repository {
                 "06/30/22", false,-1, "in progress","John Doe",
                 "216-555-5555", "john.doe@wgu.edu","These are course notes",3);
 
-        AssessmentEntity assessment1 = new AssessmentEntity(1,"Bake a cake","Objective",
-                "06/30/22", true, -1, "These are assessment notes.",1);
-        AssessmentEntity assessment2 = new AssessmentEntity(2,"Build a model","Objective",
-                "06/30/22", true, -1, "These are assessment notes.",2);
-        AssessmentEntity assessment3 = new AssessmentEntity(3,"Braise short ribs","Objective",
-                "06/30/22", true, -1, "These are assessment notes.",3);
+        AssessmentEntity assessment1 = new AssessmentEntity(1,"Bake a cake","objective",
+                "06/30/22", false, -1, "These are assessment notes.",1);
+        AssessmentEntity assessment2 = new AssessmentEntity(2,"Build a model","objective",
+                "06/30/22", false, -1, "These are assessment notes.",2);
+        AssessmentEntity assessment3 = new AssessmentEntity(3,"Braise short ribs","objective",
+                "06/30/22", false, -1, "These are assessment notes.",3);
 
         databaseExecutor.execute(()-> {
             mTermDAO.insert(term1);

@@ -19,18 +19,15 @@
         <activity
             android:name=".ui.AssessmentDetail"
             android:exported="false"
-            android:label="@string/assessment_detail"
-            android:parentActivityName=".ui.AssessmentList" />
+            android:label="@string/assessment_detail" />
         <activity
             android:name=".ui.CourseDetail"
             android:exported="false"
-            android:label="@string/course_detail"
-            android:parentActivityName=".ui.CourseList"/>
+            android:label="@string/course_detail" />
         <activity
             android:name=".ui.TermDetail"
             android:exported="false"
-            android:label="@string/term_detail"
-            android:parentActivityName=".ui.TermList"/>
+            android:label="@string/term_detail" />
         <activity
             android:name=".ui.AssessmentList"
             android:exported="false"
