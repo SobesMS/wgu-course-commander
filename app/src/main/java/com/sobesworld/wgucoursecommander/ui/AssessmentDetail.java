@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +54,7 @@ public class AssessmentDetail extends AppCompatActivity {
     Spinner typeSpinner;
     Spinner courseSpinner;
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class AssessmentDetail extends AppCompatActivity {
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
         repo = new Repository(getApplication());
         assessmentID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
+        sp = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         // sets values of all fields upon record open
         assessmentTitle = findViewById(R.id.assessmentTitleEdit);
@@ -250,9 +253,9 @@ public class AssessmentDetail extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
     }
 
-    private void deleteAlert() {
+    private void deleteAlert(int id) {
         Intent intent = new Intent(AssessmentDetail.this, CourseCommReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, assessmentAlertID, intent, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
         sender.cancel();
@@ -273,16 +276,19 @@ public class AssessmentDetail extends AppCompatActivity {
     }
 
     private void saveAssessment() {
+        SharedPreferences.Editor editor = sp.edit();
+        if (!sp.contains(getResources().getString(R.string.uniqueID))) {
+            editor.putInt(getResources().getString(R.string.uniqueID), 100).apply();
+        }
         if (assessmentAlertID == -1 && assessmentGoalAlert) {
-            int maxID = repo.getMaxAssessmentAlertID();
-            if (maxID >= 20000) {
-                assessmentAlertID = maxID + 1;
-            } else {
-                assessmentAlertID = 20000;
+            int i = sp.getInt(getResources().getString(R.string.uniqueID), -1);
+            if (i != -1) {
+                assessmentAlertID = i + 1;
+                editor.putInt(getResources().getString(R.string.uniqueID), assessmentAlertID).apply();
+                createAlert();
             }
-            createAlert();
-        } else if (assessmentAlertID > -1 && !assessmentGoalAlert) {
-            deleteAlert();
+        } else if (assessmentAlertID > 0 && !assessmentGoalAlert) {
+            deleteAlert(assessmentAlertID);
             assessmentAlertID = -1;
         }
         if (recordStatusNew) {
@@ -310,7 +316,7 @@ public class AssessmentDetail extends AppCompatActivity {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
             if (assessmentAlertID > -1) {
-                deleteAlert();
+                deleteAlert(assessmentAlertID);
             }
             repo.deleteAssessmentByID(assessmentID);
             Toast.makeText(getApplicationContext(), "Assessment record permanently deleted.", Toast.LENGTH_LONG).show();

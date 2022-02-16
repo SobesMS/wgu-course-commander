@@ -23,8 +23,8 @@ public class CourseCommReceiver extends BroadcastReceiver {
         createNotificationChannel(context);
         Notification notification = new NotificationCompat.Builder(context, channelID)
                 .setSmallIcon(R.drawable.ic_baseline_school_24)
-                .setContentText(intent.getStringExtra("title"))
-                .setContentTitle(intent.getStringExtra("text"))
+                .setContentTitle(intent.getStringExtra("title"))
+                .setContentText(intent.getStringExtra("text"))
                 .build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notification);

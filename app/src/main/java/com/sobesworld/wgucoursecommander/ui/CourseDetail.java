@@ -13,6 +13,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +62,7 @@ public class CourseDetail extends AppCompatActivity {
     Spinner statusSpinner;
     Spinner termSpinner;
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class CourseDetail extends AppCompatActivity {
         repo = new Repository(getApplication());
         courseID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
         fillRecyclerView();
+        sp = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         // sets values of all fields upon record open
         courseTitle = findViewById(R.id.courseTitleEdit);
@@ -297,9 +300,9 @@ public class CourseDetail extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
     }
 
-    private void deleteAlert() {
+    private void deleteAlert(int id) {
         Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
         sender.cancel();
@@ -320,16 +323,19 @@ public class CourseDetail extends AppCompatActivity {
     }
 
     private void saveCourse() {
+        SharedPreferences.Editor editor = sp.edit();
+        if (!sp.contains(getResources().getString(R.string.uniqueID))) {
+            editor.putInt(getResources().getString(R.string.uniqueID), 100).apply();
+        }
         if (courseAlertID == -1 && courseEndAlert) {
-            int maxID = repo.getMaxCourseAlertID();
-            if (maxID >= 10000) {
-                courseAlertID = maxID + 1;
-            } else {
-                courseAlertID = 10000;
+            int i = sp.getInt(getResources().getString(R.string.uniqueID), -1);
+            if (i != -1) {
+                courseAlertID = i + 1;
+                editor.putInt(getResources().getString(R.string.uniqueID), courseAlertID).apply();
+                createAlert();
             }
-            createAlert();
-        } else if (courseAlertID > -1 && !courseEndAlert) {
-            deleteAlert();
+        } else if (courseAlertID > 0 && !courseEndAlert) {
+            deleteAlert(courseAlertID);
             courseAlertID = -1;
         }
         if (recordStatusNew) {
@@ -359,7 +365,7 @@ public class CourseDetail extends AppCompatActivity {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
             if (courseAlertID > -1) {
-                deleteAlert();
+                deleteAlert(courseAlertID);
             }
             repo.deleteCourseByID(courseID);
             repo.deleteLinkedAssessments(courseID);

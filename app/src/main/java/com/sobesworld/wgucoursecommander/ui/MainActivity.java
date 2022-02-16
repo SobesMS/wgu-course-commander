@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Repository repo = new Repository(getApplication());
 
         // uncomment method on next line to pre-populate an empty database
-        //repo.generateData();
+        repo.generateData();
     }
 
     public void goToTermList(View view) {
