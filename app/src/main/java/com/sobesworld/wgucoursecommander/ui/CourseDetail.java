@@ -70,16 +70,8 @@ public class CourseDetail extends AppCompatActivity {
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
         repo = new Repository(getApplication());
-        AssessmentAdapter adapter = new AssessmentAdapter(this);
-        RecyclerView recyclerView = findViewById(R.id.courseAssessmentList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         courseID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
-
-        // displays assessment list for current course
-        if (!recordStatusNew) {
-            adapter.setAssessments(repo.getLinkedAssessments(courseID));
-        }
+        fillRecyclerView();
 
         // sets values of all fields upon record open
         courseTitle = findViewById(R.id.courseTitleEdit);
@@ -227,6 +219,12 @@ public class CourseDetail extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillRecyclerView();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
         return true;
@@ -370,5 +368,15 @@ public class CourseDetail extends AppCompatActivity {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void fillRecyclerView() {
+        AssessmentAdapter adapter = new AssessmentAdapter(this);
+        RecyclerView recyclerView = findViewById(R.id.courseAssessmentList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (!recordStatusNew) {
+            adapter.setAssessments(repo.getLinkedAssessments(courseID));
+        }
     }
 }

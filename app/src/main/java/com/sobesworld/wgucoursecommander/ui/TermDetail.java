@@ -49,16 +49,8 @@ public class TermDetail extends AppCompatActivity {
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
         repo = new Repository(getApplication());
-        CourseAdapter adapter = new CourseAdapter(this);
-        RecyclerView recyclerView = findViewById(R.id.termCourseList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         termID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
-
-        // displays course list for current term
-        if (!recordStatusNew) {
-            adapter.setCourses(repo.getLinkedCourses(termID));
-        }
+        fillRecyclerView();
 
         // sets values of all fields upon record open
         termTitle = findViewById(R.id.termTitleEdit);
@@ -131,6 +123,12 @@ public class TermDetail extends AppCompatActivity {
                 deleteTerm(intent);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillRecyclerView();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,5 +225,15 @@ public class TermDetail extends AppCompatActivity {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void fillRecyclerView() {
+        CourseAdapter adapter = new CourseAdapter(this);
+        RecyclerView recyclerView = findViewById(R.id.termCourseList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (!recordStatusNew) {
+            adapter.setCourses(repo.getLinkedCourses(termID));
+        }
     }
 }
