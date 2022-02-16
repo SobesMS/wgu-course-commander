@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
@@ -108,8 +109,15 @@ public class TermDetail extends AppCompatActivity {
         // save button functionality
         Button saveButton = findViewById(R.id.termSaveButton);
         saveButton.setOnClickListener(view -> {
+            /*if (recordStatusNew) {
+                saveTerm();
+                recordStatusNew = false;
+                termID = repo.getNewTermID();
+            } else {
+                saveTerm();
+            }*/
             saveTerm();
-            Intent intent = new Intent(this, TermList.class);
+            Intent intent = new Intent(TermDetail.this, TermList.class);
             startActivity(intent);
         });
 
@@ -123,6 +131,17 @@ public class TermDetail extends AppCompatActivity {
                 deleteTerm(intent);
             }
         });
+
+        // add course button TODO: create add course button on term detail (ties in with new save functionality)
+        /*ImageView addCourse = findViewById(R.id.termAddCourseButton);
+        addCourse.setOnClickListener(view -> {
+            if (recordStatusNew) {
+                Toast.makeText(TermDetail.this, "This record is new. You must save the record before adding a course.", Toast.LENGTH_LONG).show();
+            }
+            Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+            intent.putExtra(getString(R.string.is_new_record), true);
+            intent.putExtra(getString(R.string.termID), termID);
+        });*/
     }
 
     @Override

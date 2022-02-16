@@ -30,7 +30,4 @@ public interface CourseDAO {
 
     @Query("DELETE FROM course_table WHERE termID = :i")
     void deleteLinkedCourses(int i);
-
-    @Query("SELECT MAX(courseAlertID) from course_table")
-    int getMaxCourseAlertID();
 }

@@ -30,7 +30,4 @@ public interface AssessmentDAO {
 
     @Query("DELETE FROM assessment_table WHERE courseID = :i")
     void deleteLinkedAssessments(int i);
-
-    @Query("SELECT MAX(assessmentAlertID) from assessment_table")
-    int getMaxCourseAlertID();
 }

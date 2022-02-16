@@ -268,12 +268,25 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/mentorEmail"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="20sp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="24sp"
+                android:layout_marginBottom="10sp"
                 android:text="@string/assessment_list"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/courseAddAssessmentButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_toEndOf="@id/assessmentListHead"
+                android:layout_alignTop="@id/assessmentListHead"
+                android:layout_marginTop="-13dp"
+                android:padding="10dp"
+                android:contentDescription="@string/add_course"
+                app:tint="@color/black"
+                app:srcCompat="@drawable/ic_baseline_add_24"
+                style="?android:borderlessButtonStyle" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/courseAssessmentList"

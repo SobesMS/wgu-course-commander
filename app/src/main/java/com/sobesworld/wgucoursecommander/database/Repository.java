@@ -129,16 +129,6 @@ public class Repository {
         }
     }
 
-    public int getMaxCourseAlertID() {
-        databaseExecutor.execute(()-> courseMaxAlertID = mCourseDAO.getMaxCourseAlertID());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return courseMaxAlertID;
-    }
-
     // AssessmentEntity query methods
     public List<AssessmentEntity> getAllAssessments() {
         databaseExecutor.execute(()-> mAssessmentList = mAssessmentDAO.getAllAssessments());
@@ -194,16 +184,6 @@ public class Repository {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getMaxAssessmentAlertID() {
-        databaseExecutor.execute(()-> assessmentMaxAlertID = mAssessmentDAO.getMaxCourseAlertID());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return assessmentMaxAlertID;
     }
 
     // generic data generator; use to pre-populate an empty database
