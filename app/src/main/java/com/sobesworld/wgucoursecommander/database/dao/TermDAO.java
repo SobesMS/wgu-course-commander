@@ -1,5 +1,6 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -14,14 +15,17 @@ import java.util.List;
 public interface TermDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(TermEntity termEntity);
+    long insert(TermEntity termEntity);
 
     @Update
     void update(TermEntity termEntity);
 
     @Query("SELECT * FROM term_table ORDER BY termID ASC")
-    List<TermEntity> getAllTerms();
+    LiveData<List<TermEntity>> getAllTerms();
 
     @Query("DELETE FROM term_table WHERE termID = :i")
     void deleteTermByID(int i);
+
+    @Query("SELECT * FROM term_table WHERE termID = (SELECT MAX(termID) FROM term_table)")
+    LiveData<TermEntity> getMaxTermID();
 }

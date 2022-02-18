@@ -1,5 +1,6 @@
 package com.sobesworld.wgucoursecommander.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -20,10 +21,10 @@ public interface CourseDAO {
     void update(CourseEntity courseEntity);
 
     @Query("SELECT * FROM course_table ORDER BY courseID ASC")
-    List<CourseEntity> getAllCourses();
+    LiveData<List<CourseEntity>> getAllCourses();
 
     @Query("SELECT * FROM course_table WHERE termID = :i ORDER BY courseID ASC")
-    List<CourseEntity> getLinkedCourses(int i);
+    LiveData<List<CourseEntity>> getLinkedCourses(int i);
 
     @Query("DELETE FROM course_table WHERE courseID = :i")
     void deleteCourseByID(int i);

@@ -1,6 +1,7 @@
 package com.sobesworld.wgucoursecommander.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,25 +9,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.database.Repository;
-import com.sobesworld.wgucoursecommander.database.adapters.TermAdapter;
+import com.sobesworld.wgucoursecommander.database.TermViewModel;
+import com.sobesworld.wgucoursecommander.database.TermListAdapter;
 
 public class TermList extends AppCompatActivity {
 
-    private TermAdapter adapter;
-    private Repository repo;
+    public static final int NEW_TERM_ACTIVITY_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
-        repo = new Repository(getApplication());
-        adapter = new TermAdapter(this);
-        fillRecyclerView();
+
+        RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
+        final TermListAdapter adapter = new TermListAdapter(new TermListAdapter.TermDiff());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(TermList.this));
+
+        TermViewModel mTermViewModel = new ViewModelProvider(TermList.this).get(TermViewModel.class);
+        mTermViewModel.getAllTerms().observe(TermList.this, adapter::submitList);
 
         FloatingActionButton fab = findViewById(R.id.terms_fab_add);
         fab.setOnClickListener(view -> {
@@ -36,33 +40,16 @@ public class TermList extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        fillRecyclerView();
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.list_refresh_menu, menu);
+        getMenuInflater().inflate(R.menu.list_menu, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.refresh_menu) {
-            fillRecyclerView();
-            Toast.makeText(getApplicationContext(), "Term list refreshed.", Toast.LENGTH_LONG).show();
-        }
-        if (item.getItemId() == R.id.home_refresh_menu) {
-            Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(homeButton);
+        if (item.getItemId() == R.id.home_menu) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void fillRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter.setTerms(repo.getAllTerms());
     }
 }

@@ -138,7 +138,7 @@ public class AssessmentDetail extends AppCompatActivity {
         });
 
         // set course spinner data
-        courseSpinner = findViewById(R.id.linkedCourse);
+        /*courseSpinner = findViewById(R.id.linkedCourse);
         ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
                 repo.getAllCourses());
         courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -159,7 +159,7 @@ public class AssessmentDetail extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-        });
+        });*/
 
         // save button functionality
         Button saveButton = findViewById(R.id.assessmentSaveButton);

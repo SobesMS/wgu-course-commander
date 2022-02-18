@@ -3,6 +3,7 @@ package com.sobesworld.wgucoursecommander.ui;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,12 +16,13 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.database.CourseListAdapter;
+import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.Repository;
-import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
+import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.text.ParseException;
@@ -31,7 +33,7 @@ import java.util.Objects;
 
 public class TermDetail extends AppCompatActivity {
 
-    private Repository repo;
+    private TermViewModel mTermViewModel;
     private boolean recordStatusNew;
     int termID;
     EditText termTitle;
@@ -49,9 +51,15 @@ public class TermDetail extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
-        repo = new Repository(getApplication());
         termID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
-        fillRecyclerView();
+        mTermViewModel = new ViewModelProvider(TermDetail.this).get(TermViewModel.class);
+
+        RecyclerView recyclerView = findViewById(R.id.termCourseList);
+        final CourseListAdapter adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(TermDetail.this));
+        CourseViewModel mCourseViewModel = new ViewModelProvider(TermDetail.this).get(CourseViewModel.class);
+        mCourseViewModel.getLinkedCourses(termID).observe(TermDetail.this, adapter::submitList);
 
         // sets values of all fields upon record open
         termTitle = findViewById(R.id.termTitleEdit);
@@ -109,16 +117,16 @@ public class TermDetail extends AppCompatActivity {
         // save button functionality
         Button saveButton = findViewById(R.id.termSaveButton);
         saveButton.setOnClickListener(view -> {
-            /*if (recordStatusNew) {
+            if (recordStatusNew) {
                 saveTerm();
                 recordStatusNew = false;
-                termID = repo.getNewTermID();
+                termID = mTermViewModel.get;
             } else {
                 saveTerm();
-            }*/
-            saveTerm();
-            Intent intent = new Intent(TermDetail.this, TermList.class);
-            startActivity(intent);
+            }
+            //saveTerm();
+            //Intent intent = new Intent(TermDetail.this, TermList.class);
+            //startActivity(intent);
         });
 
         // delete button functionality
@@ -142,12 +150,6 @@ public class TermDetail extends AppCompatActivity {
             intent.putExtra(getString(R.string.is_new_record), true);
             intent.putExtra(getString(R.string.termID), termID);
         });*/
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        fillRecyclerView();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -218,12 +220,12 @@ public class TermDetail extends AppCompatActivity {
         if (recordStatusNew) {
             TermEntity term = new TermEntity(termTitle.getText().toString(), termStartDate.getText().toString(),
                     termEndDate.getText().toString(), termNotes);
-            repo.insert(term);
+            mTermViewModel.insert(term);
             Toast.makeText(getApplicationContext(), "New term record created.", Toast.LENGTH_LONG).show();
         } else {
             TermEntity term = new TermEntity(termID, termTitle.getText().toString(), termStartDate.getText().toString(),
                     termEndDate.getText().toString(), termNotes);
-            repo.update(term);
+            mTermViewModel.insert(term);
             Toast.makeText(getApplicationContext(), "Term record updated.", Toast.LENGTH_LONG).show();
         }
     }
@@ -237,8 +239,8 @@ public class TermDetail extends AppCompatActivity {
         builder.setNegativeButton(R.string.abort, (dialogInterface, i) -> {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
-            repo.deleteTermByID(termID);
-            repo.deleteLinkedCourses(termID);
+            mTermViewModel.deleteTermByID(termID);
+            //repo.deleteLinkedCourses(termID);
             Toast.makeText(getApplicationContext(), "Term record permanently deleted.", Toast.LENGTH_LONG).show();
             startActivity(intent);
         });
@@ -246,7 +248,7 @@ public class TermDetail extends AppCompatActivity {
         alert.show();
     }
 
-    private void fillRecyclerView() {
+    /*private void fillRecyclerView() {
         CourseAdapter adapter = new CourseAdapter(this);
         RecyclerView recyclerView = findViewById(R.id.termCourseList);
         recyclerView.setAdapter(adapter);
@@ -254,5 +256,5 @@ public class TermDetail extends AppCompatActivity {
         if (!recordStatusNew) {
             adapter.setCourses(repo.getLinkedCourses(termID));
         }
-    }
+    }*/
 }

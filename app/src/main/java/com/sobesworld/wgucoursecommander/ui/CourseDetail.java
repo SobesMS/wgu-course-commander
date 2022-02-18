@@ -4,8 +4,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -28,9 +26,7 @@ import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.Repository;
-import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
-import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,7 +69,7 @@ public class CourseDetail extends AppCompatActivity {
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
         repo = new Repository(getApplication());
         courseID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
-        fillRecyclerView();
+        //fillRecyclerView();
         sp = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         // sets values of all fields upon record open
@@ -179,7 +175,7 @@ public class CourseDetail extends AppCompatActivity {
         });
 
         // set term spinner data
-        termSpinner = findViewById(R.id.linkedTerm);
+        /*termSpinner = findViewById(R.id.linkedTerm);
         ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
                 repo.getAllTerms());
         termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -200,7 +196,7 @@ public class CourseDetail extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-        });
+        });*/
 
         // save button functionality
         Button saveButton = findViewById(R.id.courseSaveButton);
@@ -222,11 +218,11 @@ public class CourseDetail extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         fillRecyclerView();
-    }
+    }*/
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
@@ -376,7 +372,7 @@ public class CourseDetail extends AppCompatActivity {
         alert.show();
     }
 
-    private void fillRecyclerView() {
+    /*private void fillRecyclerView() {
         AssessmentAdapter adapter = new AssessmentAdapter(this);
         RecyclerView recyclerView = findViewById(R.id.courseAssessmentList);
         recyclerView.setAdapter(adapter);
@@ -384,5 +380,5 @@ public class CourseDetail extends AppCompatActivity {
         if (!recordStatusNew) {
             adapter.setAssessments(repo.getLinkedAssessments(courseID));
         }
-    }
+    }*/
 }
