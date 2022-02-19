@@ -15,7 +15,7 @@ import java.util.List;
 public interface TermDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insert(TermEntity termEntity);
+    void insert(TermEntity termEntity);
 
     @Update
     void update(TermEntity termEntity);
@@ -25,7 +25,4 @@ public interface TermDAO {
 
     @Query("DELETE FROM term_table WHERE termID = :i")
     void deleteTermByID(int i);
-
-    @Query("SELECT * FROM term_table WHERE termID = (SELECT MAX(termID) FROM term_table)")
-    LiveData<TermEntity> getMaxTermID();
 }

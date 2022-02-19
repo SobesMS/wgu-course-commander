@@ -20,29 +20,19 @@ public class AssessmentRepository {
         mAllAssessments = mAssessmentDAO.getAllAssessments();
     }
 
-    LiveData<List<AssessmentEntity>> getAllAssessments() {
-        return mAllAssessments;
-    }
+    LiveData<List<AssessmentEntity>> getAllAssessments() { return mAllAssessments; }
 
-    LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) {
-        return mAssessmentDAO.getLinkedAssessments(i);
-    }
+    LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) { return mAssessmentDAO.getLinkedAssessments(i); }
 
     void insert(AssessmentEntity assessmentEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.insert(assessmentEntity);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mAssessmentDAO.insert(assessmentEntity));
     }
 
     void update(AssessmentEntity assessmentEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.update(assessmentEntity);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mAssessmentDAO.update(assessmentEntity));
     }
 
     void deleteTermByID(int i) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mAssessmentDAO.deleteAssessmentByID(i);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mAssessmentDAO.deleteAssessmentByID(i));
     }
 }

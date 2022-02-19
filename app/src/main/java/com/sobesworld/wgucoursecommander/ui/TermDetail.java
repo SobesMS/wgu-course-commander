@@ -16,12 +16,12 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.CourseListAdapter;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
-import com.sobesworld.wgucoursecommander.database.Repository;
 import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
@@ -50,7 +50,7 @@ public class TermDetail extends AppCompatActivity {
         setContentView(R.layout.activity_term_detail);
         ActionBar actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
-        recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
+        recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), false);
         termID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
         mTermViewModel = new ViewModelProvider(TermDetail.this).get(TermViewModel.class);
 
@@ -117,16 +117,9 @@ public class TermDetail extends AppCompatActivity {
         // save button functionality
         Button saveButton = findViewById(R.id.termSaveButton);
         saveButton.setOnClickListener(view -> {
-            if (recordStatusNew) {
-                saveTerm();
-                recordStatusNew = false;
-                termID = mTermViewModel.get;
-            } else {
-                saveTerm();
-            }
-            //saveTerm();
-            //Intent intent = new Intent(TermDetail.this, TermList.class);
-            //startActivity(intent);
+            saveTerm();
+            Intent intent = new Intent(TermDetail.this, TermList.class);
+            startActivity(intent);
         });
 
         // delete button functionality
@@ -141,15 +134,18 @@ public class TermDetail extends AppCompatActivity {
         });
 
         // add course button TODO: create add course button on term detail (ties in with new save functionality)
-        /*ImageView addCourse = findViewById(R.id.termAddCourseButton);
+        ImageView addCourse = findViewById(R.id.termAddCourseButton);
         addCourse.setOnClickListener(view -> {
             if (recordStatusNew) {
                 Toast.makeText(TermDetail.this, "This record is new. You must save the record before adding a course.", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+                intent.putExtra(getString(R.string.is_new_record), true);
+                intent.putExtra(getString(R.string.from_term_detail), true);
+                intent.putExtra(getString(R.string.termID), termID);
+                startActivity(intent);
             }
-            Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-            intent.putExtra(getString(R.string.is_new_record), true);
-            intent.putExtra(getString(R.string.termID), termID);
-        });*/
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,17 +199,27 @@ public class TermDetail extends AppCompatActivity {
     }
 
     private void applyUnsavedChanges(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("COMMIT CHANGES")
-                .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
-                .setCancelable(false);
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> startActivity(intent));
-        builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
-            saveTerm();
+        String titleOld = getIntent().getStringExtra(getResources().getString(R.string.title));
+        String startDateOld = getIntent().getStringExtra(getResources().getString(R.string.start_date));
+        String endDateOld = getIntent().getStringExtra(getResources().getString(R.string.end_date));
+        String notesOld = getIntent().getStringExtra(getResources().getString(R.string.notes));
+
+        if (termTitle.getText().toString().equals(titleOld) && termStartDate.getText().toString().equals(startDateOld) &&
+                termEndDate.getText().toString().equals(endDateOld) && notesOld.equals(termNotes)) {
             startActivity(intent);
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(TermDetail.this);
+            builder.setTitle("COMMIT CHANGES")
+                    .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
+                    .setCancelable(false);
+            builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> startActivity(intent));
+            builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
+                saveTerm();
+                startActivity(intent);
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void saveTerm() {
@@ -232,7 +238,7 @@ public class TermDetail extends AppCompatActivity {
 
     // creates a delete confirmation dialog and deletes course if confirmed
     private void deleteTerm(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(TermDetail.this);
         builder.setTitle(R.string.term_delete_alert_title)
                 .setMessage(R.string.term_delete_alert_message)
                 .setCancelable(false);
@@ -240,21 +246,10 @@ public class TermDetail extends AppCompatActivity {
         });
         builder.setPositiveButton(R.string.confirm, (dialogInterface, i) -> {
             mTermViewModel.deleteTermByID(termID);
-            //repo.deleteLinkedCourses(termID);
             Toast.makeText(getApplicationContext(), "Term record permanently deleted.", Toast.LENGTH_LONG).show();
             startActivity(intent);
         });
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-    /*private void fillRecyclerView() {
-        CourseAdapter adapter = new CourseAdapter(this);
-        RecyclerView recyclerView = findViewById(R.id.termCourseList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        if (!recordStatusNew) {
-            adapter.setCourses(repo.getLinkedCourses(termID));
-        }
-    }*/
 }

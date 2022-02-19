@@ -4,6 +4,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -25,8 +29,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.database.AssessmentListAdapter;
+import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
+import com.sobesworld.wgucoursecommander.database.CourseListAdapter;
+import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.Repository;
+import com.sobesworld.wgucoursecommander.database.TermListAdapter;
+import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
+import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,8 +50,9 @@ import java.util.Objects;
 
 public class CourseDetail extends AppCompatActivity {
 
-    private Repository repo;
+    private CourseViewModel mCourseViewModel;
     private boolean recordStatusNew;
+    private boolean fromTermDetail;
     int courseID;
     EditText courseTitle;
     EditText courseStartDate;
@@ -67,10 +79,17 @@ public class CourseDetail extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         recordStatusNew = getIntent().getBooleanExtra(getString(R.string.is_new_record), true);
-        repo = new Repository(getApplication());
+        fromTermDetail = getIntent().getBooleanExtra(getResources().getString(R.string.from_term_detail), false);
         courseID = getIntent().getIntExtra(getResources().getString(R.string.idnum), -1);
-        //fillRecyclerView();
         sp = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
+        mCourseViewModel = new ViewModelProvider(CourseDetail.this).get(CourseViewModel.class);
+
+        RecyclerView recyclerView = findViewById(R.id.courseAssessmentList);
+        final AssessmentListAdapter adapter = new AssessmentListAdapter(new AssessmentListAdapter.AssessmentDiff());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(CourseDetail.this));
+        AssessmentViewModel mAssessmentViewModel = new ViewModelProvider(CourseDetail.this).get(AssessmentViewModel.class);
+        mAssessmentViewModel.getLinkedAssessments(courseID).observe(CourseDetail.this, adapter::submitList);
 
         // sets values of all fields upon record open
         courseTitle = findViewById(R.id.courseTitleEdit);
@@ -175,9 +194,10 @@ public class CourseDetail extends AppCompatActivity {
         });
 
         // set term spinner data
-        /*termSpinner = findViewById(R.id.linkedTerm);
-        ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
-                repo.getAllTerms());
+        termSpinner = findViewById(R.id.linkedTerm);
+        ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(CourseDetail.this, android.R.layout.simple_spinner_item);
+        TermViewModel mTermViewModel = new ViewModelProvider(CourseDetail.this).get(TermViewModel.class);
+        mTermViewModel.getAllTerms().observe(CourseDetail.this, termSpinnerAdapter::addAll);
         termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         termSpinner.setAdapter(termSpinnerAdapter);
         termSpinner.setSelection(0);
@@ -196,7 +216,7 @@ public class CourseDetail extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-        });*/
+        });
 
         // save button functionality
         Button saveButton = findViewById(R.id.courseSaveButton);
@@ -217,12 +237,6 @@ public class CourseDetail extends AppCompatActivity {
             }
         });
     }
-
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        fillRecyclerView();
-    }*/
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
@@ -305,17 +319,36 @@ public class CourseDetail extends AppCompatActivity {
     }
 
     private void applyUnsavedChanges(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("COMMIT CHANGES")
-                .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
-                .setCancelable(false);
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> startActivity(intent));
-        builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
-            saveCourse();
-            startActivity(intent);
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        if (true) {
+            if (fromTermDetail) {
+                finish();
+            } else {
+                startActivity(intent); // TODO: apply unsaved changes method
+            }
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("COMMIT CHANGES")
+                    .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
+                    .setCancelable(false);
+            builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                if (getIntent().getBooleanExtra(getResources().getString(R.string.from_term_detail), false)) {
+                    finish();
+                } else {
+                    startActivity(intent);
+                }
+            });
+            builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
+                if (getIntent().getBooleanExtra(getResources().getString(R.string.from_term_detail), false)) {
+                    saveCourse();
+                    finish();
+                } else {
+                    saveCourse();
+                    startActivity(intent);
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void saveCourse() {
@@ -339,14 +372,14 @@ public class CourseDetail extends AppCompatActivity {
                     courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
                     courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
                     courseMentorsEmail.getText().toString(), courseNotes, termID);
-            repo.insert(course);
+            mCourseViewModel.insert(course);
             Toast.makeText(getApplicationContext(), "New course record created.", Toast.LENGTH_LONG).show();
         } else {
             CourseEntity course = new CourseEntity(courseID, courseTitle.getText().toString(), courseStartDate.getText().toString(),
                     courseEndDate.getText().toString(), courseEndAlert, courseAlertID, courseStatus,
                     courseMentorsName.getText().toString(), courseMentorsPhone.getText().toString(),
                     courseMentorsEmail.getText().toString(), courseNotes, termID);
-            repo.update(course);
+            mCourseViewModel.update(course);
             Toast.makeText(getApplicationContext(), "Course record updated.", Toast.LENGTH_LONG).show();
         }
     }
@@ -363,8 +396,9 @@ public class CourseDetail extends AppCompatActivity {
             if (courseAlertID > -1) {
                 deleteAlert(courseAlertID);
             }
-            repo.deleteCourseByID(courseID);
-            repo.deleteLinkedAssessments(courseID);
+            //repo.deleteCourseByID(courseID);
+            mCourseViewModel.deleteTermByID(courseID);
+            //repo.deleteLinkedAssessments(courseID); TODO: add delete linked assessments method
             Toast.makeText(getApplicationContext(), "Course record permanently deleted.", Toast.LENGTH_LONG).show();
             startActivity(intent);
         });

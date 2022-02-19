@@ -23,6 +23,8 @@ public class AssessmentViewModel extends AndroidViewModel {
 
     public LiveData<List<AssessmentEntity>> getAllAssessments() { return mAllAssessments; }
 
+    public LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) { return mAssessmentRepository.getLinkedAssessments(i); }
+
     public void insert(AssessmentEntity assessmentEntity) { mAssessmentRepository.insert(assessmentEntity); }
 
     public void update(AssessmentEntity assessmentEntity) { mAssessmentRepository.update(assessmentEntity); }

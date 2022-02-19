@@ -13,7 +13,6 @@ public class CourseViewModel extends AndroidViewModel {
 
     private final CourseRepository mCourseRepository;
     private final LiveData<List<CourseEntity>> mAllCourses;
-    private final LiveData<List<CourseEntity>> mLinkedCourses;
 
     public CourseViewModel(Application application) {
         super(application);
@@ -23,10 +22,7 @@ public class CourseViewModel extends AndroidViewModel {
 
     public LiveData<List<CourseEntity>> getAllCourses() { return mAllCourses; }
 
-    public LiveData<List<CourseEntity>> getLinkedCourses(int i) {
-
-        return mLinkedCourses;
-    }
+    public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return mCourseRepository.getLinkedCourses(i); }
 
     public void insert(CourseEntity courseEntity) { mCourseRepository.insert(courseEntity); }
 

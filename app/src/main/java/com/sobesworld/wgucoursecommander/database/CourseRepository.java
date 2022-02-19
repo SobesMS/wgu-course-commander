@@ -20,29 +20,19 @@ public class CourseRepository {
         mAllCourses = mCourseDAO.getAllCourses();
     }
 
-    LiveData<List<CourseEntity>> getAllCourses() {
-        return mAllCourses;
-    }
+    LiveData<List<CourseEntity>> getAllCourses() { return mAllCourses; }
 
-    LiveData<List<CourseEntity>> getLinkedCourses(int i) {
-        return mCourseDAO.getLinkedCourses(i);
-    }
+    LiveData<List<CourseEntity>> getLinkedCourses(int i) { return mCourseDAO.getLinkedCourses(i); }
 
     void insert(CourseEntity courseEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.insert(courseEntity);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mCourseDAO.insert(courseEntity));
     }
 
     void update(CourseEntity courseEntity) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.update(courseEntity);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mCourseDAO.update(courseEntity));
     }
 
     void deleteTermByID(int i) {
-        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
-            mCourseDAO.deleteCourseByID(i);
-        });
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> mCourseDAO.deleteCourseByID(i));
     }
 }
