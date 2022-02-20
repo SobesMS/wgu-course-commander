@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
@@ -30,14 +29,16 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class TermDetail extends AppCompatActivity {
+    public static final String EXTRA_TERM_ID = "com.sobesworld.wgucoursecommander.EXTRA_TERM_ID";
+    public static final String EXTRA_TERM_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_TITLE";
+    public static final String EXTRA_TERM_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_START_DATE";
+    public static final String EXTRA_TERM_END_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_END_DATE";
+    public static final String EXTRA_TERM_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_TERM_NOTES";
 
-    private Repository repo;
-    private boolean recordStatusNew;
-    int termID;
-    EditText termTitle;
-    EditText termStartDate;
-    EditText termEndDate;
-    String termNotes;
+    EditText editTextTermTitle;
+    EditText editTextTermStartDate;
+    EditText editTextTermEndDate;
+    EditText editTextTermNotes;
     final Calendar startCalendar = Calendar.getInstance();
     final Calendar endCalendar = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
@@ -54,25 +55,25 @@ public class TermDetail extends AppCompatActivity {
         fillRecyclerView();
 
         // sets values of all fields upon record open
-        termTitle = findViewById(R.id.termTitleEdit);
-        termStartDate = findViewById(R.id.termStartDateEdit);
-        termEndDate = findViewById(R.id.termEndDateEdit);
-        termTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
-        termStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
-        termEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
-        termNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
+        editTextTermTitle = findViewById(R.id.termTitleEdit);
+        editTextTermStartDate = findViewById(R.id.termStartDateEdit);
+        editTextTermEndDate = findViewById(R.id.termEndDateEdit);
+        editTextTermTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
+        editTextTermStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
+        editTextTermEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
+        editTextTermNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
 
         // sets term start date from user's date picker selection
         DatePickerDialog.OnDateSetListener startDateDialog = (datePicker, year, month, dayOfMonth) -> {
             startCalendar.set(Calendar.YEAR, year);
             startCalendar.set(Calendar.MONTH, month);
             startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            termStartDate.setText(sdf.format(startCalendar.getTime()));
+            editTextTermStartDate.setText(sdf.format(startCalendar.getTime()));
         };
 
         // onClickListener for the term start date field
-        termStartDate.setOnClickListener(view -> {
-            String info = termStartDate.getText().toString();
+        editTextTermStartDate.setOnClickListener(view -> {
+            String info = editTextTermStartDate.getText().toString();
             if (!info.equals("")) {
                 try {
                     startCalendar.setTime(Objects.requireNonNull(sdf.parse(info)));
@@ -89,12 +90,12 @@ public class TermDetail extends AppCompatActivity {
             endCalendar.set(Calendar.YEAR, year);
             endCalendar.set(Calendar.MONTH, month);
             endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            termEndDate.setText(sdf.format(endCalendar.getTime()));
+            editTextTermEndDate.setText(sdf.format(endCalendar.getTime()));
         };
 
         // onClickListener for the term end date field
-        termEndDate.setOnClickListener(view -> {
-            String info = termEndDate.getText().toString();
+        editTextTermEndDate.setOnClickListener(view -> {
+            String info = editTextTermEndDate.getText().toString();
             if (!info.equals("")) {
                 try {
                     endCalendar.setTime(Objects.requireNonNull(sdf.parse(info)));
@@ -177,17 +178,17 @@ public class TermDetail extends AppCompatActivity {
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.note_dialog);
         final EditText note = dialog.findViewById(R.id.noteBody);
-        note.setText(termNotes);
+        note.setText(editTextTermNotes);
         Button saveNoteButton = dialog.findViewById(R.id.saveNoteButton);
         Button shareNoteButton = dialog.findViewById(R.id.shareNoteButton);
 
         saveNoteButton.setOnClickListener(view -> {
-            termNotes = note.getText().toString();
+            editTextTermNotes = note.getText().toString();
             dialog.dismiss();
         });
 
         shareNoteButton.setOnClickListener(view -> {
-            String title = termTitle.getText().toString();
+            String title = editTextTermTitle.getText().toString();
             String notes = title + " notes: " + note.getText().toString();
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -216,13 +217,13 @@ public class TermDetail extends AppCompatActivity {
 
     private void saveTerm() {
         if (recordStatusNew) {
-            TermEntity term = new TermEntity(termTitle.getText().toString(), termStartDate.getText().toString(),
-                    termEndDate.getText().toString(), termNotes);
+            TermEntity term = new TermEntity(editTextTermTitle.getText().toString(), editTextTermStartDate.getText().toString(),
+                    editTextTermEndDate.getText().toString(), editTextTermNotes);
             repo.insert(term);
             Toast.makeText(getApplicationContext(), "New term record created.", Toast.LENGTH_LONG).show();
         } else {
-            TermEntity term = new TermEntity(termID, termTitle.getText().toString(), termStartDate.getText().toString(),
-                    termEndDate.getText().toString(), termNotes);
+            TermEntity term = new TermEntity(termID, editTextTermTitle.getText().toString(), editTextTermStartDate.getText().toString(),
+                    editTextTermEndDate.getText().toString(), editTextTermNotes);
             repo.update(term);
             Toast.makeText(getApplicationContext(), "Term record updated.", Toast.LENGTH_LONG).show();
         }

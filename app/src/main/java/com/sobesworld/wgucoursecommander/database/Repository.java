@@ -28,7 +28,7 @@ public class Repository {
     static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public Repository(Application application) {
-        CourseCommDatabase db = CourseCommDatabase.getDatabase(application);
+        CourseCommDatabase db = CourseCommDatabase.getInstance(application);
         mTermDAO = db.termDAO();
         mCourseDAO = db.courseDAO();
         mAssessmentDAO = db.assessmentDAO();
@@ -181,48 +181,6 @@ public class Repository {
         databaseExecutor.execute(()-> mAssessmentDAO.deleteLinkedAssessments(i));
         try {
             Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // generic data generator; use to pre-populate an empty database
-    public void generateData() {
-        TermEntity term1 = new TermEntity(1,"Term 1", "01/01/22","06/30/22", "These are term notes.");
-        TermEntity term2 = new TermEntity(2,"Term 2", "01/01/22","06/30/22", "These are term notes.");
-        TermEntity term3 = new TermEntity(3,"Term 3", "01/01/22","06/30/22", "These are term notes.");
-
-        CourseEntity course1 = new CourseEntity(1,"C123", "01/01/22",
-                "06/30/22", false,-1, "in progress","John Doe",
-                "216-555-5555", "john.doe@wgu.edu","These are course notes",1);
-        CourseEntity course2 = new CourseEntity(2,"C456", "01/01/22",
-                "06/30/22", false,-1, "in progress","John Doe",
-                "216-555-5555", "john.doe@wgu.edu","These are course notes",2);
-        CourseEntity course3 = new CourseEntity(3,"C789", "01/01/22",
-                "06/30/22", false,-1, "in progress","John Doe",
-                "216-555-5555", "john.doe@wgu.edu","These are course notes",3);
-
-        AssessmentEntity assessment1 = new AssessmentEntity(1,"Bake a cake","objective",
-                "06/30/22", false, -1, "These are assessment notes.",1);
-        AssessmentEntity assessment2 = new AssessmentEntity(2,"Build a model","objective",
-                "06/30/22", false, -1, "These are assessment notes.",2);
-        AssessmentEntity assessment3 = new AssessmentEntity(3,"Braise short ribs","objective",
-                "06/30/22", false, -1, "These are assessment notes.",3);
-
-        databaseExecutor.execute(()-> {
-            mTermDAO.insert(term1);
-            mTermDAO.insert(term2);
-            mTermDAO.insert(term3);
-            mCourseDAO.insert(course1);
-            mCourseDAO.insert(course2);
-            mCourseDAO.insert(course3);
-            mAssessmentDAO.insert(assessment1);
-            mAssessmentDAO.insert(assessment2);
-            mAssessmentDAO.insert(assessment3);
-        });
-
-        try {
-            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -16,6 +16,8 @@ import com.sobesworld.wgucoursecommander.database.Repository;
 import com.sobesworld.wgucoursecommander.database.adapters.TermAdapter;
 
 public class TermList extends AppCompatActivity {
+    public static final int ADD_TERM_REQUEST = 1;
+    public static final int EDIT_TERM_REQUEST = 2;
 
     private TermAdapter adapter;
     private Repository repo;

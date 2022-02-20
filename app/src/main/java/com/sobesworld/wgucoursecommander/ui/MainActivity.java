@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.database.Repository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,10 +17,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-        Repository repo = new Repository(getApplication());
-
-        // uncomment method on next line to pre-populate an empty database
-        repo.generateData();
     }
 
     public void goToTermList(View view) {
@@ -41,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void createNotificationChannel() {
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CourseCommReceiver.channelID, CourseCommReceiver.channelName,
+        NotificationChannel channel = new NotificationChannel(CourseCommReceiver.CHANNEL_ID, CourseCommReceiver.CHANNEL_NAME,
                 importance);
-        channel.setDescription(CourseCommReceiver.channelDescription);
+        channel.setDescription(CourseCommReceiver.CHANNEL_DESCRIPTION);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
     }

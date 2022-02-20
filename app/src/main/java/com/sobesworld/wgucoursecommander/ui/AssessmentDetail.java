@@ -39,20 +39,24 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class AssessmentDetail extends AppCompatActivity {
+    public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
+    public static final String EXTRA_ASSESSMENT_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TITLE";
+    public static final String EXTRA_ASSESSMENT_TYPE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TYPE";
+    public static final String EXTRA_ASSESSMENT_GOAL_DATE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_GOAL_DATE";
+    public static final String EXTRA_ASSESSMENT_GOAL_ALERT = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_GOAL_ALERT";
+    public static final String EXTRA_ASSESSMENT_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_ID";
+    public static final String EXTRA_ASSESSMENT_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_NOTES";
+    public static final String EXTRA_ASSESSMENT_LINKED_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_LINKED_COURSE_ID";
 
-    private Repository repo;
-    private boolean recordStatusNew;
-    int assessmentID;
-    EditText assessmentTitle;
-    String assessmentType;
-    EditText assessmentGoalDate;
+    EditText editTextAssessmentTitle;
+    Spinner spinnerAssessmentType;
+    EditText editTextAssessmentGoalDate;
     boolean assessmentGoalAlert;
     int assessmentAlertID;
-    String assessmentNotes;
-    int courseID;
+    EditText editTextAssessmentNotes;
+    Spinner spinnerAssessmentLinkedCourseID;
     final Calendar goalCalendar = Calendar.getInstance();
-    Spinner typeSpinner;
-    Spinner courseSpinner;
+
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
     SharedPreferences sp;
 
@@ -68,14 +72,14 @@ public class AssessmentDetail extends AppCompatActivity {
         sp = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         // sets values of all fields upon record open
-        assessmentTitle = findViewById(R.id.assessmentTitleEdit);
-        assessmentGoalDate = findViewById(R.id.assessmentGoalDateEdit);
-        assessmentTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
+        editTextAssessmentTitle = findViewById(R.id.assessmentTitleEdit);
+        editTextAssessmentGoalDate = findViewById(R.id.assessmentGoalDateEdit);
+        editTextAssessmentTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
         assessmentType = getIntent().getStringExtra(getResources().getString(R.string.assessment_type));
-        assessmentGoalDate.setText(getIntent().getStringExtra(getResources().getString(R.string.completion_goal_date)));
+        editTextAssessmentGoalDate.setText(getIntent().getStringExtra(getResources().getString(R.string.completion_goal_date)));
         assessmentGoalAlert = getIntent().getBooleanExtra(getResources().getString(R.string.goal_alert), false);
         assessmentAlertID = getIntent().getIntExtra(getResources().getString(R.string.alert_id), -1);
-        assessmentNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
+        editTextAssessmentNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
         courseID = getIntent().getIntExtra(getResources().getString(R.string.courseID), -1);
 
         // sets assessment goal date from user's date picker selection
@@ -83,12 +87,12 @@ public class AssessmentDetail extends AppCompatActivity {
             goalCalendar.set(Calendar.YEAR, year);
             goalCalendar.set(Calendar.MONTH, month);
             goalCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            assessmentGoalDate.setText(sdf.format(goalCalendar.getTime()));
+            editTextAssessmentGoalDate.setText(sdf.format(goalCalendar.getTime()));
         };
 
         // onClickListener for the goal date field
-        assessmentGoalDate.setOnClickListener(view -> {
-            String info = assessmentGoalDate.getText().toString();
+        editTextAssessmentGoalDate.setOnClickListener(view -> {
+            String info = editTextAssessmentGoalDate.getText().toString();
             if (!info.equals("")) {
                 try {
                     goalCalendar.setTime(Objects.requireNonNull(sdf.parse(info)));
@@ -104,7 +108,7 @@ public class AssessmentDetail extends AppCompatActivity {
         SwitchCompat notifySwitch = findViewById(R.id.assessmentNotifySwitch);
         notifySwitch.setChecked(assessmentGoalAlert);
         notifySwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (assessmentGoalDate.getText().toString().equals("")) {
+            if (editTextAssessmentGoalDate.getText().toString().equals("")) {
                 Toast.makeText(getApplicationContext(), "You must set an end date before turning on notify.", Toast.LENGTH_LONG).show();
                 notifySwitch.setChecked(assessmentGoalAlert);
             } else {
@@ -113,20 +117,20 @@ public class AssessmentDetail extends AppCompatActivity {
         });
 
         // set type spinner data
-        typeSpinner = findViewById(R.id.assessmentType);
+        spinnerAssessmentType = findViewById(R.id.assessmentType);
         List<String> typeOptions = new ArrayList<>();
         typeOptions.add("objective");
         typeOptions.add("performance");
         ArrayAdapter<String> typeSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeOptions);
         typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(typeSpinnerAdapter);
-        typeSpinner.setSelection(0);
+        spinnerAssessmentType.setAdapter(typeSpinnerAdapter);
+        spinnerAssessmentType.setSelection(0);
         for (int i = 0; i < typeSpinnerAdapter.getCount(); i++) {
             if (typeSpinnerAdapter.getItem(i).equals(assessmentType)) {
-                typeSpinner.setSelection(i);
+                spinnerAssessmentType.setSelection(i);
             }
         }
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerAssessmentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 assessmentType = (String) adapterView.getSelectedItem();
@@ -138,18 +142,18 @@ public class AssessmentDetail extends AppCompatActivity {
         });
 
         // set course spinner data
-        courseSpinner = findViewById(R.id.linkedCourse);
+        spinnerAssessmentLinkedCourseID = findViewById(R.id.linkedCourse);
         ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
                 repo.getAllCourses());
         courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseSpinner.setAdapter(courseSpinnerAdapter);
-        courseSpinner.setSelection(0);
+        spinnerAssessmentLinkedCourseID.setAdapter(courseSpinnerAdapter);
+        spinnerAssessmentLinkedCourseID.setSelection(0);
         for (int i = 0; i < courseSpinnerAdapter.getCount(); i++) {
             if (courseSpinnerAdapter.getItem(i).getTermID() == courseID) {
-                courseSpinner.setSelection(i);
+                spinnerAssessmentLinkedCourseID.setSelection(i);
             }
         }
-        courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerAssessmentLinkedCourseID.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 CourseEntity course = (CourseEntity) adapterView.getSelectedItem();
@@ -208,17 +212,17 @@ public class AssessmentDetail extends AppCompatActivity {
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.note_dialog);
         final EditText note = dialog.findViewById(R.id.noteBody);
-        note.setText(assessmentNotes);
+        note.setText(editTextAssessmentNotes);
         Button saveNoteButton = dialog.findViewById(R.id.saveNoteButton);
         Button shareNoteButton = dialog.findViewById(R.id.shareNoteButton);
 
         saveNoteButton.setOnClickListener(view -> {
-            assessmentNotes = note.getText().toString();
+            editTextAssessmentNotes = note.getText().toString();
             dialog.dismiss();
         });
 
         shareNoteButton.setOnClickListener(view -> {
-            String title = assessmentTitle.getText().toString();
+            String title = editTextAssessmentTitle.getText().toString();
             String notes = title + " notes: " + note.getText().toString();
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -234,12 +238,12 @@ public class AssessmentDetail extends AppCompatActivity {
     private void createAlert() {
         Date goalDate = null;
         try {
-            goalDate=sdf.parse(assessmentGoalDate.getText().toString());
+            goalDate=sdf.parse(editTextAssessmentGoalDate.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String title = assessmentTitle.getText().toString() + " Goal Today";
-        String text = "Your goal to complete " + assessmentTitle.getText().toString() + " is today. Finish any remaining work.";
+        String title = editTextAssessmentTitle.getText().toString() + " Goal Today";
+        String text = "Your goal to complete " + editTextAssessmentTitle.getText().toString() + " is today. Finish any remaining work.";
         long trigger = 0;
         if (goalDate != null) {
             trigger = goalDate.getTime();
@@ -292,15 +296,15 @@ public class AssessmentDetail extends AppCompatActivity {
             assessmentAlertID = -1;
         }
         if (recordStatusNew) {
-            AssessmentEntity assessment = new AssessmentEntity(assessmentTitle.getText().toString(),
-                    assessmentType, assessmentGoalDate.getText().toString(), assessmentGoalAlert, assessmentAlertID,
-                    assessmentNotes, courseID);
+            AssessmentEntity assessment = new AssessmentEntity(editTextAssessmentTitle.getText().toString(),
+                    assessmentType, editTextAssessmentGoalDate.getText().toString(), assessmentGoalAlert, assessmentAlertID,
+                    editTextAssessmentNotes, courseID);
             repo.insert(assessment);
             Toast.makeText(getApplicationContext(), "New assessment record created.", Toast.LENGTH_LONG).show();
         } else {
-            AssessmentEntity assessment = new AssessmentEntity(assessmentID, assessmentTitle.getText().toString(),
-                    assessmentType, assessmentGoalDate.getText().toString(), assessmentGoalAlert, assessmentAlertID,
-                    assessmentNotes, courseID);
+            AssessmentEntity assessment = new AssessmentEntity(assessmentID, editTextAssessmentTitle.getText().toString(),
+                    assessmentType, editTextAssessmentGoalDate.getText().toString(), assessmentGoalAlert, assessmentAlertID,
+                    editTextAssessmentNotes, courseID);
             repo.update(assessment);
             Toast.makeText(getApplicationContext(), "Assessment record updated.", Toast.LENGTH_LONG).show();
         }
