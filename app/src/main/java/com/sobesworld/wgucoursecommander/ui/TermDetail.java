@@ -34,8 +34,10 @@ public class TermDetail extends AppCompatActivity {
     public static final String EXTRA_TERM_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_TITLE";
     public static final String EXTRA_TERM_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_START_DATE";
     public static final String EXTRA_TERM_END_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_END_DATE";
+    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
+    public static final int REQUEST_ADD_COURSE_FROM_TERM = 3;
     public static final int RESULT_TERM_DELETE = 99;
-    static final SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy", Locale.US);
+    static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
 
     private int termID;
     private EditText editTextTermTitle;
@@ -53,6 +55,7 @@ public class TermDetail extends AppCompatActivity {
         textViewTermStartDate = findViewById(R.id.text_view_start_date);
         textViewTermEndDate = findViewById(R.id.text_view_end_date);
 
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent passedIntent = getIntent();
@@ -127,12 +130,12 @@ public class TermDetail extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, TermList.class);
-            startActivity(intent);
+            applyUnsavedChanges();
         }
         if (item.getItemId() == R.id.home_term_detail_menu) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
         if (item.getItemId() == R.id.save_term_detail_menu) {
             saveTerm();
@@ -143,19 +146,32 @@ public class TermDetail extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*private void applyUnsavedChanges(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("COMMIT CHANGES")
-                .setMessage("Click COMMIT to save any changes you have made. Click CANCEL to close this record without saving.")
-                .setCancelable(false);
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> startActivity(intent));
-        builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
-            saveTerm();
-            startActivity(intent);
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
+    private void applyUnsavedChanges() {
+        String termTitle = editTextTermTitle.getText().toString();
+        String termStartDate = textViewTermStartDate.getText().toString();
+        String termEndDate = textViewTermEndDate.getText().toString();
+
+        if (termTitle.equals(getIntent().getStringExtra(EXTRA_TERM_TITLE)) &&
+                termStartDate.equals(getIntent().getStringExtra(EXTRA_TERM_START_DATE)) &&
+                termEndDate.equals(getIntent().getStringExtra(EXTRA_TERM_END_DATE))) {
+            setResult(RESULT_CANCELED);
+            finish();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("COMMIT CHANGES")
+                    .setMessage("You have unsaved changes. Click COMMIT to save. Click CANCEL to close without saving.")
+                    .setCancelable(false);
+            builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                setResult(RESULT_CANCELED);
+                finish();
+            });
+            builder.setPositiveButton(R.string.commit, (dialogInterface, i) -> {
+                saveTerm();
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
 
     private void saveTerm() {
         String termTitle = editTextTermTitle.getText().toString();
@@ -172,12 +188,10 @@ public class TermDetail extends AppCompatActivity {
             if (termEndDate.trim().isEmpty()) {
                 textViewTermEndDate.setHintTextColor(ContextCompat.getColor(TermDetail.this, R.color.red));
             }
-            Toast.makeText(TermDetail.this, "A required field is empty.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TermDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent();
-            if (termID != -1) {
-                intent.putExtra(EXTRA_TERM_ID, termID);
-            }
+            intent.putExtra(EXTRA_TERM_ID, termID);
             intent.putExtra(EXTRA_TERM_TITLE, termTitle);
             intent.putExtra(EXTRA_TERM_START_DATE, termStartDate);
             intent.putExtra(EXTRA_TERM_END_DATE, termEndDate);
@@ -190,16 +204,17 @@ public class TermDetail extends AppCompatActivity {
     private void deleteTerm() {
         if (termID == -1) {
             setResult(RESULT_CANCELED);
-            Toast.makeText(this, "Term entry cancelled.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "New term creation cancelled.", Toast.LENGTH_SHORT).show();
             finish();
         } else {
+            // TODO: search for linked courses logic
             if (false) {
                 Toast.makeText(this, "This term can't be deleted until linked courses are " +
-                                "\ntransferred to another term or deleted.", Toast.LENGTH_SHORT).show();
+                                "\ndeleted or transferred to another term.", Toast.LENGTH_LONG).show();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("CONFIRM TERM DELETION")
-                        .setMessage("Select CONFIRM to delete the term record.\nSelect ABORT to cancel.\n\n(records are not recoverable)")
+                        .setMessage("Select CONFIRM to delete the term.\nSelect ABORT to cancel.\n\n(records are not recoverable)")
                         .setCancelable(false);
                 builder.setNegativeButton(R.string.abort, (dialogInterface, i) -> {
                 });
@@ -207,6 +222,7 @@ public class TermDetail extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra(EXTRA_TERM_ID, termID);
                     setResult(RESULT_TERM_DELETE, intent);
+                    finish();
                 });
                 AlertDialog alert = builder.create();
                 alert.show();

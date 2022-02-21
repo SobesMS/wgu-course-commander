@@ -4,11 +4,9 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,19 +63,6 @@ public class TermList extends AppCompatActivity {
             }
         });
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                termViewModel.delete(adapter.getTermEntityAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(TermList.this, "Term deleted", Toast.LENGTH_SHORT).show();
-            }
-        }).attachToRecyclerView(recyclerView);
-
         adapter.setOnItemClickListener(new TermAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TermEntity termEntity) {
@@ -95,40 +80,37 @@ public class TermList extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
+                        Intent intent = result.getData();
                         Log.d(TAG, "onActivityResult: ");
 
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent intent = result.getData();
-
-                            if (intent != null) {
-                                // extract data
+                        if (intent != null) {
+                            int id = intent.getIntExtra(TermDetail.EXTRA_TERM_ID, -1);
+                            String termTitle = intent.getStringExtra(TermDetail.EXTRA_TERM_TITLE);
+                            String termStartDate = intent.getStringExtra(TermDetail.EXTRA_TERM_START_DATE);
+                            String termEndDate = intent.getStringExtra(TermDetail.EXTRA_TERM_END_DATE);
+                            if (result.getResultCode() == RESULT_OK) {
+                                if (id == -1) {
+                                    TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
+                                    termViewModel.insert(termEntity);
+                                    Toast.makeText(TermList.this, "Term added.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
+                                    termEntity.setTermID(id);
+                                    termViewModel.update(termEntity);
+                                    Toast.makeText(TermList.this, "Term updated.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (result.getResultCode() == TermDetail.RESULT_TERM_DELETE) {
+                                if (id == -1) {
+                                    Toast.makeText(TermList.this, "Term does not exist.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    termViewModel.deleteUsingTermID(id);
+                                    Toast.makeText(getApplicationContext(), "Term permanently deleted.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        } else if (result.getResultCode() == TermDetail.RESULT_TERM_DELETE) {
-                            Intent intent = result.getData();
-                            termViewModel.delete(adapter.getTermEntityAt(intent.getIntExtra())); // TODO: finish this logic
-                            Toast.makeText(getApplicationContext(), "Term record permanently deleted.", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
         );
     }
-
-
-
-    /*public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.list_menu, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.refresh_menu) {
-            fillRecyclerView();
-            Toast.makeText(getApplicationContext(), "Term list refreshed.", Toast.LENGTH_LONG).show();
-        }
-        if (item.getItemId() == R.id.list_home_button) {
-            Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(homeButton);
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

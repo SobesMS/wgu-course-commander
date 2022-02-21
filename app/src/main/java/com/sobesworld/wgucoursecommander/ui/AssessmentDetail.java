@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class AssessmentDetail extends AppCompatActivity {
-    public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
+    /*public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
     public static final String EXTRA_ASSESSMENT_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TITLE";
     public static final String EXTRA_ASSESSMENT_TYPE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TYPE";
     public static final String EXTRA_ASSESSMENT_GOAL_DATE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_GOAL_DATE";
@@ -328,5 +328,5 @@ public class AssessmentDetail extends AppCompatActivity {
         });
         AlertDialog alert = builder.create();
         alert.show();
-    }
+    }*/
 }

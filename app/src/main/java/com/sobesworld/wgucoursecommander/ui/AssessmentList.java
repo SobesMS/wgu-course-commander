@@ -17,7 +17,7 @@ import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
 
 public class AssessmentList extends AppCompatActivity {
 
-    private AssessmentAdapter adapter;
+    /*private AssessmentAdapter adapter;
     private Repository repo;
 
     @Override
@@ -65,5 +65,5 @@ public class AssessmentList extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setAssessments(repo.getAllAssessments());
-    }
+    }*/
 }

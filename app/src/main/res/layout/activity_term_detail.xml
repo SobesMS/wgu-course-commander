@@ -75,7 +75,8 @@
                 android:importantForAutofill="no"
                 android:longClickable="false"
                 android:textColorHint="#757575"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/termEndDate"
@@ -105,7 +106,8 @@
                 android:importantForAutofill="no"
                 android:longClickable="false"
                 android:textColorHint="#757575"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/courseListHead"

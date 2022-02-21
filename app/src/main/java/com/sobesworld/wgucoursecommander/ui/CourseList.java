@@ -17,7 +17,7 @@ import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 
 public class CourseList extends AppCompatActivity {
 
-    private CourseAdapter adapter;
+    /*private CourseAdapter adapter;
     private Repository repo;
 
     @Override
@@ -64,5 +64,5 @@ public class CourseList extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setCourses(repo.getAllCourses());
-    }
+    }*/
 }

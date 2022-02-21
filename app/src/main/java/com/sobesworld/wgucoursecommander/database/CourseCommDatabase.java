@@ -46,9 +46,9 @@ public abstract class CourseCommDatabase extends RoomDatabase {
             CourseDAO courseDAO = instance.courseDAO();
             AssessmentDAO assessmentDAO = instance.assessmentDAO();
             databaseWriteExecutor.execute(() -> {
-                termDAO.insert(new TermEntity("Term 1", "01/01/22","06/30/22", "These are term notes."));
-                termDAO.insert(new TermEntity("Term 2", "01/01/22","06/30/22", "These are term notes."));
-                termDAO.insert(new TermEntity("Term 3", "01/01/22","06/30/22", "These are term notes."));
+                termDAO.insert(new TermEntity("Term 1", "01/01/22","06/30/22"));
+                termDAO.insert(new TermEntity("Term 2", "01/01/22","06/30/22"));
+                termDAO.insert(new TermEntity("Term 3", "01/01/22","06/30/22"));
                 courseDAO.insert(new CourseEntity("C123", "01/01/22", "06/30/22", false,
                         -1, "in progress","John Doe", "216-555-5555",
                         "john.doe@wgu.edu","These are course notes",1));

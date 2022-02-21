@@ -31,5 +31,9 @@ public class TermRepository {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> termDAO.delete(termEntity));
     }
 
+    public void deleteUsingTermID(int i) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> termDAO.deleteUsingTermID(i));
+    }
+
     public LiveData<List<TermEntity>> getAllTerms() { return allTerms; }
 }
