@@ -43,7 +43,7 @@ public class CourseList extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.list_refresh_menu, menu);
+        getMenuInflater().inflate(R.menu.list_menu, menu);
         return true;
     }
 
@@ -52,7 +52,7 @@ public class CourseList extends AppCompatActivity {
             fillRecyclerView();
             Toast.makeText(getApplicationContext(), "Course list refreshed.", Toast.LENGTH_LONG).show();
         }
-        if (item.getItemId() == R.id.home_refresh_menu) {
+        if (item.getItemId() == R.id.list_home_button) {
             Intent homeButton = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(homeButton);
         }

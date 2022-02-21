@@ -1,81 +1,83 @@
 package com.sobesworld.wgucoursecommander.database.adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
-import com.sobesworld.wgucoursecommander.ui.TermDetail;
 
-import java.util.List;
+public class TermAdapter extends ListAdapter<TermEntity, TermAdapter.TermHolder> {
+    private OnItemClickListener listener;
 
-public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder> {
-
-    private List<TermEntity> mTerms;
-    private final Context context;
-
-    public TermAdapter(Context context) {
-        this.context = context;
+    public TermAdapter() {
+        super(DIFF_CALLBACK);
     }
 
-    class TermViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView termItemView;
-
-        private TermViewHolder(View itemView) {
-            super(itemView);
-            termItemView = itemView.findViewById(R.id.item_view);
-            itemView.setOnClickListener((view -> {
-                int position = getAdapterPosition();
-                final TermEntity current = mTerms.get(position);
-                Intent intent = new Intent(context, TermDetail.class);
-                intent.putExtra(context.getString(R.string.is_new_record), false);
-                intent.putExtra(context.getString(R.string.idnum), current.getTermID());
-                intent.putExtra(context.getString(R.string.title), current.getTermTitle());
-                intent.putExtra(context.getString(R.string.start_date), current.getTermStartDate());
-                intent.putExtra(context.getString(R.string.end_date), current.getTermEndDate());
-                intent.putExtra(context.getString(R.string.notes), current.getTermNotes());
-                context.startActivity(intent);
-            }));
+    private static final DiffUtil.ItemCallback<TermEntity> DIFF_CALLBACK = new DiffUtil.ItemCallback<TermEntity>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull TermEntity oldItem, @NonNull TermEntity newItem) {
+            return oldItem.getTermID() == newItem.getTermID();
         }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull TermEntity oldItem, @NonNull TermEntity newItem) {
+            return oldItem.getTermTitle().equals(newItem.getTermTitle()) && oldItem.getTermStartDate().equals(newItem.getTermStartDate()) &&
+                    oldItem.getTermEndDate().equals(newItem.getTermEndDate());
+        }
+    };
+
+    public TermEntity getTermEntityAt(int position) {
+        return getItem(position);
     }
 
     @NonNull
     @Override
-    public TermAdapter.TermViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
-        return new TermViewHolder(itemView);
+    public TermHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.term_item, parent, false);
+        return new TermHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TermAdapter.TermViewHolder holder, int position) {
-        if (mTerms != null) {
-            TermEntity current = mTerms.get(position);
-            String title = current.getTermTitle();
-            holder.termItemView.setText(title);
-        } else {
-            holder.termItemView.setText(R.string.no_term_title);
+    public void onBindViewHolder(@NonNull TermHolder holder, int position) {
+        TermEntity current = getItem(position);
+        holder.textViewTermTitle.setText(current.getTermTitle());
+        String dates = current.getTermStartDate() + " to " + current.getTermEndDate();
+        holder.textViewTermDates.setText(dates);
+    }
+
+    class TermHolder extends RecyclerView.ViewHolder {
+        private final TextView textViewTermTitle;
+        private final TextView textViewTermDates;
+
+        private TermHolder(@NonNull View itemView) {
+            super(itemView);
+            textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);
+            textViewTermDates = itemView.findViewById(R.id.text_view_term_dates);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(getItem(position));
+                    }
+                }
+            });
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (mTerms != null) {
-            return mTerms.size();
-        } else {
-            return 0;
-        }
+    public interface OnItemClickListener {
+        void onItemClick(TermEntity termEntity);
     }
 
-    public void setTerms(List<TermEntity> terms) {
-        mTerms = terms;
-        notifyDataSetChanged();
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

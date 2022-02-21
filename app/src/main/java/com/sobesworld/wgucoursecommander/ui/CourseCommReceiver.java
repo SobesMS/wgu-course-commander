@@ -22,7 +22,7 @@ public class CourseCommReceiver extends BroadcastReceiver {
         int id = intent.getIntExtra("id", -1);
         createNotificationChannel(context);
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_baseline_school_24)
+                .setSmallIcon(R.drawable.ic_school)
                 .setContentTitle(intent.getStringExtra("title"))
                 .setContentText(intent.getStringExtra("text"))
                 .build();

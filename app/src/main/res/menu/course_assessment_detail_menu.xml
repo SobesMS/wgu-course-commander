@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home_course_assessment_detail_menu"
+        android:title="Home"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_home" />
+
+    <item
+        android:id="@+id/note_course_assessment_detail_menu"
+        android:title="Notes"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_sticky_note"/>
+
+    <item
+        android:id="@+id/delete_course_assessment_detail_menu"
+        android:title="Delete Record"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_delete_forever"/>
+
+</menu>

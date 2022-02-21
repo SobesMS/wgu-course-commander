@@ -31,9 +31,7 @@ public class CourseRepository {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> courseDAO.delete(courseEntity));
     }
 
-    public void deleteAllCourses() {
-        CourseCommDatabase.databaseWriteExecutor.execute(courseDAO::deleteAllCourses);
-    }
-
     public LiveData<List<CourseEntity>> getAllCourses() { return allCourses; }
+
+    public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return courseDAO.getLinkedCourses(i); }
 }

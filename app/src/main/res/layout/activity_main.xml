@@ -7,7 +7,7 @@
     tools:context=".ui.MainActivity">
 
     <ImageView
-        android:id="@+id/wguLogo"
+        android:id="@+id/wgu_logo"
         android:layout_width="169dp"
         android:layout_height="169dp"
         android:layout_marginTop="32dp"
@@ -18,10 +18,10 @@
         android:contentDescription="@string/wgu_logo" />
 
     <Button
-        android:id="@+id/termsButton"
-        android:layout_width="200dp"
+        android:id="@+id/main_terms_button"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:backgroundTint="#267F9A"
         android:onClick="goToTermList"
         android:text="@string/terms"
@@ -30,13 +30,13 @@
         app:cornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wguLogo" />
+        app:layout_constraintTop_toBottomOf="@+id/wgu_logo" />
 
     <Button
-        android:id="@+id/coursesButton"
-        android:layout_width="200dp"
+        android:id="@+id/main_courses_button"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         android:backgroundTint="#267F9A"
         android:onClick="goToCourseList"
         android:text="@string/courses"
@@ -45,21 +45,6 @@
         app:cornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/termsButton" />
-
-    <Button
-        android:id="@+id/assessmentsButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#267F9A"
-        android:onClick="goToAssessmentList"
-        android:text="@string/assessments"
-        android:textColor="@color/white"
-        android:textSize="17sp"
-        app:cornerRadius="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coursesButton" />
+        app:layout_constraintTop_toBottomOf="@+id/main_terms_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

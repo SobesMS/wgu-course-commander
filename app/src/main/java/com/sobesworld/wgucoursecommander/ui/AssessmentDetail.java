@@ -186,7 +186,7 @@ public class AssessmentDetail extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.detail_menu, menu);
+        getMenuInflater().inflate(R.menu.course_assessment_detail_menu, menu);
         return true;
     }
 
@@ -195,11 +195,11 @@ public class AssessmentDetail extends AppCompatActivity {
             Intent intent = new Intent(AssessmentDetail.this, AssessmentList.class);
             applyUnsavedChanges(intent);
         }
-        if (item.getItemId() == R.id.home_detail_menu) {
+        if (item.getItemId() == R.id.home_term_detail_menu) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             applyUnsavedChanges(intent);
         }
-        if (item.getItemId() == R.id.note_detail_menu) {
+        if (item.getItemId() == R.id.note_course_assessment_detail_menu) {
             showNoteDialog();
         }
         return super.onOptionsItemSelected(item);

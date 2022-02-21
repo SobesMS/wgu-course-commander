@@ -12,16 +12,13 @@ public class TermEntity {
     private final String termTitle;
     private final String termStartDate;
     private final String termEndDate;
-    private final String termNotes;
 
-    public TermEntity(@NonNull String termTitle, String termStartDate, String termEndDate, String termNotes) {
+    public TermEntity(@NonNull String termTitle, String termStartDate, String termEndDate) {
         this.termTitle = termTitle;
         this.termStartDate = termStartDate;
         this.termEndDate = termEndDate;
-        this.termNotes = termNotes;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "TermEntity{" +
@@ -29,7 +26,6 @@ public class TermEntity {
                 ", termTitle='" + termTitle + '\'' +
                 ", termStartDate='" + termStartDate + '\'' +
                 ", termEndDate='" + termEndDate + '\'' +
-                ", termNotes='" + termNotes + '\'' +
                 '}';
     }
 
@@ -51,9 +47,5 @@ public class TermEntity {
 
     public String getTermEndDate() {
         return termEndDate;
-    }
-
-    public String getTermNotes() {
-        return termNotes;
     }
 }

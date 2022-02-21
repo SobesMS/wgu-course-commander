@@ -11,6 +11,7 @@ import android.view.View;
 import com.sobesworld.wgucoursecommander.R;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToCourseList(View view) {
         Intent intent= new Intent(MainActivity.this, CourseList.class);
-        startActivity(intent);
-    }
-
-    public void goToAssessmentList(View view) {
-        Intent intent= new Intent(MainActivity.this, AssessmentList.class);
         startActivity(intent);
     }
 
