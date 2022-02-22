@@ -11,7 +11,7 @@ public class CourseEntity {
     private int courseID;
     private final String courseTitle;
     private final String courseStartDate;
-    private final String courseProjectedEndDate;
+    private final String courseEndDate;
     private final boolean courseEndAlert;
     private final int courseAlertID;
     private final String courseStatus;
@@ -19,14 +19,14 @@ public class CourseEntity {
     private final String courseMentorsPhone;
     private final String courseMentorsEmail;
     private final String courseNotes;
-    private final int termID;
+    private final int courseLinkedTermID;
 
-    public CourseEntity(@NonNull String courseTitle, String courseStartDate, String courseProjectedEndDate,
+    public CourseEntity(@NonNull String courseTitle, String courseStartDate, String courseEndDate,
                         boolean courseEndAlert, int courseAlertID, String courseStatus, String courseMentorsName,
-                        String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int termID) {
+                        String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int courseLinkedTermID) {
         this.courseTitle = courseTitle;
         this.courseStartDate = courseStartDate;
-        this.courseProjectedEndDate = courseProjectedEndDate;
+        this.courseEndDate = courseEndDate;
         this.courseEndAlert = courseEndAlert;
         this.courseAlertID = courseAlertID;
         this.courseStatus = courseStatus;
@@ -34,7 +34,7 @@ public class CourseEntity {
         this.courseMentorsPhone = courseMentorsPhone;
         this.courseMentorsEmail = courseMentorsEmail;
         this.courseNotes = courseNotes;
-        this.termID = termID;
+        this.courseLinkedTermID = courseLinkedTermID;
     }
 
     @NonNull
@@ -44,7 +44,7 @@ public class CourseEntity {
                 "courseID=" + courseID +
                 ", courseTitle='" + courseTitle + '\'' +
                 ", courseStartDate='" + courseStartDate + '\'' +
-                ", courseProjectedEndDate='" + courseProjectedEndDate + '\'' +
+                ", courseEndDate='" + courseEndDate + '\'' +
                 ", courseEndAlert=" + courseEndAlert +
                 ", courseAlertID=" + courseAlertID +
                 ", courseStatus='" + courseStatus + '\'' +
@@ -52,7 +52,7 @@ public class CourseEntity {
                 ", courseMentorsPhone='" + courseMentorsPhone + '\'' +
                 ", courseMentorsEmail='" + courseMentorsEmail + '\'' +
                 ", courseNotes='" + courseNotes + '\'' +
-                ", termID=" + termID +
+                ", courseLinkedTermID=" + courseLinkedTermID +
                 '}';
     }
 
@@ -72,8 +72,8 @@ public class CourseEntity {
         return courseStartDate;
     }
 
-    public String getCourseProjectedEndDate() {
-        return courseProjectedEndDate;
+    public String getCourseEndDate() {
+        return courseEndDate;
     }
 
     public boolean isCourseEndAlert() {
@@ -104,7 +104,7 @@ public class CourseEntity {
         return courseNotes;
     }
 
-    public int getTermID() {
-        return termID;
+    public int getCourseLinkedTermID() {
+        return courseLinkedTermID;
     }
 }

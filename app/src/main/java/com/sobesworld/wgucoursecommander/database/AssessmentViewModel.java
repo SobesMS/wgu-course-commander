@@ -1,4 +1,4 @@
-package com.sobesworld.wgucoursecommander.ui;
+package com.sobesworld.wgucoursecommander.database;
 
 import android.app.Application;
 

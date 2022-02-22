@@ -1,4 +1,4 @@
-package com.sobesworld.wgucoursecommander.ui;
+package com.sobesworld.wgucoursecommander.database;
 
 import android.app.Application;
 
@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.sobesworld.wgucoursecommander.database.CourseRepository;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.util.List;
@@ -26,6 +25,8 @@ public class CourseViewModel extends AndroidViewModel {
     public void update(CourseEntity courseEntity) { courseRepository.update(courseEntity); }
 
     public void delete(CourseEntity courseEntity) { courseRepository.delete(courseEntity); }
+
+    public void deleteUsingCourseID(int i) { courseRepository.deleteUsingCourseID(i); }
 
     public LiveData<List<CourseEntity>> getAllCourses() { return allCourses; }
 

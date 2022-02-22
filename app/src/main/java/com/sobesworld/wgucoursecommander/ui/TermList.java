@@ -27,8 +27,8 @@ import java.util.List;
 public class TermList extends AppCompatActivity {
     public static final String TAG = "TermList";
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
-    public static final int REQUEST_ADD_TERM = 1;
-    public static final int REQUEST_EDIT_TERM = 2;
+    public static final int REQUEST_ADD_TERM = 11;
+    public static final int REQUEST_EDIT_TERM = 12;
 
     private TermViewModel termViewModel;
     private ActivityResultLauncher<Intent> activityLauncher;
@@ -50,7 +50,6 @@ public class TermList extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
 
         TermAdapter adapter = new TermAdapter();
         recyclerView.setAdapter(adapter);
@@ -81,29 +80,30 @@ public class TermList extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
+                        int resultCode = result.getResultCode(); // TODO: strip to separate method
                         Log.d(TAG, "onActivityResult: ");
 
                         if (intent != null) {
-                            int id = intent.getIntExtra(TermDetail.EXTRA_TERM_ID, -1);
+                            int termID = intent.getIntExtra(TermDetail.EXTRA_TERM_ID, -1);
                             String termTitle = intent.getStringExtra(TermDetail.EXTRA_TERM_TITLE);
                             String termStartDate = intent.getStringExtra(TermDetail.EXTRA_TERM_START_DATE);
                             String termEndDate = intent.getStringExtra(TermDetail.EXTRA_TERM_END_DATE);
                             if (result.getResultCode() == RESULT_OK) {
-                                if (id == -1) {
+                                if (termID == -1) {
                                     TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
                                     termViewModel.insert(termEntity);
                                     Toast.makeText(TermList.this, "Term added.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
-                                    termEntity.setTermID(id);
+                                    termEntity.setTermID(termID);
                                     termViewModel.update(termEntity);
                                     Toast.makeText(TermList.this, "Term updated.", Toast.LENGTH_SHORT).show();
                                 }
                             } else if (result.getResultCode() == TermDetail.RESULT_TERM_DELETE) {
-                                if (id == -1) {
+                                if (termID == -1) {
                                     Toast.makeText(TermList.this, "Term does not exist.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    termViewModel.deleteUsingTermID(id);
+                                    termViewModel.deleteUsingTermID(termID);
                                     Toast.makeText(getApplicationContext(), "Term permanently deleted.",
                                             Toast.LENGTH_SHORT).show();
                                 }

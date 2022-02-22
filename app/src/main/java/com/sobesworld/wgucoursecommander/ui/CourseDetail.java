@@ -42,7 +42,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CourseDetail extends AppCompatActivity {
-    /*public static final String EXTRA_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_ID";
+    public static final String TAG = "CourseDetail";
+    public static final String EXTRA_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_ID";
     public static final String EXTRA_COURSE_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_TITLE";
     public static final String EXTRA_COURSE_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_START_DATE";
     public static final String EXTRA_COURSE_END_DATE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_END_DATE";
@@ -54,8 +55,12 @@ public class CourseDetail extends AppCompatActivity {
     public static final String EXTRA_COURSE_MENTORS_EMAIL = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_MENTORS_EMAIL";
     public static final String EXTRA_COURSE_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_NOTES";
     public static final String EXTRA_COURSE_LINKED_TERM_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_LINKED_TERM_ID";
+    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
+    public static final int REQUEST_ADD_ASSESSMENT_FROM_COURSE = 23;
+    public static final int RESULT_COURSE_DELETE = 23;
+    static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
 
-    EditText editTextCourseTitle;
+    /*EditText editTextCourseTitle;
     EditText editTextCourseStartDate;
     EditText editTextCourseEndDate;
     Boolean courseEndAlert;

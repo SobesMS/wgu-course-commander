@@ -1,21 +1,20 @@
 package com.sobesworld.wgucoursecommander.ui;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.database.Repository;
-import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
+import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 
 public class AssessmentList extends AppCompatActivity {
+    public static final String TAG = "AssessmentList";
+    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
+    public static final int REQUEST_ADD_COURSE = 31;
+    public static final int REQUEST_EDIT_COURSE = 32;
+
+    private AssessmentViewModel assessmentViewModel;
+    private ActivityResultLauncher<Intent> activityLauncher;
 
     /*private AssessmentAdapter adapter;
     private Repository repo;
