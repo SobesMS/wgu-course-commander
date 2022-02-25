@@ -26,9 +26,6 @@ import java.util.List;
 
 public class CourseList extends AppCompatActivity {
     public static final String TAG = "CourseList";
-    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
-    public static final int REQUEST_ADD_COURSE = 21;
-    public static final int REQUEST_EDIT_COURSE = 22;
 
     private CourseViewModel courseViewModel;
     private ActivityResultLauncher<Intent> activityLauncher;
@@ -43,7 +40,7 @@ public class CourseList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CourseList.this, CourseDetail.class);
-                intent.putExtra(EXTRA_REQUEST_ID, REQUEST_ADD_COURSE);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
                 activityLauncher.launch(intent);
             }
         });
@@ -66,7 +63,7 @@ public class CourseList extends AppCompatActivity {
             @Override
             public void onItemClick(CourseEntity courseEntity) {
                 Intent intent = new Intent(CourseList.this, CourseDetail.class);
-                intent.putExtra(EXTRA_REQUEST_ID, REQUEST_EDIT_COURSE);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
                 intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
                 intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
                 intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
@@ -88,8 +85,8 @@ public class CourseList extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
-                        int resultCode = result.getResultCode(); // TODO: strip to separate method
-                        Log.d(TAG, "onActivityResult: ");
+                        int resultCode = result.getResultCode();
+                        Log.d(TAG, "onActivityResult: " + resultCode);
 
                         if (intent != null) {
                             int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
@@ -104,7 +101,7 @@ public class CourseList extends AppCompatActivity {
                             String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
                             String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
                             int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
-                            if (result.getResultCode() == RESULT_OK) {
+                            if (resultCode == RESULT_OK) {
                                 if (courseID == -1) {
                                     CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
                                             courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
@@ -119,7 +116,7 @@ public class CourseList extends AppCompatActivity {
                                     courseViewModel.update(courseEntity);
                                     Toast.makeText(CourseList.this, "Course updated.", Toast.LENGTH_SHORT).show();
                                 }
-                            } else if (result.getResultCode() == CourseDetail.RESULT_COURSE_DELETE) {
+                            } else if (resultCode == MainActivity.RESULT_DELETE) {
                                 if (courseID == -1) {
                                     Toast.makeText(CourseList.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
                                 } else {

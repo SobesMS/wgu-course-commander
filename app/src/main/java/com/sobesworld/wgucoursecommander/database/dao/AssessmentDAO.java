@@ -24,12 +24,12 @@ public interface AssessmentDAO {
     @Delete
     void delete(AssessmentEntity assessmentEntity);
 
-    @Query("DELETE FROM assessment_table WHERE courseID = :i")
+    @Query("DELETE FROM assessment_table WHERE assessmentLinkedCourseID = :i")
     void deleteLinkedAssessments(int i);
 
     @Query("SELECT * FROM assessment_table ORDER BY assessmentID ASC")
     LiveData<List<AssessmentEntity>> getAllAssessments();
 
-    @Query("SELECT * FROM assessment_table WHERE courseID = :i ORDER BY assessmentID ASC")
+    @Query("SELECT * FROM assessment_table WHERE assessmentLinkedCourseID = :i ORDER BY assessmentID ASC")
     LiveData<List<AssessmentEntity>> getLinkedAssessments(int i);
 }

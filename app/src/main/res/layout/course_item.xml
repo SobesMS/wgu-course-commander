@@ -2,9 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp" >
+    android:layout_marginTop="10dp" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,11 +21,21 @@
             android:textSize="20sp"/>
 
         <TextView
-            android:id="@+id/text_view_course_dates"
+            android:id="@+id/text_view_course_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_view_course_title"
             android:text="00/00/00 to 00/00/00"
+            android:maxLines="1"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/text_view_course_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBaseline="@id/text_view_course_status"
+            android:text="Status: in progress"
             android:maxLines="1"
             android:textSize="14sp"/>
 

@@ -19,9 +19,9 @@
 
     <Button
         android:id="@+id/main_terms_button"
-        android:layout_width="175dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="#267F9A"
         android:onClick="goToTermList"
         android:text="@string/terms"
@@ -34,9 +34,9 @@
 
     <Button
         android:id="@+id/main_courses_button"
-        android:layout_width="175dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="#267F9A"
         android:onClick="goToCourseList"
         android:text="@string/courses"
@@ -46,5 +46,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_terms_button" />
+
+    <Button
+        android:id="@+id/main_assessments_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="#267F9A"
+        android:onClick="goToAssessmentList"
+        android:text="@string/assessments"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_courses_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,9 @@
 package com.sobesworld.wgucoursecommander.ui;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -11,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,10 +31,8 @@ import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class TermDetail extends AppCompatActivity {
@@ -37,12 +41,9 @@ public class TermDetail extends AppCompatActivity {
     public static final String EXTRA_TERM_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_TITLE";
     public static final String EXTRA_TERM_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_START_DATE";
     public static final String EXTRA_TERM_END_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_END_DATE";
-    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
-    public static final int REQUEST_ADD_COURSE_FROM_TERM = 13;
-    public static final int RESULT_TERM_DELETE = 14;
-    static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
-    private CourseViewModel courseViewModel;
     private CourseAdapter courseAdapter;
+    private CourseViewModel courseViewModel;
+    private ActivityResultLauncher<Intent> activityLauncher;
 
     private int termID;
     private EditText editTextTermTitle;
@@ -50,6 +51,7 @@ public class TermDetail extends AppCompatActivity {
     private TextView textViewTermEndDate;
     private DatePickerDialog.OnDateSetListener startDateSetListener;
     private DatePickerDialog.OnDateSetListener endDateSetListener;
+    private ImageView imageViewTermAddCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,8 @@ public class TermDetail extends AppCompatActivity {
 
         editTextTermTitle = findViewById(R.id.edit_text_term_title);
         textViewTermStartDate = findViewById(R.id.text_view_term_start_date);
-        textViewTermEndDate = findViewById(R.id.text_view_end_date);
+        textViewTermEndDate = findViewById(R.id.text_view_term_end_date);
+        imageViewTermAddCourse = findViewById(R.id.image_view_term_add_course);
 
         Intent passedIntent = getIntent();
         termID = passedIntent.getIntExtra(EXTRA_TERM_ID, -1);
@@ -80,20 +83,28 @@ public class TermDetail extends AppCompatActivity {
         courseAdapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CourseEntity courseEntity) {
-                /*Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-                intent.putExtra(EXTRA_REQUEST_ID, REQUEST_EDIT_TERM);
-                intent.putExtra(TermDetail.EXTRA_TERM_ID, termEntity.getTermID());
-                intent.putExtra(TermDetail.EXTRA_TERM_TITLE, termEntity.getTermTitle());
-                intent.putExtra(TermDetail.EXTRA_TERM_START_DATE, termEntity.getTermStartDate());
-                intent.putExtra(TermDetail.EXTRA_TERM_END_DATE, termEntity.getTermEndDate());
-                activityLauncher.launch(intent);*/
+                Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+                intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_END_DATE, courseEntity.getCourseEndDate());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT, courseEntity.isCourseEndAlert());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, courseEntity.getCourseAlertID());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_STATUS, courseEntity.getCourseStatus());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME, courseEntity.getCourseMentorsName());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE, courseEntity.getCourseMentorsPhone());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL, courseEntity.getCourseMentorsEmail());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_NOTES, courseEntity.getCourseNotes());
+                intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, courseEntity.getCourseLinkedTermID());
+                activityLauncher.launch(intent);
             }
         });
 
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (passedIntent.getIntExtra(TermList.EXTRA_REQUEST_ID, -1) == 11) {
+        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == 1) {
             setTitle("Add Term");
         } else {
             setTitle("Edit Term");
@@ -109,7 +120,7 @@ public class TermDetail extends AppCompatActivity {
                 String date = textViewTermStartDate.getText().toString();
                 if (!date.trim().isEmpty()) {
                     try {
-                        calendar.setTime(Objects.requireNonNull(sdf.parse(date)));
+                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -124,7 +135,7 @@ public class TermDetail extends AppCompatActivity {
             public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
-                textViewTermStartDate.setText(sdf.format(calendar.getTime()));
+                textViewTermStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
             }
         };
 
@@ -135,7 +146,7 @@ public class TermDetail extends AppCompatActivity {
                 String date = textViewTermEndDate.getText().toString();
                 if (!date.trim().isEmpty()) {
                     try {
-                        calendar.setTime(Objects.requireNonNull(sdf.parse(date)));
+                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -150,9 +161,68 @@ public class TermDetail extends AppCompatActivity {
             public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
-                textViewTermEndDate.setText(sdf.format(calendar.getTime()));
+                textViewTermEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
             }
         };
+
+        imageViewTermAddCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+                activityLauncher.launch(intent);
+            }
+        });
+
+        activityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Intent intent = result.getData();
+                        int resultCode = result.getResultCode();
+                        Log.d(TAG, "onActivityResult: " + resultCode);
+
+                        if (intent != null) {
+                            int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
+                            String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
+                            String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
+                            String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
+                            boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
+                            int courseAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, -1);
+                            String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
+                            String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
+                            String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
+                            String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
+                            String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
+                            int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
+                            if (resultCode == RESULT_OK) {
+                                if (courseID == -1) {
+                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
+                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
+                                    courseViewModel.insert(courseEntity);
+                                    Toast.makeText(TermDetail.this, "Course added.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
+                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
+                                    courseEntity.setCourseID(courseID);
+                                    courseViewModel.update(courseEntity);
+                                    Toast.makeText(TermDetail.this, "Course updated.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (resultCode == MainActivity.RESULT_DELETE) {
+                                if (courseID == -1) {
+                                    Toast.makeText(TermDetail.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    courseViewModel.deleteUsingCourseID(courseID);
+                                    Toast.makeText(getApplicationContext(), "Course permanently deleted.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,7 +248,7 @@ public class TermDetail extends AppCompatActivity {
         String termStartDate = textViewTermStartDate.getText().toString();
         String termEndDate = textViewTermEndDate.getText().toString();
 
-        if (getIntent().getIntExtra(TermList.EXTRA_REQUEST_ID, -1) == 11 && termTitle.trim().isEmpty()
+        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == 11 && termTitle.trim().isEmpty()
                 && termStartDate.trim().isEmpty() && termEndDate.trim().isEmpty()) {
             setResult(RESULT_CANCELED);
             finish();
@@ -253,7 +323,7 @@ public class TermDetail extends AppCompatActivity {
                 builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
                     Intent intent = new Intent();
                     intent.putExtra(EXTRA_TERM_ID, termID);
-                    setResult(RESULT_TERM_DELETE, intent);
+                    setResult(MainActivity.RESULT_DELETE, intent);
                     finish();
                 });
                 AlertDialog alert = builder.create();

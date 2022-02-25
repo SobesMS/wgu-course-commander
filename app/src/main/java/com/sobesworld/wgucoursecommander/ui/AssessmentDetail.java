@@ -39,7 +39,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class AssessmentDetail extends AppCompatActivity {
-    /*public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
+    public static final String TAG = "AssessmentDetail";
+    public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
     public static final String EXTRA_ASSESSMENT_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TITLE";
     public static final String EXTRA_ASSESSMENT_TYPE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TYPE";
     public static final String EXTRA_ASSESSMENT_GOAL_DATE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_GOAL_DATE";
@@ -47,8 +48,9 @@ public class AssessmentDetail extends AppCompatActivity {
     public static final String EXTRA_ASSESSMENT_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_ID";
     public static final String EXTRA_ASSESSMENT_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_NOTES";
     public static final String EXTRA_ASSESSMENT_LINKED_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_LINKED_COURSE_ID";
+    private SharedPreferences sharedPreferences;
 
-    EditText editTextAssessmentTitle;
+    /*EditText editTextAssessmentTitle;
     Spinner spinnerAssessmentType;
     EditText editTextAssessmentGoalDate;
     boolean assessmentGoalAlert;

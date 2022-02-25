@@ -15,17 +15,18 @@ public class AssessmentEntity {
     private final boolean assessmentGoalAlert;
     private final int assessmentAlertID;
     private final String assessmentNotes;
-    private final int courseID;
+    private final int assessmentLinkedCourseID;
 
     public AssessmentEntity(@NonNull String assessmentTitle, String assessmentType, String assessmentGoalDate,
-                            boolean assessmentGoalAlert, int assessmentAlertID, String assessmentNotes, int courseID) {
+                            boolean assessmentGoalAlert, int assessmentAlertID, String assessmentNotes,
+                            int assessmentLinkedCourseID) {
         this.assessmentTitle = assessmentTitle;
         this.assessmentType = assessmentType;
         this.assessmentGoalDate = assessmentGoalDate;
         this.assessmentGoalAlert = assessmentGoalAlert;
         this.assessmentAlertID = assessmentAlertID;
         this.assessmentNotes = assessmentNotes;
-        this.courseID = courseID;
+        this.assessmentLinkedCourseID = assessmentLinkedCourseID;
     }
 
     @NonNull
@@ -39,7 +40,7 @@ public class AssessmentEntity {
                 ", assessmentGoalAlert=" + assessmentGoalAlert +
                 ", assessmentAlertID=" + assessmentAlertID +
                 ", assessmentNotes='" + assessmentNotes + '\'' +
-                ", courseID=" + courseID +
+                ", assessmentLinkedCourseID=" + assessmentLinkedCourseID +
                 '}';
     }
 
@@ -75,7 +76,7 @@ public class AssessmentEntity {
         return assessmentNotes;
     }
 
-    public int getCourseID() {
-        return courseID;
+    public int getAssessmentLinkedCourseID() {
+        return assessmentLinkedCourseID;
     }
 }

@@ -26,9 +26,6 @@ import java.util.List;
 
 public class TermList extends AppCompatActivity {
     public static final String TAG = "TermList";
-    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
-    public static final int REQUEST_ADD_TERM = 11;
-    public static final int REQUEST_EDIT_TERM = 12;
 
     private TermViewModel termViewModel;
     private ActivityResultLauncher<Intent> activityLauncher;
@@ -43,7 +40,7 @@ public class TermList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TermList.this, TermDetail.class);
-                intent.putExtra(EXTRA_REQUEST_ID, REQUEST_ADD_TERM);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
                 activityLauncher.launch(intent);
             }
         });
@@ -66,7 +63,7 @@ public class TermList extends AppCompatActivity {
             @Override
             public void onItemClick(TermEntity termEntity) {
                 Intent intent = new Intent(TermList.this, TermDetail.class);
-                intent.putExtra(EXTRA_REQUEST_ID, REQUEST_EDIT_TERM);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
                 intent.putExtra(TermDetail.EXTRA_TERM_ID, termEntity.getTermID());
                 intent.putExtra(TermDetail.EXTRA_TERM_TITLE, termEntity.getTermTitle());
                 intent.putExtra(TermDetail.EXTRA_TERM_START_DATE, termEntity.getTermStartDate());
@@ -80,7 +77,7 @@ public class TermList extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
-                        int resultCode = result.getResultCode(); // TODO: strip to separate method
+                        int resultCode = result.getResultCode();
                         Log.d(TAG, "onActivityResult: ");
 
                         if (intent != null) {
@@ -88,7 +85,7 @@ public class TermList extends AppCompatActivity {
                             String termTitle = intent.getStringExtra(TermDetail.EXTRA_TERM_TITLE);
                             String termStartDate = intent.getStringExtra(TermDetail.EXTRA_TERM_START_DATE);
                             String termEndDate = intent.getStringExtra(TermDetail.EXTRA_TERM_END_DATE);
-                            if (result.getResultCode() == RESULT_OK) {
+                            if (resultCode == RESULT_OK) {
                                 if (termID == -1) {
                                     TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
                                     termViewModel.insert(termEntity);
@@ -99,7 +96,7 @@ public class TermList extends AppCompatActivity {
                                     termViewModel.update(termEntity);
                                     Toast.makeText(TermList.this, "Term updated.", Toast.LENGTH_SHORT).show();
                                 }
-                            } else if (result.getResultCode() == TermDetail.RESULT_TERM_DELETE) {
+                            } else if (resultCode == MainActivity.RESULT_DELETE) {
                                 if (termID == -1) {
                                     Toast.makeText(TermList.this, "Term does not exist.", Toast.LENGTH_SHORT).show();
                                 } else {

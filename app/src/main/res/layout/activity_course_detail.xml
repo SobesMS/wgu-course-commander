@@ -20,52 +20,52 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/courseTitle"
+                android:id="@+id/course_title_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/title"
+                android:text="Title:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/courseTitleEdit"
+                android:id="@+id/edit_text_course_title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/courseTitle"
+                android:layout_alignBaseline="@+id/course_title_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/courseTitle"
-                android:hint="@string/enter_a_course_title"
+                android:layout_toEndOf="@+id/course_title_label"
+                android:hint="enter a course title"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/courseStartDate"
+                android:id="@+id/course_start_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/courseTitle"
+                android:layout_below="@+id/course_title_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/start_date"
+                android:text="Start Date:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/courseStartDateEdit"
+                android:id="@+id/text_view_course_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/courseStartDate"
+                android:layout_alignBaseline="@+id/course_start_date_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/courseStartDate"
+                android:layout_toEndOf="@+id/course_start_date_label"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -77,14 +77,14 @@
                 android:textColor="@color/black"/>
 
             <TextView
-                android:id="@+id/courseEndDate"
+                android:id="@+id/course_end_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/courseStartDate"
+                android:layout_below="@+id/course_start_date_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/end_date"
+                android:text="End Date:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -93,10 +93,10 @@
                 android:id="@+id/text_view_course_end_date"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/courseEndDate"
-                android:layout_alignStart="@+id/courseStartDateEdit"
+                android:layout_alignBaseline="@+id/course_end_date_label"
+                android:layout_alignStart="@+id/text_view_course_start_date"
                 android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@id/courseNotifySwitch"
+                android:layout_toStartOf="@id/switch_course_alert"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -108,7 +108,7 @@
                 android:textColor="@color/black"/>
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/courseNotifySwitch"
+                android:id="@+id/switch_course_alert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/text_view_course_end_date"
@@ -121,180 +121,180 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/courseNotifySwitch"
-                android:layout_alignStart="@+id/courseNotifySwitch"
-                android:layout_alignEnd="@id/courseNotifySwitch"
+                android:layout_below="@+id/switch_course_alert"
+                android:layout_alignStart="@+id/switch_course_alert"
+                android:layout_alignEnd="@id/switch_course_alert"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="-20dp"
                 android:layout_marginEnd="0dp"
-                android:text="@string/notify_switch"
+                android:text="NOTIFY"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 
             <TextView
-                android:id="@+id/courseStatusTitle"
+                android:id="@+id/course_status_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/courseEndDate"
+                android:layout_below="@+id/course_end_date_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/status"
+                android:text="Course Status:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/courseStatus"
+                android:id="@+id/spinner_course_status"
                 android:layout_width="200dp"
                 android:layout_height="48dp"
-                android:layout_below="@+id/courseStatusTitle"
+                android:layout_below="@+id/course_status_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
-                android:contentDescription="@string/status" />
+                android:contentDescription="Course Status:" />
 
             <TextView
-                android:id="@+id/linkedTermTitle"
+                android:id="@+id/course_linked_term_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/courseStatusTitle"
-                android:layout_alignStart="@id/linkedTerm"
-                android:text="@string/term_enrolled"
+                android:layout_alignBaseline="@id/course_status_label"
+                android:layout_alignStart="@id/spinner_linked_term"
+                android:text="Term Enrolled:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/linkedTerm"
+                android:id="@+id/spinner_linked_term"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/linkedTermTitle"
-                android:layout_toEndOf="@id/courseStatus"
+                android:layout_below="@id/course_linked_term_label"
+                android:layout_toEndOf="@id/spinner_course_status"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="@string/term_enrolled"/>
+                android:contentDescription="Term Enrolled:"/>
 
             <TextView
-                android:id="@+id/mentorName"
+                android:id="@+id/course_mentors_name_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/courseStatus"
+                android:layout_below="@id/spinner_course_status"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/mentor"
+                android:text="Mentor:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/mentorNameEdit"
+                android:id="@+id/edit_text_course_mentors_name"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/mentorName"
+                android:layout_alignBaseline="@+id/course_mentors_name_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/mentorName"
-                android:hint="@string/enter_mentors_name"
+                android:layout_toEndOf="@+id/course_mentors_name_label"
+                android:hint="enter mentor's name"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/mentorPhone"
+                android:id="@+id/course_mentors_phone_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/mentorName"
+                android:layout_below="@id/course_mentors_name_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/phone"
+                android:text="Phone:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/mentorPhoneEdit"
+                android:id="@+id/edit_text_course_mentors_phone"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/mentorPhone"
+                android:layout_alignBaseline="@+id/course_mentors_phone_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/mentorName"
-                android:hint="@string/enter_mentors_phone_number"
+                android:layout_toEndOf="@+id/course_mentors_name_label"
+                android:hint="enter mentor's phone number"
                 android:importantForAutofill="no"
                 android:inputType="phone"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/mentorEmail"
+                android:id="@+id/course_mentors_email_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/mentorPhone"
+                android:layout_below="@id/course_mentors_phone_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/email"
+                android:text="Email:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/mentorEmailEdit"
+                android:id="@+id/edit_text_course_mentors_email"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/mentorEmail"
+                android:layout_alignBaseline="@+id/course_mentors_email_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/mentorName"
-                android:hint="@string/enter_mentors_email_address"
+                android:layout_toEndOf="@+id/course_mentors_name_label"
+                android:hint="enter mentor's email address"
                 android:importantForAutofill="no"
                 android:inputType="textEmailAddress"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/assessmentListHead"
+                android:id="@+id/assessment_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/mentorEmail"
+                android:layout_below="@id/course_mentors_email_label"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24sp"
                 android:layout_marginBottom="10sp"
-                android:text="@string/assessment_list"
+                android:text="Assessment List"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/courseAddAssessmentButton"
+                android:id="@+id/image_view_course_add_assessment"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_toEndOf="@id/assessmentListHead"
-                android:layout_alignTop="@id/assessmentListHead"
+                android:layout_toEndOf="@id/assessment_list_label"
+                android:layout_alignTop="@id/assessment_list_label"
                 android:layout_marginTop="-13dp"
                 android:padding="10dp"
-                android:contentDescription="@string/add_course"
+                android:contentDescription="Add Assessment"
                 app:tint="@color/black"
                 app:srcCompat="@drawable/ic_add"
                 style="?android:borderlessButtonStyle" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/courseAssessmentList"
+                android:id="@+id/course_assessment_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_below="@id/assessmentListHead"
+                android:layout_below="@id/assessment_list_label"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                tools:listitem="@layout/recyclerview_item_small" />
+                tools:listitem="@layout/assessment_item" />
 
         </RelativeLayout>
 
