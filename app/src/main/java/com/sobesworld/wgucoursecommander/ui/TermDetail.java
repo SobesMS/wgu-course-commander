@@ -51,7 +51,6 @@ public class TermDetail extends AppCompatActivity {
     private TextView textViewTermEndDate;
     private DatePickerDialog.OnDateSetListener startDateSetListener;
     private DatePickerDialog.OnDateSetListener endDateSetListener;
-    private ImageView imageViewTermAddCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,6 @@ public class TermDetail extends AppCompatActivity {
         editTextTermTitle = findViewById(R.id.edit_text_term_title);
         textViewTermStartDate = findViewById(R.id.text_view_term_start_date);
         textViewTermEndDate = findViewById(R.id.text_view_term_end_date);
-        imageViewTermAddCourse = findViewById(R.id.image_view_term_add_course);
 
         Intent passedIntent = getIntent();
         termID = passedIntent.getIntExtra(EXTRA_TERM_ID, -1);
@@ -165,11 +163,13 @@ public class TermDetail extends AppCompatActivity {
             }
         };
 
+        // add course button
+        ImageView imageViewTermAddCourse = findViewById(R.id.image_view_term_add_course);
         imageViewTermAddCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_DETAIL);
                 activityLauncher.launch(intent);
             }
         });
@@ -180,8 +180,6 @@ public class TermDetail extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
                         int resultCode = result.getResultCode();
-                        Log.d(TAG, "onActivityResult: " + resultCode);
-
                         if (intent != null) {
                             int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
                             String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);

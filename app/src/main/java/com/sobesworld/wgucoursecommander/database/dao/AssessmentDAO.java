@@ -24,6 +24,9 @@ public interface AssessmentDAO {
     @Delete
     void delete(AssessmentEntity assessmentEntity);
 
+    @Query("DELETE FROM assessment_table WHERE assessmentID = :i")
+    void deleteUsingAssessmentID(int i);
+
     @Query("DELETE FROM assessment_table WHERE assessmentLinkedCourseID = :i")
     void deleteLinkedAssessments(int i);
 

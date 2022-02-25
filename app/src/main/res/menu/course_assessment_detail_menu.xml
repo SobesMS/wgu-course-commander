@@ -9,6 +9,12 @@
         android:icon="@drawable/ic_sticky_note"/>
 
     <item
+        android:id="@+id/save_course_assessment_detail_menu"
+        android:title="Save"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save" />
+
+    <item
         android:id="@+id/delete_course_assessment_detail_menu"
         android:title="Delete Record"
         app:showAsAction="ifRoom"

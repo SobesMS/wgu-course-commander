@@ -27,6 +27,8 @@ public class AssessmentViewModel extends AndroidViewModel {
 
     public void delete(AssessmentEntity assessmentEntity) { assessmentRepository.delete(assessmentEntity); }
 
+    public void deleteUsingAssessmentID(int i) { assessmentRepository.deleteUsingAssessmentID(i); }
+
     public void deleteLinkedAssessments(int i) { assessmentRepository.deleteLinkedAssessments(i); }
 
     public LiveData<List<AssessmentEntity>> getAllAssessments() { return allAssessments; }

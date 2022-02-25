@@ -17,8 +17,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
-    public static final int REQUEST_ADD = 1;
-    public static final int REQUEST_EDIT = 2;
+    public static final int REQUEST_ADD_FROM_LIST = 1;
+    public static final int REQUEST_ADD_FROM_DETAIL = 2;
+    public static final int REQUEST_EDIT = 3;
     public static final int RESULT_DELETE = 99;
 
     @Override

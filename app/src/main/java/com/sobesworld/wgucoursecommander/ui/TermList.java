@@ -40,7 +40,7 @@ public class TermList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TermList.this, TermDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_LIST);
                 activityLauncher.launch(intent);
             }
         });

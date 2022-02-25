@@ -1,5 +1,9 @@
 package com.sobesworld.wgucoursecommander.ui;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -16,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,13 +28,16 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
+import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
@@ -58,7 +66,9 @@ public class CourseDetail extends AppCompatActivity {
     public static final String EXTRA_COURSE_LINKED_TERM_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_LINKED_TERM_ID";
     private AssessmentAdapter assessmentAdapter;
     private SharedPreferences sharedPreferences;
+    private ActivityResultLauncher<Intent> activityLauncher;
 
+    private int requestID;
     private int courseID;
     private EditText editTextCourseTitle;
     private TextView textViewCourseStartDate;
@@ -68,16 +78,13 @@ public class CourseDetail extends AppCompatActivity {
     private int courseAlertID;
     private DatePickerDialog.OnDateSetListener startDateSetListener;
     private DatePickerDialog.OnDateSetListener endDateSetListener;
-    private Spinner statusSpinner;
     private String courseStatus;
-    private Spinner termSpinner;
+    private Spinner spinnerLinkedTerm;
     private EditText editTextCourseMentorsName;
     private EditText editTextCourseMentorsPhone;
     private EditText editTextCourseMentorsEmail;
     private String courseNotes;
     private int courseLinkedTermID;
-    private final Calendar startCalendar = Calendar.getInstance();
-    private final Calendar endCalendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +97,13 @@ public class CourseDetail extends AppCompatActivity {
         textViewCourseStartDate = findViewById(R.id.text_view_course_start_date);
         textViewCourseEndDate = findViewById(R.id.text_view_course_end_date);
         switchCourseAlert = findViewById(R.id.switch_course_alert);
+        spinnerLinkedTerm = findViewById(R.id.spinner_linked_term);
         editTextCourseMentorsName = findViewById(R.id.edit_text_course_mentors_name);
         editTextCourseMentorsPhone = findViewById(R.id.edit_text_course_mentors_phone);
         editTextCourseMentorsEmail = findViewById(R.id.edit_text_course_mentors_email);
 
         Intent passedIntent = getIntent();
+        requestID = passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1);
         courseID = passedIntent.getIntExtra(EXTRA_COURSE_ID, -1);
 
         RecyclerView recyclerView = findViewById(R.id.course_assessment_list);
@@ -111,8 +120,6 @@ public class CourseDetail extends AppCompatActivity {
             }
         });
 
-        // TODO: new assessment onClickListener
-
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -124,71 +131,66 @@ public class CourseDetail extends AppCompatActivity {
             textViewCourseStartDate.setText(passedIntent.getStringExtra(EXTRA_COURSE_START_DATE));
             textViewCourseEndDate.setText(passedIntent.getStringExtra(EXTRA_COURSE_END_DATE));
             switchCourseAlert.setChecked(passedIntent.getBooleanExtra(EXTRA_COURSE_END_ALERT, false);
-            statusSpinner.setSelection(0);
-            termSpinner.setSelection(0);
             editTextCourseMentorsName.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_NAME));
             editTextCourseMentorsPhone.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_PHONE));
             editTextCourseMentorsEmail.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_EMAIL));
         }
 
-        /* sets values of all fields upon record open
-        editTextCourseTitle.setText(getIntent().getStringExtra(getResources().getString(R.string.title)));
-        textViewCourseStartDate.setText(getIntent().getStringExtra(getResources().getString(R.string.start_date)));
-        textViewCourseEndDate.setText(getIntent().getStringExtra(getResources().getString(R.string.end_date)));
-        courseEndAlert = getIntent().getBooleanExtra(getResources().getString(R.string.end_alert), false);
-        courseAlertID = getIntent().getIntExtra(getResources().getString(R.string.alert_id), -1);
-        courseStatus = getIntent().getStringExtra(getResources().getString(R.string.status));
-        editTextCourseMentorsName.setText(getIntent().getStringExtra(getResources().getString(R.string.mentor)));
-        editTextCourseMentorsPhone.setText(getIntent().getStringExtra(getResources().getString(R.string.phone)));
-        editTextCourseMentorsEmail.setText(getIntent().getStringExtra(getResources().getString(R.string.email)));
-        courseNotes = getIntent().getStringExtra(getResources().getString(R.string.notes));
-        courseLinkedTermID = getIntent().getIntExtra(getResources().getString(R.string.termID), -1);*/
-
-        // sets course start date from user's date picker selection
-        DatePickerDialog.OnDateSetListener startDateDialog = (datePicker, year, month, dayOfMonth) -> {
-            startCalendar.set(Calendar.YEAR, year);
-            startCalendar.set(Calendar.MONTH, month);
-            startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            textViewCourseStartDate.setText(MainActivity.sdf.format(startCalendar.getTime()));
-        };
-
-        // onClickListener for the course start date field
-        textViewCourseStartDate.setOnClickListener(view -> {
-            String info = textViewCourseStartDate.getText().toString();
-            if (!info.equals("")) {
-                try {
-                    startCalendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(info)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        // sets course start date
+        textViewCourseStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                String date = textViewCourseStartDate.getText().toString();
+                if (!date.trim().isEmpty()) {
+                    try {
+                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
+                new DatePickerDialog(CourseDetail.this, startDateSetListener, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
-            new DatePickerDialog(CourseDetail.this, startDateDialog, startCalendar.get(Calendar.YEAR),
-                    startCalendar.get(Calendar.MONTH), startCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        // sets course end date from user's date picker selection
-        DatePickerDialog.OnDateSetListener endDateDialog = (datePicker, year, month, dayOfMonth) -> {
-            endCalendar.set(Calendar.YEAR, year);
-            endCalendar.set(Calendar.MONTH, month);
-            endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            textViewCourseEndDate.setText(MainActivity.sdf.format(endCalendar.getTime()));
+        startDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                textViewCourseStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            }
         };
 
-        // onClickListener for the course end date field
-        textViewCourseEndDate.setOnClickListener(view -> {
-            String info = textViewCourseEndDate.getText().toString();
-            if (!info.equals("")) {
-                try {
-                    endCalendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(info)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        // sets course end date
+        textViewCourseEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                String date = textViewCourseEndDate.getText().toString();
+                if (!date.trim().isEmpty()) {
+                    try {
+                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
+                new DatePickerDialog(CourseDetail.this, endDateSetListener, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
-            new DatePickerDialog(CourseDetail.this, endDateDialog, endCalendar.get(Calendar.YEAR),
-                    endCalendar.get(Calendar.MONTH), endCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        // notify switch toggle functionality
+        endDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                textViewCourseEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            }
+        };
+
+        // alert switch toggle functionality
         switchCourseAlert.setChecked(courseEndAlert);
         switchCourseAlert.setOnCheckedChangeListener((compoundButton, b) -> {
             if (textViewCourseEndDate.getText().toString().equals("")) {
@@ -200,7 +202,7 @@ public class CourseDetail extends AppCompatActivity {
         });
 
         // set status spinner data
-        statusSpinner = findViewById(R.id.courseStatus);
+        Spinner spinnerCourseStatus = findViewById(R.id.spinner_course_status);
         List<String> statusOptions = new ArrayList<>();
         statusOptions.add("in progress");
         statusOptions.add("plan to take");
@@ -208,14 +210,14 @@ public class CourseDetail extends AppCompatActivity {
         statusOptions.add("dropped");
         ArrayAdapter<String> statusSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statusOptions);
         statusSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        statusSpinner.setAdapter(statusSpinnerAdapter);
-        statusSpinner.setSelection(0);
+        spinnerCourseStatus.setAdapter(statusSpinnerAdapter);
+        spinnerCourseStatus.setSelection(0);
         for (int i = 0; i < statusSpinnerAdapter.getCount(); i++) {
             if (statusSpinnerAdapter.getItem(i).equals(courseStatus)) {
-                statusSpinner.setSelection(i);
+                spinnerCourseStatus.setSelection(i);
             }
         }
-        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerCourseStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 courseStatus = (String) adapterView.getSelectedItem();
@@ -227,18 +229,25 @@ public class CourseDetail extends AppCompatActivity {
         });
 
         // set term spinner data
-        termSpinner = findViewById(R.id.linkedTerm);
-        ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
-                repo.getAllTerms());
-        termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        termSpinner.setAdapter(termSpinnerAdapter);
-        termSpinner.setSelection(0);
-        for (int i = 0; i < termSpinnerAdapter.getCount(); i++) {
-            if (termSpinnerAdapter.getItem(i).getTermID() == courseLinkedTermID) {
-                termSpinner.setSelection(i);
+        spinnerLinkedTerm = findViewById(R.id.spinner_linked_term);
+        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+        termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
+            @Override
+            public void onChanged(List<TermEntity> termEntities) {
+                ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<TermEntity>(CourseDetail.this,
+                        android.R.layout.simple_spinner_item, termEntities);
+                termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerLinkedTerm.setAdapter(termSpinnerAdapter);
+                spinnerLinkedTerm.setSelection(0);
+                for (int i = 0; i < termSpinnerAdapter.getCount(); i++) {
+                    if (termSpinnerAdapter.getItem(i).getTermID() == courseLinkedTermID) {
+                        spinnerLinkedTerm.setSelection(i);
+                    }
+                }
             }
-        }
-        termSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        });
+
+        spinnerLinkedTerm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 TermEntity term = (TermEntity) adapterView.getSelectedItem();
@@ -250,24 +259,57 @@ public class CourseDetail extends AppCompatActivity {
             }
         });
 
-        // save button functionality
-        Button saveButton = findViewById(R.id.courseSaveButton);
-        saveButton.setOnClickListener(view -> {
-            saveCourse();
-            Intent intent = new Intent(CourseDetail.this, CourseList.class);
-            startActivity(intent);
-        });
-
-        // delete button functionality
-        Button deleteButton = findViewById(R.id.courseDeleteButton);
-        deleteButton.setOnClickListener( view -> {
-            if (recordStatusNew) {
-                Toast.makeText(getApplicationContext(), "New course entry. No saved record to delete.", Toast.LENGTH_LONG).show();
-            } else {
-                Intent intent = new Intent(CourseDetail.this, CourseList.class);
-                deleteCourse(intent);
+        // add assessment button
+        ImageView imageViewCourseAddAssessment = findViewById(R.id.image_view_course_add_assessment);
+        imageViewCourseAddAssessment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_DETAIL);
+                activityLauncher.launch(intent);
             }
         });
+
+        activityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Intent intent = result.getData();
+                        int resultCode = result.getResultCode();
+                        if (intent != null) {
+                            int assessmentID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, -1);
+                            String assessmentTitle = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE);
+                            String assessmentType = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE);
+                            String assessmentGoalDate = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE);
+                            boolean assessmentGoalAlert = intent.getBooleanExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, false);
+                            int assessmentAlertID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, -1);
+                            String assessmentNotes = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES);
+                            int assessmentLinkedCourseID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1);
+                            if (resultCode == RESULT_OK) {
+                                if (assessmentID == -1) {
+                                    AssessmentEntity assessmentEntity = new AssessmentEntity(assessmentTitle, assessmentType, assessmentGoalDate,
+                                            assessmentGoalAlert, assessmentAlertID, assessmentNotes, assessmentLinkedCourseID);
+                                    assessmentViewModel.insert(assessmentEntity);
+                                    Toast.makeText(CourseDetail.this, "Assessment added.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    AssessmentEntity assessmentEntity = new AssessmentEntity(assessmentTitle, assessmentType, assessmentGoalDate,
+                                            assessmentGoalAlert, assessmentAlertID, assessmentNotes, assessmentLinkedCourseID);
+                                    assessmentEntity.setAssessmentID(assessmentID);
+                                    assessmentViewModel.update(assessmentEntity);
+                                    Toast.makeText(CourseDetail.this, "Assessment updated.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (resultCode == MainActivity.RESULT_DELETE) {
+                                if (assessmentID == -1) {
+                                    Toast.makeText(CourseDetail.this, "Assessment does not exist.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    assessmentViewModel.deleteUsingAssessmentID(assessmentID);
+                                    Toast.makeText(getApplicationContext(), "Assessment permanently deleted.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -277,15 +319,25 @@ public class CourseDetail extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(CourseDetail.this, CourseList.class);
-            applyUnsavedChanges(intent);
-        }
-        if (item.getItemId() == R.id.home_term_detail_menu) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent;
+            if (requestID == MainActivity.REQUEST_ADD_FROM_LIST) {
+                intent = new Intent(CourseDetail.this, CourseList.class);
+            } else if (requestID == MainActivity.REQUEST_ADD_FROM_DETAIL) {
+                intent = new Intent(CourseDetail.this, TermDetail.class);
+            } else {
+                intent = new Intent(CourseDetail.this, MainActivity.class);
+                Toast.makeText(this, "Can't determine previous page. Returning to home.", Toast.LENGTH_SHORT).show();
+            }
             applyUnsavedChanges(intent);
         }
         if (item.getItemId() == R.id.note_course_assessment_detail_menu) {
             showNoteDialog();
+        }
+        if (item.getItemId() == R.id.save_course_assessment_detail_menu) {
+            saveCourse();
+        }
+        if (item.getItemId() == R.id.delete_course_assessment_detail_menu) {
+            deleteCourse();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -417,14 +469,4 @@ public class CourseDetail extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-    private void fillRecyclerView() {
-        AssessmentAdapter adapter = new AssessmentAdapter(this);
-        RecyclerView recyclerView = findViewById(R.id.courseAssessmentList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        if (!recordStatusNew) {
-            adapter.setAssessments(repo.getLinkedAssessments(courseID));
-        }
-    }*/
 }
