@@ -10,24 +10,30 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public class CourseList extends AppCompatActivity {
     public static final String TAG = "CourseList";
 
     private CourseViewModel courseViewModel;
+    private AssessmentViewModel assessmentViewModel;
     private ActivityResultLauncher<Intent> activityLauncher;
 
     @Override
@@ -40,7 +46,7 @@ public class CourseList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CourseList.this, CourseDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_LIST);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
                 activityLauncher.launch(intent);
             }
         });
@@ -51,6 +57,7 @@ public class CourseList extends AppCompatActivity {
         CourseAdapter adapter = new CourseAdapter();
         recyclerView.setAdapter(adapter);
 
+        assessmentViewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
         courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
             @Override
@@ -86,8 +93,6 @@ public class CourseList extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
                         int resultCode = result.getResultCode();
-                        Log.d(TAG, "onActivityResult: " + resultCode);
-
                         if (intent != null) {
                             int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
                             String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
@@ -102,16 +107,13 @@ public class CourseList extends AppCompatActivity {
                             String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
                             int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
                             if (resultCode == RESULT_OK) {
+                                CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
+                                        courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                                        courseMentorsEmail, courseNotes, courseLinkedTermID);
                                 if (courseID == -1) {
-                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
-                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
                                     courseViewModel.insert(courseEntity);
                                     Toast.makeText(CourseList.this, "Course added.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
-                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
                                     courseEntity.setCourseID(courseID);
                                     courseViewModel.update(courseEntity);
                                     Toast.makeText(CourseList.this, "Course updated.", Toast.LENGTH_SHORT).show();
@@ -121,6 +123,7 @@ public class CourseList extends AppCompatActivity {
                                     Toast.makeText(CourseList.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     courseViewModel.deleteUsingCourseID(courseID);
+                                    assessmentViewModel.deleteLinkedAssessments(courseID);
                                     Toast.makeText(getApplicationContext(), "Course permanently deleted.",
                                             Toast.LENGTH_SHORT).show();
                                 }

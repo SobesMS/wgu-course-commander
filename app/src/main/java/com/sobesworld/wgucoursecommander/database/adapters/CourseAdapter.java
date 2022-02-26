@@ -14,7 +14,7 @@ import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.CourseHolder> {
-    private CourseAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public CourseAdapter() {
         super(DIFF_CALLBACK);
@@ -55,20 +55,16 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
         holder.textViewCourseTitle.setText(current.getCourseTitle());
         String dates = current.getCourseStartDate() + " to " + current.getCourseEndDate();
         holder.textViewCourseDates.setText(dates);
-        String status = "Status: " + current.getCourseStatus();
-        holder.textViewCourseStatus.setText(status);
     }
 
     class CourseHolder extends RecyclerView.ViewHolder {
         private final TextView textViewCourseTitle;
         private final TextView textViewCourseDates;
-        private final TextView textViewCourseStatus;
 
         private CourseHolder(@NonNull View itemView) {
             super(itemView);
             textViewCourseTitle = itemView.findViewById(R.id.text_view_course_title);
             textViewCourseDates = itemView.findViewById(R.id.text_view_course_dates);
-            textViewCourseStatus = itemView.findViewById(R.id.text_view_course_status);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,7 +81,7 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
         void onItemClick(CourseEntity courseEntity);
     }
 
-    public void setOnItemClickListener(CourseAdapter.OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 }

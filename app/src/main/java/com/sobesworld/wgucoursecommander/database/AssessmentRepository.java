@@ -36,7 +36,9 @@ public class AssessmentRepository {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> assessmentDAO.deleteUsingAssessmentID(i));
     }
 
-    public void deleteLinkedAssessments(int i) { assessmentDAO.deleteLinkedAssessments(i); }
+    public void deleteLinkedAssessments(int i) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> assessmentDAO.deleteLinkedAssessments(i));
+    }
 
     public LiveData<List<AssessmentEntity>> getAllAssessments() { return allAssessments; }
 

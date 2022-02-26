@@ -53,10 +53,10 @@ public abstract class CourseCommDatabase extends RoomDatabase {
                         -1, "in progress","John Doe", "216-555-5555",
                         "john.doe@wgu.edu","These are course notes",1));
                 courseDAO.insert(new CourseEntity("C456", "01/01/22", "06/30/22", false,
-                        -1, "in progress","John Doe", "216-555-5555",
+                        -1, "completed","John Doe", "216-555-5555",
                         "john.doe@wgu.edu","These are course notes",2));
                 courseDAO.insert(new CourseEntity("C789", "01/01/22", "06/30/22", false,
-                        -1, "in progress","John Doe", "216-555-5555",
+                        -1, "plan to take","John Doe", "216-555-5555",
                         "john.doe@wgu.edu","These are course notes",3));
                 assessmentDAO.insert(new AssessmentEntity("Bake a cake","objective", "06/30/22",
                         false, -1, "These are assessment notes.",1));

@@ -13,7 +13,7 @@
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_assessment_list.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_assessments_list.xml" value="0.32916666666666666" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_add_edit.xml" value="0.2391304347826087" />
-        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail.xml" value="0.5" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail.xml" value="0.40324763193504737" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail_test.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_list.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_courses_list.xml" value="0.32916666666666666" />
@@ -32,7 +32,7 @@
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/dialog_course_note.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/dialog_mentor_info.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/fragment_add_term.xml" value="0.19610507246376813" />
-        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/note_dialog.xml" value="0.33" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/note_dialog.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/recyclerview_item.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/recyclerview_item_small.xml" value="0.2672239108409321" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/term_item.xml" value="0.5" />

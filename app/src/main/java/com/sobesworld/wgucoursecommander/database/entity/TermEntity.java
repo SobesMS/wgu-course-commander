@@ -21,12 +21,7 @@ public class TermEntity {
 
     @Override
     public String toString() {
-        return "TermEntity{" +
-                "termID=" + termID +
-                ", termTitle='" + termTitle + '\'' +
-                ", termStartDate='" + termStartDate + '\'' +
-                ", termEndDate='" + termEndDate + '\'' +
-                '}';
+        return termTitle;
     }
 
     public void setTermID(int termID) {

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -40,7 +39,7 @@ public class TermList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TermList.this, TermDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_LIST);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
                 activityLauncher.launch(intent);
             }
         });
@@ -78,20 +77,17 @@ public class TermList extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         Intent intent = result.getData();
                         int resultCode = result.getResultCode();
-                        Log.d(TAG, "onActivityResult: ");
-
                         if (intent != null) {
                             int termID = intent.getIntExtra(TermDetail.EXTRA_TERM_ID, -1);
                             String termTitle = intent.getStringExtra(TermDetail.EXTRA_TERM_TITLE);
                             String termStartDate = intent.getStringExtra(TermDetail.EXTRA_TERM_START_DATE);
                             String termEndDate = intent.getStringExtra(TermDetail.EXTRA_TERM_END_DATE);
                             if (resultCode == RESULT_OK) {
+                                TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
                                 if (termID == -1) {
-                                    TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
                                     termViewModel.insert(termEntity);
                                     Toast.makeText(TermList.this, "Term added.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    TermEntity termEntity = new TermEntity(termTitle, termStartDate, termEndDate);
                                     termEntity.setTermID(termID);
                                     termViewModel.update(termEntity);
                                     Toast.makeText(TermList.this, "Term updated.", Toast.LENGTH_SHORT).show();

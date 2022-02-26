@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,13 +43,13 @@ public class TermDetail extends AppCompatActivity {
     private CourseAdapter courseAdapter;
     private CourseViewModel courseViewModel;
     private ActivityResultLauncher<Intent> activityLauncher;
+    private DatePickerDialog.OnDateSetListener startDateSetListener;
+    private DatePickerDialog.OnDateSetListener endDateSetListener;
 
     private int termID;
     private EditText editTextTermTitle;
     private TextView textViewTermStartDate;
     private TextView textViewTermEndDate;
-    private DatePickerDialog.OnDateSetListener startDateSetListener;
-    private DatePickerDialog.OnDateSetListener endDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +65,8 @@ public class TermDetail extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.term_course_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         courseAdapter = new CourseAdapter();
         recyclerView.setAdapter(courseAdapter);
-
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
         courseViewModel.getLinkedCourses(termID).observe(this, new Observer<List<CourseEntity>>() {
             @Override
@@ -102,7 +99,7 @@ public class TermDetail extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == 1) {
+        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD) {
             setTitle("Add Term");
         } else {
             setTitle("Edit Term");
@@ -169,7 +166,8 @@ public class TermDetail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD_FROM_DETAIL);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+                intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, termID);
                 activityLauncher.launch(intent);
             }
         });
@@ -194,16 +192,13 @@ public class TermDetail extends AppCompatActivity {
                             String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
                             int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
                             if (resultCode == RESULT_OK) {
+                                CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
+                                        courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                                        courseMentorsEmail, courseNotes, courseLinkedTermID);
                                 if (courseID == -1) {
-                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
-                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
                                     courseViewModel.insert(courseEntity);
                                     Toast.makeText(TermDetail.this, "Course added.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                            courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
-                                            courseMentorsEmail, courseNotes, courseLinkedTermID);
                                     courseEntity.setCourseID(courseID);
                                     courseViewModel.update(courseEntity);
                                     Toast.makeText(TermDetail.this, "Course updated.", Toast.LENGTH_SHORT).show();
@@ -246,8 +241,8 @@ public class TermDetail extends AppCompatActivity {
         String termStartDate = textViewTermStartDate.getText().toString();
         String termEndDate = textViewTermEndDate.getText().toString();
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == 11 && termTitle.trim().isEmpty()
-                && termStartDate.trim().isEmpty() && termEndDate.trim().isEmpty()) {
+        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD
+                && termTitle.trim().isEmpty() && termStartDate.trim().isEmpty() && termEndDate.trim().isEmpty()) {
             setResult(RESULT_CANCELED);
             finish();
         } else if (termTitle.equals(getIntent().getStringExtra(EXTRA_TERM_TITLE)) &&
@@ -315,8 +310,6 @@ public class TermDetail extends AppCompatActivity {
                         .setMessage("Select CONFIRM to delete the term.\nSelect ABORT to cancel.\n\n(records are not recoverable)")
                         .setCancelable(false);
                 builder.setNegativeButton("ABORT", (dialogInterface, i) -> {
-                    setResult(RESULT_CANCELED);
-                    finish();
                 });
                 builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
                     Intent intent = new Intent();
