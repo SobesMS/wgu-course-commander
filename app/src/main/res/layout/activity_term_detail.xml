@@ -9,11 +9,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/termsLinearBtns"
-        android:layout_marginBottom="12dp"
         android:scrollbars="vertical"
         android:fadeScrollbars="true" >
 
@@ -22,175 +20,134 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/termTitle"
+                android:id="@+id/term_title_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/title"
+                android:text="Title:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/termTitleEdit"
+                android:id="@+id/edit_text_term_title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/termTitle"
+                android:layout_alignBaseline="@+id/term_title_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/termTitle"
-                android:hint="@string/enter_a_term_title"
+                android:layout_toEndOf="@+id/term_title_label"
+                android:hint="enter a term title (req)"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/termStartDate"
+                android:id="@+id/term_start_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/termTitle"
+                android:layout_below="@+id/term_title_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/start_date"
+                android:text="Start Date:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/termStartDateEdit"
+            <TextView
+                android:id="@+id/text_view_term_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/termStartDate"
+                android:layout_alignBaseline="@+id/term_start_date_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/termStartDate"
+                android:layout_toEndOf="@+id/term_start_date_label"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/select_a_start_date"
+                android:hint="select a start date (req)"
                 android:importantForAutofill="no"
-                android:inputType="date"
                 android:longClickable="false"
                 android:textColorHint="#757575"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:textColor="@color/black"/>
 
             <TextView
-                android:id="@+id/termEndDate"
+                android:id="@+id/term_end_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/termStartDate"
+                android:layout_below="@+id/term_start_date_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/end_date"
+                android:text="End Date:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/termEndDateEdit"
+            <TextView
+                android:id="@+id/text_view_term_end_date"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/termEndDate"
-                android:layout_alignStart="@+id/termStartDateEdit"
+                android:layout_alignBaseline="@+id/term_end_date_label"
+                android:layout_alignStart="@+id/text_view_term_start_date"
                 android:layout_marginEnd="16dp"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/select_an_end_date"
+                android:hint="select an end date (req)"
                 android:importantForAutofill="no"
-                android:inputType="date"
                 android:longClickable="false"
                 android:textColorHint="#757575"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:textColor="@color/black"/>
 
             <TextView
-                android:id="@+id/courseListHead"
+                android:id="@+id/course_list_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/termEndDate"
+                android:layout_below="@id/term_end_date_label"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24sp"
                 android:layout_marginBottom="10dp"
-                android:text="@string/course_list"
+                android:text="Course List"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/termAddCourseButton"
+                android:id="@+id/image_view_term_add_course"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_toEndOf="@id/courseListHead"
-                android:layout_alignTop="@id/courseListHead"
+                android:layout_toEndOf="@id/course_list_label"
+                android:layout_alignTop="@id/course_list_label"
                 android:layout_marginTop="-13dp"
                 android:padding="10dp"
-                android:contentDescription="@string/add_course"
+                android:contentDescription="Add Course"
                 app:tint="@color/black"
-                app:srcCompat="@drawable/ic_baseline_add_24"
+                app:srcCompat="@drawable/ic_add"
                 style="?android:borderlessButtonStyle" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/termCourseList"
+                android:id="@+id/term_course_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_below="@id/courseListHead"
+                android:layout_below="@id/course_list_label"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                tools:listitem="@layout/recyclerview_item_small" />
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                tools:listitem="@layout/course_item" />
 
         </RelativeLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/termsLinearBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/termSaveButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
-            android:backgroundTint="@color/green"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:text="@string/save_record"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/termDeleteButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:backgroundTint="@color/red"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:text="@string/delete_record"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            style="?android:attr/buttonBarButtonStyle" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

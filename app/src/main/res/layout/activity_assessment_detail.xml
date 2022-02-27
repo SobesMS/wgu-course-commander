@@ -9,11 +9,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/assessmentLinearBtns"
-        android:layout_marginBottom="12dp"
         android:scrollbars="vertical"
         android:fadeScrollbars="true" >
 
@@ -22,68 +20,67 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/assessmentTitle"
+                android:id="@+id/assessment_title_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/title"
+                android:text="Title:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/assessmentTitleEdit"
+                android:id="@+id/edit_text_assessment_title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/assessmentTitle"
+                android:layout_alignBaseline="@+id/assessment_title_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@+id/assessmentTitle"
-                android:hint="@string/enter_an_assessment_title"
+                android:layout_toEndOf="@+id/assessment_title_label"
+                android:hint="enter an assessment title (req)"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/assessmentGoalDate"
+                android:id="@+id/assessment_goal_date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/assessmentTitle"
+                android:layout_below="@+id/assessment_title_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/completion_goal_date"
+                android:text="Completion Goal:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/assessmentGoalDateEdit"
+            <TextView
+                android:id="@+id/text_view_assessment_goal_date_detail"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_alignBaseline="@+id/assessmentGoalDate"
-                android:layout_toEndOf="@+id/assessmentGoalDate"
+                android:layout_alignBaseline="@+id/assessment_goal_date_label"
+                android:layout_toEndOf="@+id/assessment_goal_date_label"
                 android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@id/assessmentNotifySwitch"
+                android:layout_toStartOf="@id/switch_assessment_alert"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/select_a_completion_goal_date"
+                android:hint="set goal date (req)"
                 android:importantForAutofill="no"
-                android:inputType="date"
                 android:longClickable="false"
                 android:textColorHint="#757575"
                 android:textSize="17sp" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/assessmentNotifySwitch"
+                android:id="@+id/switch_assessment_alert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/assessmentGoalDateEdit"
+                android:layout_alignTop="@id/text_view_assessment_goal_date_detail"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp"
                 android:gravity="end"
@@ -93,108 +90,66 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/assessmentNotifySwitch"
-                android:layout_alignStart="@+id/assessmentNotifySwitch"
-                android:layout_alignEnd="@id/assessmentNotifySwitch"
+                android:layout_below="@+id/switch_assessment_alert"
+                android:layout_alignStart="@+id/switch_assessment_alert"
+                android:layout_alignEnd="@id/switch_assessment_alert"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="-20dp"
                 android:layout_marginEnd="0dp"
-                android:text="@string/notify_switch"
+                android:text="Goal Date Alert"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 
             <TextView
-                android:id="@+id/assessmentTypeTitle"
+                android:id="@+id/assessment_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/assessmentGoalDate"
+                android:layout_below="@+id/assessment_goal_date_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="26dp"
-                android:text="@string/assessment_type"
+                android:text="Assessment Type:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/assessmentType"
+                android:id="@+id/spinner_assessment_type"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@+id/assessmentTypeTitle"
+                android:layout_below="@+id/assessment_type_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="@string/assessment_type" />
+                android:contentDescription="Assessment Type" />
 
             <TextView
-                android:id="@+id/linkedCourseTitle"
+                android:id="@+id/assessment_linked_course_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/assessmentType"
+                android:layout_below="@id/spinner_assessment_type"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
-                android:text="@string/course"
+                android:text="Course:"
                 android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/linkedCourse"
+                android:id="@+id/spinner_assessment_linked_course"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/linkedCourseTitle"
+                android:layout_below="@id/assessment_linked_course_label"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="@string/course"/>
+                android:contentDescription="Course:"/>
 
         </RelativeLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/assessmentLinearBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/assessmentSaveButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
-            android:backgroundTint="@color/green"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:text="@string/save_record"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:id="@+id/assessmentDeleteButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:backgroundTint="@color/red"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:text="@string/delete_record"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            style="?android:attr/buttonBarButtonStyle" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

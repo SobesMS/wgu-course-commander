@@ -4,6 +4,8 @@
     <string name="terms">Terms</string>
     <string name="courses">Courses</string>
     <string name="assessments">Assessments</string>
+    <string name="uniqueID">uniqueID</string>
+
     <string name="add_term">Add Term</string>
     <string name="add_course">Add Course</string>
     <string name="add_assessment">Add Assessment</string>
@@ -65,5 +67,5 @@
     <string name="completion_goal_date">Completion Goal:</string>
     <string name="select_a_completion_goal_date">select a date</string>
     <string name="cancel">CANCEL</string>
-    <string name="uniqueID">uniqueID</string>
+
 </resources>

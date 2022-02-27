@@ -9,19 +9,23 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.sobesworld.wgucoursecommander.R;
-import com.sobesworld.wgucoursecommander.database.Repository;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
+    public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
+    public static final int REQUEST_ADD = 1;
+    public static final int REQUEST_EDIT = 2;
+    public static final int RESULT_DELETE = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-        Repository repo = new Repository(getApplication());
-
-        // uncomment method on next line to pre-populate an empty database
-        repo.generateData();
     }
 
     public void goToTermList(View view) {
@@ -41,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void createNotificationChannel() {
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CourseCommReceiver.channelID, CourseCommReceiver.channelName,
+        NotificationChannel channel = new NotificationChannel(CourseCommReceiver.CHANNEL_ID, CourseCommReceiver.CHANNEL_NAME,
                 importance);
-        channel.setDescription(CourseCommReceiver.channelDescription);
+        channel.setDescription(CourseCommReceiver.CHANNEL_DESCRIPTION);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
     }

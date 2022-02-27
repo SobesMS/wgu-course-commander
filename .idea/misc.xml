@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.3453125" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.3416666666666667" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout-land/activity_main.xml" value="0.25793650793650796" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_add_assessment.xml" value="0.19610507246376813" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_add_course.xml" value="0.19610507246376813" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_add_term.xml" value="0.19610507246376813" />
@@ -13,7 +14,7 @@
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_assessment_list.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_assessments_list.xml" value="0.32916666666666666" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_add_edit.xml" value="0.2391304347826087" />
-        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail.xml" value="0.33" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail.xml" value="0.3790523690773067" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_detail_test.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_course_list.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_courses_list.xml" value="0.32916666666666666" />
@@ -23,22 +24,27 @@
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_term_detail_new.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_term_list.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/activity_terms_list.xml" value="0.32916666666666666" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/assessment_item.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/assessment_list_item.xml" value="0.2672239108409321" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/assessment_recyclerview_item.xml" value="0.3496376811594203" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/course_item.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/course_list_item.xml" value="0.2672239108409321" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/course_recyclerview_item.xml" value="0.3496376811594203" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/dialog_course_note.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/dialog_mentor_info.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/fragment_add_term.xml" value="0.19610507246376813" />
-        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/note_dialog.xml" value="0.33" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/note_dialog.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/recyclerview_item.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/recyclerview_item_small.xml" value="0.2672239108409321" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/term_item.xml" value="0.5" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/term_list_item.xml" value="0.2672239108409321" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/term_list_view.xml" value="0.2672239108409321" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/layout/term_recyclerview_item.xml" value="0.3496376811594203" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/assessment_detail_menu.xml" value="0.4888888888888889" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/course_assessment_detail_menu.xml" value="0.3109375" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/course_detail_menu.xml" value="0.4888888888888889" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/detail_menu.xml" value="0.3125" />
+        <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/list_menu.xml" value="0.3109375" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/list_refresh_menu.xml" value="0.3" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/refresh_menu.xml" value="0.33" />
         <entry key="..\:/Users/sobes/OneDrive/Documents/AndroidStudioProjects/WGUCourseCommander/app/src/main/res/menu/term_detail_menu.xml" value="0.4888888888888889" />
