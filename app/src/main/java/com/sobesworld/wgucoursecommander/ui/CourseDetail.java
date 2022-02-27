@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +39,9 @@ import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
+import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
+import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.text.ParseException;
@@ -75,7 +76,7 @@ public class CourseDetail extends AppCompatActivity {
     private EditText editTextCourseTitle;
     private TextView textViewCourseStartDate;
     private TextView textViewCourseEndDate;
-    private Boolean courseEndAlert;
+    private boolean courseEndAlert;
     private int courseAlertID;
     private String courseStatus;
     private EditText editTextCourseMentorsName;
@@ -113,6 +114,23 @@ public class CourseDetail extends AppCompatActivity {
             }
         });
 
+        assessmentAdapter.setOnItemClickListener(new AssessmentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(AssessmentEntity assessmentEntity) {
+                Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
+                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, assessmentEntity.getAssessmentID());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE, assessmentEntity.getAssessmentTitle());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE, assessmentEntity.getAssessmentType());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE, assessmentEntity.getAssessmentGoalDate());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, assessmentEntity.isAssessmentGoalAlert());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, assessmentEntity.getAssessmentAlertID());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES, assessmentEntity.getAssessmentNotes());
+                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, assessmentEntity.getAssessmentLinkedCourseID());
+                activityLauncher.launch(intent);
+            }
+        });
+
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -130,7 +148,6 @@ public class CourseDetail extends AppCompatActivity {
             editTextCourseMentorsPhone.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_PHONE));
             editTextCourseMentorsEmail.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_EMAIL));
             courseNotes = passedIntent.getStringExtra(EXTRA_COURSE_NOTES);
-            courseLinkedTermID = passedIntent.getIntExtra(EXTRA_COURSE_LINKED_TERM_ID, -1);
         }
 
         // sets course start date
@@ -189,14 +206,10 @@ public class CourseDetail extends AppCompatActivity {
 
         // alert switch toggle functionality
         SwitchCompat switchCourseAlert = findViewById(R.id.switch_course_alert);
-        if (courseEndAlert == null) {
-            switchCourseAlert.setChecked(false);
-        } else {
-            switchCourseAlert.setChecked(courseEndAlert);
-        }
+        switchCourseAlert.setChecked(courseEndAlert);
         switchCourseAlert.setOnCheckedChangeListener((compoundButton, b) -> {
             if (textViewCourseEndDate.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(), "You must set an end date before turning on notify.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You must set an end date before turning on alert.", Toast.LENGTH_LONG).show();
                 switchCourseAlert.setChecked(courseEndAlert);
             } else {
                 courseEndAlert = b;
@@ -364,6 +377,7 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
+    // TODO: figure out why course alerts are delayed by a day
     private void createAlert() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (!sharedPreferences.contains(getResources().getString(R.string.uniqueID))) {

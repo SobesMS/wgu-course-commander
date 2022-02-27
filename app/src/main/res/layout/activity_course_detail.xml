@@ -286,6 +286,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:layout_below="@id/assessment_list_label"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"

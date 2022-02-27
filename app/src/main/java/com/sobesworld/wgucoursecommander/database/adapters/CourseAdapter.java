@@ -23,17 +23,17 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
     private static final DiffUtil.ItemCallback<CourseEntity> DIFF_CALLBACK = new DiffUtil.ItemCallback<CourseEntity>() {
         @Override
         public boolean areItemsTheSame(@NonNull CourseEntity oldItem, @NonNull CourseEntity newItem) {
-            return oldItem.getCourseID() == newItem.getCourseID();
+            return newItem.getCourseID() == oldItem.getCourseID();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull CourseEntity oldItem, @NonNull CourseEntity newItem) {
-            return oldItem.getCourseTitle().equals(newItem.getCourseTitle()) && oldItem.getCourseStartDate().equals(newItem.getCourseStartDate())
-                    && oldItem.getCourseEndDate().equals(newItem.getCourseEndDate()) && oldItem.isCourseEndAlert() == newItem.isCourseEndAlert()
-                    && oldItem.getCourseAlertID() == newItem.getCourseAlertID() && oldItem.getCourseMentorsName().equals(newItem.getCourseMentorsName())
-                    && oldItem.getCourseMentorsPhone().equals(newItem.getCourseMentorsPhone())
-                    && oldItem.getCourseMentorsEmail().equals(newItem.getCourseMentorsEmail())
-                    && oldItem.getCourseNotes().equals(newItem.getCourseNotes()) && oldItem.getCourseLinkedTermID() == newItem.getCourseLinkedTermID();
+            return newItem.getCourseTitle().equalsIgnoreCase(oldItem.getCourseTitle()) && newItem.getCourseStartDate().equals(oldItem.getCourseStartDate())
+                    && newItem.getCourseEndDate().equals(oldItem.getCourseEndDate()) && newItem.isCourseEndAlert() == oldItem.isCourseEndAlert()
+                    && newItem.getCourseAlertID() == oldItem.getCourseAlertID() && newItem.getCourseMentorsName().equalsIgnoreCase(oldItem.getCourseMentorsName())
+                    && newItem.getCourseMentorsPhone().equalsIgnoreCase(oldItem.getCourseMentorsPhone())
+                    && newItem.getCourseMentorsEmail().equalsIgnoreCase(oldItem.getCourseMentorsEmail())
+                    && newItem.getCourseNotes().equalsIgnoreCase(oldItem.getCourseNotes()) && newItem.getCourseLinkedTermID() == oldItem.getCourseLinkedTermID();
         }
     };
 

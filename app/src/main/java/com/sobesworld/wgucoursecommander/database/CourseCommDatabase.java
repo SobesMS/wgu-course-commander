@@ -46,23 +46,23 @@ public abstract class CourseCommDatabase extends RoomDatabase {
             CourseDAO courseDAO = instance.courseDAO();
             AssessmentDAO assessmentDAO = instance.assessmentDAO();
             databaseWriteExecutor.execute(() -> {
-                termDAO.insert(new TermEntity("Term 1", "01/01/22","06/30/22"));
-                termDAO.insert(new TermEntity("Term 2", "01/01/22","06/30/22"));
-                termDAO.insert(new TermEntity("Term 3", "01/01/22","06/30/22"));
-                courseDAO.insert(new CourseEntity("C123", "01/01/22", "06/30/22", false,
-                        -1, "in progress","John Doe", "216-555-5555",
-                        "john.doe@wgu.edu","These are course notes",1));
-                courseDAO.insert(new CourseEntity("C456", "01/01/22", "06/30/22", false,
-                        -1, "completed","John Doe", "216-555-5555",
-                        "john.doe@wgu.edu","These are course notes",2));
-                courseDAO.insert(new CourseEntity("C789", "01/01/22", "06/30/22", false,
-                        -1, "plan to take","John Doe", "216-555-5555",
-                        "john.doe@wgu.edu","These are course notes",3));
-                assessmentDAO.insert(new AssessmentEntity("Bake a cake","objective", "06/30/22",
+                termDAO.insert(new TermEntity("Term Tatooine", "01/01/22","04/30/22"));
+                termDAO.insert(new TermEntity("Term Coruscant", "05/01/22","08/31/22"));
+                termDAO.insert(new TermEntity("Term Mustafar", "09/01/22","12/31/22"));
+                courseDAO.insert(new CourseEntity("Jedi 101", "01/01/22", "04/30/22", false,
+                        -1, "plan to take","Luke Skywalker", "555-555-5555",
+                        "lskywalker@starwars.com","These are course notes.",1));
+                courseDAO.insert(new CourseEntity("Becoming a Jedi Master", "05/01/22", "08/31/22", false,
+                        -1, "in progress","Obi Wan Kenobi", "555-555-6666",
+                        "owkenobi@starwars.com","These are course notes.",2));
+                courseDAO.insert(new CourseEntity("History of the Empire", "09/01/22", "12/31/22", false,
+                        -1, "completed","Darth Vader", "555-555-7777",
+                        "dvader@starwars.com","These are course notes.",3));
+                assessmentDAO.insert(new AssessmentEntity("Path of the Jedi quiz","Objective", "04/15/22",
                         false, -1, "These are assessment notes.",1));
-                assessmentDAO.insert(new AssessmentEntity("Build a model","objective", "06/30/22",
+                assessmentDAO.insert(new AssessmentEntity("Train a Padawan","Performance", "08/15/22",
                         false, -1, "These are assessment notes.",2));
-                assessmentDAO.insert(new AssessmentEntity("Braise short ribs","objective", "06/30/22",
+                assessmentDAO.insert(new AssessmentEntity("Famous Sith exam","Objective", "12/15/22",
                         false, -1, "These are assessment notes.",3));
             });
         }

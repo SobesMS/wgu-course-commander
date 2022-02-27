@@ -23,13 +23,13 @@ public class TermAdapter extends ListAdapter<TermEntity, TermAdapter.TermHolder>
     private static final DiffUtil.ItemCallback<TermEntity> DIFF_CALLBACK = new DiffUtil.ItemCallback<TermEntity>() {
         @Override
         public boolean areItemsTheSame(@NonNull TermEntity oldItem, @NonNull TermEntity newItem) {
-            return oldItem.getTermID() == newItem.getTermID();
+            return newItem.getTermID() == oldItem.getTermID();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull TermEntity oldItem, @NonNull TermEntity newItem) {
-            return oldItem.getTermTitle().equals(newItem.getTermTitle()) && oldItem.getTermStartDate().equals(newItem.getTermStartDate()) &&
-                    oldItem.getTermEndDate().equals(newItem.getTermEndDate());
+            return newItem.getTermTitle().equalsIgnoreCase(oldItem.getTermTitle()) && newItem.getTermStartDate().equals(oldItem.getTermStartDate()) &&
+                    newItem.getTermEndDate().equals(oldItem.getTermEndDate());
         }
     };
 

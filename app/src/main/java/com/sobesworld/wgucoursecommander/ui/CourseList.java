@@ -10,9 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,8 +22,6 @@ import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public class CourseList extends AppCompatActivity {

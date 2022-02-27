@@ -40,20 +40,7 @@ public class CourseEntity {
     @NonNull
     @Override
     public String toString() {
-        return "CourseEntity{" +
-                "courseID=" + courseID +
-                ", courseTitle='" + courseTitle + '\'' +
-                ", courseStartDate='" + courseStartDate + '\'' +
-                ", courseEndDate='" + courseEndDate + '\'' +
-                ", courseEndAlert=" + courseEndAlert +
-                ", courseAlertID=" + courseAlertID +
-                ", courseStatus='" + courseStatus + '\'' +
-                ", courseMentorsName='" + courseMentorsName + '\'' +
-                ", courseMentorsPhone='" + courseMentorsPhone + '\'' +
-                ", courseMentorsEmail='" + courseMentorsEmail + '\'' +
-                ", courseNotes='" + courseNotes + '\'' +
-                ", courseLinkedTermID=" + courseLinkedTermID +
-                '}';
+        return courseTitle;
     }
 
     public void setCourseID(int courseID) {

@@ -32,16 +32,7 @@ public class AssessmentEntity {
     @NonNull
     @Override
     public String toString() {
-        return "AssessmentEntity{" +
-                "assessmentID=" + assessmentID +
-                ", assessmentTitle='" + assessmentTitle + '\'' +
-                ", assessmentType='" + assessmentType + '\'' +
-                ", assessmentGoalDate='" + assessmentGoalDate + '\'' +
-                ", assessmentGoalAlert=" + assessmentGoalAlert +
-                ", assessmentAlertID=" + assessmentAlertID +
-                ", assessmentNotes='" + assessmentNotes + '\'' +
-                ", assessmentLinkedCourseID=" + assessmentLinkedCourseID +
-                '}';
+        return assessmentTitle;
     }
 
     public void setAssessmentID(int assessmentID) {
