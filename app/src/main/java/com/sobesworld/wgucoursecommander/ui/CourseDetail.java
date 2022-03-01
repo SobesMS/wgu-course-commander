@@ -1,14 +1,11 @@
 package com.sobesworld.wgucoursecommander.ui;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +25,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -39,9 +35,7 @@ import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
-import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
-import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 import com.sobesworld.wgucoursecommander.database.entity.TermEntity;
 
 import java.text.ParseException;
@@ -52,7 +46,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class CourseDetail extends AppCompatActivity {
-    public static final String TAG = "CourseDetail";
     public static final String EXTRA_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_ID";
     public static final String EXTRA_COURSE_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_TITLE";
     public static final String EXTRA_COURSE_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_START_DATE";
@@ -107,28 +100,20 @@ public class CourseDetail extends AppCompatActivity {
         assessmentAdapter = new AssessmentAdapter();
         recyclerView.setAdapter(assessmentAdapter);
         assessmentViewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
-        assessmentViewModel.getLinkedAssessments(courseID).observe(this, new Observer<List<AssessmentEntity>>() {
-            @Override
-            public void onChanged(List<AssessmentEntity> assessmentEntities) {
-                assessmentAdapter.submitList(assessmentEntities);
-            }
-        });
+        assessmentViewModel.getLinkedAssessments(courseID).observe(this, assessmentEntities -> assessmentAdapter.submitList(assessmentEntities));
 
-        assessmentAdapter.setOnItemClickListener(new AssessmentAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(AssessmentEntity assessmentEntity) {
-                Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, assessmentEntity.getAssessmentID());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE, assessmentEntity.getAssessmentTitle());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE, assessmentEntity.getAssessmentType());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE, assessmentEntity.getAssessmentGoalDate());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, assessmentEntity.isAssessmentGoalAlert());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, assessmentEntity.getAssessmentAlertID());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES, assessmentEntity.getAssessmentNotes());
-                intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, assessmentEntity.getAssessmentLinkedCourseID());
-                activityLauncher.launch(intent);
-            }
+        assessmentAdapter.setOnItemClickListener(assessmentEntity -> {
+            Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
+            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, assessmentEntity.getAssessmentID());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE, assessmentEntity.getAssessmentTitle());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE, assessmentEntity.getAssessmentType());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE, assessmentEntity.getAssessmentGoalDate());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, assessmentEntity.isAssessmentGoalAlert());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, assessmentEntity.getAssessmentAlertID());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES, assessmentEntity.getAssessmentNotes());
+            intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, assessmentEntity.getAssessmentLinkedCourseID());
+            activityLauncher.launch(intent);
         });
 
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
@@ -151,57 +136,45 @@ public class CourseDetail extends AppCompatActivity {
         }
 
         // sets course start date
-        textViewCourseStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                String date = textViewCourseStartDate.getText().toString();
-                if (!date.trim().isEmpty()) {
-                    try {
-                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+        textViewCourseStartDate.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            String date = textViewCourseStartDate.getText().toString();
+            if (!date.trim().isEmpty()) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                new DatePickerDialog(CourseDetail.this, startDateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
+            new DatePickerDialog(CourseDetail.this, startDateSetListener, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        startDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                textViewCourseStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
-            }
+        startDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            textViewCourseStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
         // sets course end date
-        textViewCourseEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                String date = textViewCourseEndDate.getText().toString();
-                if (!date.trim().isEmpty()) {
-                    try {
-                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+        textViewCourseEndDate.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            String date = textViewCourseEndDate.getText().toString();
+            if (!date.trim().isEmpty()) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                new DatePickerDialog(CourseDetail.this, endDateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
+            new DatePickerDialog(CourseDetail.this, endDateSetListener, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        endDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                textViewCourseEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
-            }
+        endDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            textViewCourseEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
         // alert switch toggle functionality
@@ -246,17 +219,14 @@ public class CourseDetail extends AppCompatActivity {
         // set term spinner data
         Spinner spinnerLinkedTerm = findViewById(R.id.spinner_linked_term);
         TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
-            @Override
-            public void onChanged(List<TermEntity> termEntities) {
-                ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<TermEntity>(CourseDetail.this,
-                        android.R.layout.simple_spinner_item, termEntities);
-                termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerLinkedTerm.setAdapter(termSpinnerAdapter);
-                for (int i = 0; i < termSpinnerAdapter.getCount(); i++) {
-                    if (termSpinnerAdapter.getItem(i).getTermID() == courseLinkedTermID) {
-                        spinnerLinkedTerm.setSelection(i);
-                    }
+        termViewModel.getAllTerms().observe(this, termEntities -> {
+            ArrayAdapter<TermEntity> termSpinnerAdapter = new ArrayAdapter<>(CourseDetail.this,
+                    android.R.layout.simple_spinner_item, termEntities);
+            termSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerLinkedTerm.setAdapter(termSpinnerAdapter);
+            for (int i = 0; i < termSpinnerAdapter.getCount(); i++) {
+                if (termSpinnerAdapter.getItem(i).getTermID() == courseLinkedTermID) {
+                    spinnerLinkedTerm.setSelection(i);
                 }
             }
         });
@@ -274,48 +244,42 @@ public class CourseDetail extends AppCompatActivity {
 
         // add assessment button
         ImageView imageViewCourseAddAssessment = findViewById(R.id.image_view_course_add_assessment);
-        imageViewCourseAddAssessment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
-                activityLauncher.launch(intent);
-            }
+        imageViewCourseAddAssessment.setOnClickListener(view -> {
+            Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
+            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            activityLauncher.launch(intent);
         });
 
         activityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Intent intent = result.getData();
-                        int resultCode = result.getResultCode();
-                        if (intent != null) {
-                            int assessmentID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, -1);
-                            String assessmentTitle = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE);
-                            String assessmentType = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE);
-                            String assessmentGoalDate = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE);
-                            boolean assessmentGoalAlert = intent.getBooleanExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, false);
-                            int assessmentAlertID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, -1);
-                            String assessmentNotes = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES);
-                            int assessmentLinkedCourseID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1);
-                            if (resultCode == RESULT_OK) {
-                                AssessmentEntity assessmentEntity = new AssessmentEntity(assessmentTitle, assessmentType, assessmentGoalDate,
-                                        assessmentGoalAlert, assessmentAlertID, assessmentNotes, assessmentLinkedCourseID);
-                                if (assessmentID == -1) {
-                                    assessmentViewModel.insert(assessmentEntity);
-                                    Toast.makeText(CourseDetail.this, "Assessment added.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    assessmentEntity.setAssessmentID(assessmentID);
-                                    assessmentViewModel.update(assessmentEntity);
-                                    Toast.makeText(CourseDetail.this, "Assessment updated.", Toast.LENGTH_SHORT).show();
-                                }
-                            } else if (resultCode == MainActivity.RESULT_DELETE) {
-                                if (assessmentID == -1) {
-                                    Toast.makeText(CourseDetail.this, "Assessment does not exist.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    assessmentViewModel.deleteUsingAssessmentID(assessmentID);
-                                    Toast.makeText(getApplicationContext(), "Assessment permanently deleted.", Toast.LENGTH_SHORT).show();
-                                }
+                result -> {
+                    Intent intent = result.getData();
+                    int resultCode = result.getResultCode();
+                    if (intent != null) {
+                        int assessmentID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, -1);
+                        String assessmentTitle = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE);
+                        String assessmentType = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE);
+                        String assessmentGoalDate = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_DATE);
+                        boolean assessmentGoalAlert = intent.getBooleanExtra(AssessmentDetail.EXTRA_ASSESSMENT_GOAL_ALERT, false);
+                        int assessmentAlertID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_ALERT_ID, -1);
+                        String assessmentNotes = intent.getStringExtra(AssessmentDetail.EXTRA_ASSESSMENT_NOTES);
+                        int assessmentLinkedCourseID = intent.getIntExtra(AssessmentDetail.EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1);
+                        if (resultCode == RESULT_OK) {
+                            AssessmentEntity assessmentEntity = new AssessmentEntity(assessmentTitle, assessmentType, assessmentGoalDate,
+                                    assessmentGoalAlert, assessmentAlertID, assessmentNotes, assessmentLinkedCourseID);
+                            if (assessmentID == -1) {
+                                assessmentViewModel.insert(assessmentEntity);
+                                Toast.makeText(CourseDetail.this, "Assessment added.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                assessmentEntity.setAssessmentID(assessmentID);
+                                assessmentViewModel.update(assessmentEntity);
+                                Toast.makeText(CourseDetail.this, "Assessment updated.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                            if (assessmentID == -1) {
+                                Toast.makeText(CourseDetail.this, "Assessment does not exist.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                assessmentViewModel.deleteUsingAssessmentID(assessmentID);
+                                Toast.makeText(getApplicationContext(), "Assessment permanently deleted.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -377,7 +341,6 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    // TODO: figure out why course alerts are delayed by a day
     private void createAlert() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (!sharedPreferences.contains(getResources().getString(R.string.uniqueID))) {
@@ -452,9 +415,7 @@ public class CourseDetail extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             });
-            builder.setPositiveButton("SAVE", (dialogInterface, i) -> {
-                saveCourse();
-            });
+            builder.setPositiveButton("SAVE", (dialogInterface, i) -> saveCourse());
             AlertDialog alert = builder.create();
             alert.show();
         }

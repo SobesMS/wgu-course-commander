@@ -1,13 +1,10 @@
 package com.sobesworld.wgucoursecommander.ui;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +14,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,11 +26,9 @@ import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 public class TermDetail extends AppCompatActivity {
-    public static final String TAG = "TermDetail";
     public static final String EXTRA_TERM_ID = "com.sobesworld.wgucoursecommander.EXTRA_TERM_ID";
     public static final String EXTRA_TERM_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_TITLE";
     public static final String EXTRA_TERM_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_TERM_START_DATE";
@@ -68,32 +61,24 @@ public class TermDetail extends AppCompatActivity {
         courseAdapter = new CourseAdapter();
         recyclerView.setAdapter(courseAdapter);
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-        courseViewModel.getLinkedCourses(termID).observe(this, new Observer<List<CourseEntity>>() {
-            @Override
-            public void onChanged(List<CourseEntity> courseEntities) {
-                courseAdapter.submitList(courseEntities);
-            }
-        });
+        courseViewModel.getLinkedCourses(termID).observe(this, courseEntities -> courseAdapter.submitList(courseEntities));
 
-        courseAdapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(CourseEntity courseEntity) {
-                Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
-                intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_END_DATE, courseEntity.getCourseEndDate());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT, courseEntity.isCourseEndAlert());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, courseEntity.getCourseAlertID());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_STATUS, courseEntity.getCourseStatus());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME, courseEntity.getCourseMentorsName());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE, courseEntity.getCourseMentorsPhone());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL, courseEntity.getCourseMentorsEmail());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_NOTES, courseEntity.getCourseNotes());
-                intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, courseEntity.getCourseLinkedTermID());
-                activityLauncher.launch(intent);
-            }
+        courseAdapter.setOnItemClickListener(courseEntity -> {
+            Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_END_DATE, courseEntity.getCourseEndDate());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT, courseEntity.isCourseEndAlert());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, courseEntity.getCourseAlertID());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_STATUS, courseEntity.getCourseStatus());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME, courseEntity.getCourseMentorsName());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE, courseEntity.getCourseMentorsPhone());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL, courseEntity.getCourseMentorsEmail());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_NOTES, courseEntity.getCourseNotes());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, courseEntity.getCourseLinkedTermID());
+            activityLauncher.launch(intent);
         });
 
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
@@ -108,109 +93,91 @@ public class TermDetail extends AppCompatActivity {
             textViewTermEndDate.setText(passedIntent.getStringExtra(EXTRA_TERM_END_DATE));
         }
 
-        textViewTermStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                String date = textViewTermStartDate.getText().toString();
-                if (!date.trim().isEmpty()) {
-                    try {
-                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+        textViewTermStartDate.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            String date = textViewTermStartDate.getText().toString();
+            if (!date.trim().isEmpty()) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                new DatePickerDialog(TermDetail.this, startDateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
+            new DatePickerDialog(TermDetail.this, startDateSetListener, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        startDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                textViewTermStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
-            }
+        startDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            textViewTermStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
-        textViewTermEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                String date = textViewTermEndDate.getText().toString();
-                if (!date.trim().isEmpty()) {
-                    try {
-                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+        textViewTermEndDate.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            String date = textViewTermEndDate.getText().toString();
+            if (!date.trim().isEmpty()) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                new DatePickerDialog(TermDetail.this, endDateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
+            new DatePickerDialog(TermDetail.this, endDateSetListener, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        endDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                textViewTermEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
-            }
+        endDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            textViewTermEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
         // add course button
         ImageView imageViewTermAddCourse = findViewById(R.id.image_view_term_add_course);
-        imageViewTermAddCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-                intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
-                intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, termID);
-                activityLauncher.launch(intent);
-            }
+        imageViewTermAddCourse.setOnClickListener(view -> {
+            Intent intent = new Intent(TermDetail.this, CourseDetail.class);
+            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, termID);
+            activityLauncher.launch(intent);
         });
 
         activityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Intent intent = result.getData();
-                        int resultCode = result.getResultCode();
-                        if (intent != null) {
-                            int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
-                            String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
-                            String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
-                            String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
-                            boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
-                            int courseAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, -1);
-                            String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
-                            String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
-                            String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
-                            String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
-                            String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
-                            int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
-                            if (resultCode == RESULT_OK) {
-                                CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                        courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
-                                        courseMentorsEmail, courseNotes, courseLinkedTermID);
-                                if (courseID == -1) {
-                                    courseViewModel.insert(courseEntity);
-                                    Toast.makeText(TermDetail.this, "Course added.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    courseEntity.setCourseID(courseID);
-                                    courseViewModel.update(courseEntity);
-                                    Toast.makeText(TermDetail.this, "Course updated.", Toast.LENGTH_SHORT).show();
-                                }
-                            } else if (resultCode == MainActivity.RESULT_DELETE) {
-                                if (courseID == -1) {
-                                    Toast.makeText(TermDetail.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    courseViewModel.deleteUsingCourseID(courseID);
-                                    Toast.makeText(getApplicationContext(), "Course permanently deleted.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                result -> {
+                    Intent intent = result.getData();
+                    int resultCode = result.getResultCode();
+                    if (intent != null) {
+                        int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
+                        String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
+                        String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
+                        String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
+                        boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
+                        int courseAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, -1);
+                        String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
+                        String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
+                        String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
+                        String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
+                        String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
+                        int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
+                        if (resultCode == RESULT_OK) {
+                            CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
+                                    courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                                    courseMentorsEmail, courseNotes, courseLinkedTermID);
+                            if (courseID == -1) {
+                                courseViewModel.insert(courseEntity);
+                                Toast.makeText(TermDetail.this, "Course added.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                courseEntity.setCourseID(courseID);
+                                courseViewModel.update(courseEntity);
+                                Toast.makeText(TermDetail.this, "Course updated.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                            if (courseID == -1) {
+                                Toast.makeText(TermDetail.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                courseViewModel.deleteUsingCourseID(courseID);
+                                Toast.makeText(getApplicationContext(), "Course permanently deleted.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -259,9 +226,7 @@ public class TermDetail extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             });
-            builder.setPositiveButton("SAVE", (dialogInterface, i) -> {
-                saveTerm();
-            });
+            builder.setPositiveButton("SAVE", (dialogInterface, i) -> saveTerm());
             AlertDialog alert = builder.create();
             alert.show();
         }

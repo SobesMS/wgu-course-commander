@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.sobesworld.wgucoursecommander.database.AssessmentRepository;
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
 
 import java.util.List;

@@ -33,10 +33,6 @@ public class TermAdapter extends ListAdapter<TermEntity, TermAdapter.TermHolder>
         }
     };
 
-    public TermEntity getTermEntityAt(int position) {
-        return getItem(position);
-    }
-
     @NonNull
     @Override
     public TermHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -61,13 +57,10 @@ public class TermAdapter extends ListAdapter<TermEntity, TermAdapter.TermHolder>
             super(itemView);
             textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);
             textViewTermDates = itemView.findViewById(R.id.text_view_term_dates);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(position));
-                    }
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(position));
                 }
             });
         }

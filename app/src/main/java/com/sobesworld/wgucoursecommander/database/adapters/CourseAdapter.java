@@ -37,10 +37,6 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
         }
     };
 
-    public CourseEntity getCourseEntityAt(int position) {
-        return getItem(position);
-    }
-
     @NonNull
     @Override
     public CourseAdapter.CourseHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -65,13 +61,10 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
             super(itemView);
             textViewCourseTitle = itemView.findViewById(R.id.text_view_course_title);
             textViewCourseDates = itemView.findViewById(R.id.text_view_course_dates);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(position));
-                    }
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(position));
                 }
             });
         }

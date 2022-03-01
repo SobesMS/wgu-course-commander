@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "MainActivity";
     public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
     public static final int REQUEST_ADD = 1;

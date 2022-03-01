@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlarmManager;
@@ -22,7 +21,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class AssessmentDetail extends AppCompatActivity {
-    public static final String TAG = "AssessmentDetail";
     public static final String EXTRA_ASSESSMENT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ID";
     public static final String EXTRA_ASSESSMENT_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TITLE";
     public static final String EXTRA_ASSESSMENT_TYPE = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_TYPE";
@@ -91,30 +88,24 @@ public class AssessmentDetail extends AppCompatActivity {
         }
 
         // sets assessment goal date
-        textViewAssessmentGoalDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                String date = textViewAssessmentGoalDate.getText().toString();
-                if (!date.trim().isEmpty()) {
-                    try {
-                        calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+        textViewAssessmentGoalDate.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            String date = textViewAssessmentGoalDate.getText().toString();
+            if (!date.trim().isEmpty()) {
+                try {
+                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                new DatePickerDialog(AssessmentDetail.this, goalDateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
+            new DatePickerDialog(AssessmentDetail.this, goalDateSetListener, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        goalDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                textViewAssessmentGoalDate.setText(MainActivity.sdf.format(calendar.getTime()));
-            }
+        goalDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            textViewAssessmentGoalDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
         // alert switch toggle functionality
@@ -157,17 +148,14 @@ public class AssessmentDetail extends AppCompatActivity {
         // set course spinner data
         Spinner spinnerLinkedCourse = findViewById(R.id.spinner_assessment_linked_course);
         CourseViewModel courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-        courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
-            @Override
-            public void onChanged(List<CourseEntity> courseEntities) {
-                ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<CourseEntity>(AssessmentDetail.this,
-                        android.R.layout.simple_spinner_item, courseEntities);
-                courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerLinkedCourse.setAdapter(courseSpinnerAdapter);
-                for (int i = 0; i < courseSpinnerAdapter.getCount(); i++) {
-                    if (courseSpinnerAdapter.getItem(i).getCourseID() == assessmentLinkedCourseID) {
-                        spinnerLinkedCourse.setSelection(i);
-                    }
+        courseViewModel.getAllCourses().observe(this, courseEntities -> {
+            ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<>(AssessmentDetail.this,
+                    android.R.layout.simple_spinner_item, courseEntities);
+            courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerLinkedCourse.setAdapter(courseSpinnerAdapter);
+            for (int i = 0; i < courseSpinnerAdapter.getCount(); i++) {
+                if (courseSpinnerAdapter.getItem(i).getCourseID() == assessmentLinkedCourseID) {
+                    spinnerLinkedCourse.setSelection(i);
                 }
             }
         });
@@ -238,7 +226,6 @@ public class AssessmentDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    // TODO: figure out why assessment alerts are delayed by a day
     private void createAlert() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (!sharedPreferences.contains(getResources().getString(R.string.uniqueID))) {
@@ -304,9 +291,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 setResult(RESULT_CANCELED);
                 finish();
             });
-            builder.setPositiveButton("SAVE", (dialogInterface, i) -> {
-                saveAssessment();
-            });
+            builder.setPositiveButton("SAVE", (dialogInterface, i) -> saveAssessment());
             AlertDialog alert = builder.create();
             alert.show();
         }

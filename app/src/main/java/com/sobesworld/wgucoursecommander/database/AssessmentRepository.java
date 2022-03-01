@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 
 import com.sobesworld.wgucoursecommander.database.dao.AssessmentDAO;
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
-import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.util.List;
 

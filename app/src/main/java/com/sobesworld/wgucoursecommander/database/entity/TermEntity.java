@@ -19,6 +19,7 @@ public class TermEntity {
         this.termEndDate = termEndDate;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return termTitle;

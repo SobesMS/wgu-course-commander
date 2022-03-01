@@ -6,66 +6,10 @@
     <string name="assessments">Assessments</string>
     <string name="uniqueID">uniqueID</string>
 
-    <string name="add_term">Add Term</string>
-    <string name="add_course">Add Course</string>
-    <string name="add_assessment">Add Assessment</string>
-    <string name="edit_course">Edit Course</string>
-    <string name="edit_term">Edit Term</string>
-    <string name="edit_assessment">Edit Assessment</string>
     <string name="assessment_list">Assessment List</string>
     <string name="course_list">Course List</string>
     <string name="term_list">Term List</string>
-    <string name="refresh">Refresh</string>
     <string name="assessment_detail">Assessment Detail</string>
     <string name="course_detail">Course Detail</string>
     <string name="term_detail">Term Detail</string>
-    <string name="is_new_record">is new record</string>
-    <string name="no_term_title">-- no term title --</string>
-    <string name="no_course_title">-- no course title --</string>
-    <string name="no_assessment_title">-- no assessment title --</string>
-    <string name="home">Home</string>
-    <string name="confirm">CONFIRM</string>
-    <string name="abort">ABORT</string>
-    <string name="commit">COMMIT</string>
-    <string name="term_delete_alert_title">CONFIRM TERM DELETION</string>
-    <string name="course_delete_alert_title">CONFIRM COURSE DELETION</string>
-    <string name="assessment_delete_alert_title">CONFIRM ASSESSMENT DELETION</string>
-    <string name="term_delete_alert_message">Select CONFIRM to delete the term record and all associated courses.
-        \n\nSelect ABORT to cancel. \n\n(records are not recoverable)</string>
-    <string name="course_delete_alert_message">Select CONFIRM to delete the course record and all associated assessments.
-        \n\nSelect ABORT to cancel. \n\n(records are not recoverable)</string>
-    <string name="assessment_delete_alert_message">Select CONFIRM to delete the assessment record.
-        \n\nSelect ABORT to cancel. \n\n(records are not recoverable)</string>
-    <string name="title">Title:</string>
-    <string name="enter_a_term_title">enter a term title</string>
-    <string name="start_date">Start Date:</string>
-    <string name="select_a_start_date">select a start date</string>
-    <string name="end_date">End Date:</string>
-    <string name="select_an_end_date">select an end date</string>
-    <string name="save_record">Save Record</string>
-    <string name="delete_record">Delete Record</string>
-    <string name="enter_a_course_title">enter a course title</string>
-    <string name="notify_switch">NOTIFY</string>
-    <string name="idnum">id</string>
-    <string name="notes">notes</string>
-    <string name="end_alert">End Alert:</string>
-    <string name="goal_alert">Goal Alert:</string>
-    <string name="alert_id">Alert ID:</string>
-    <string name="status">Course Status:</string>
-    <string name="assessment_type">Assessment Type:</string>
-    <string name="course">Course:</string>
-    <string name="mentor">Mentor:</string>
-    <string name="phone">Phone:</string>
-    <string name="email">Email:</string>
-    <string name="termID">term id</string>
-    <string name="courseID">course id</string>
-    <string name="term_enrolled">Term Enrolled:</string>
-    <string name="enter_mentors_name">enter mentor\'s name</string>
-    <string name="enter_mentors_phone_number">enter mentor\'s phone number</string>
-    <string name="enter_mentors_email_address">enter mentor\'s email address</string>
-    <string name="enter_an_assessment_title">enter an assessment title</string>
-    <string name="completion_goal_date">Completion Goal:</string>
-    <string name="select_a_completion_goal_date">select a date</string>
-    <string name="cancel">CANCEL</string>
-
 </resources>

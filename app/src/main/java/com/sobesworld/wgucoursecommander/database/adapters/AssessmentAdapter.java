@@ -38,10 +38,6 @@ public class AssessmentAdapter extends ListAdapter<AssessmentEntity, AssessmentA
         }
     };
 
-    public AssessmentEntity getAssessmentEntityAt(int position) {
-        return getItem(position);
-    }
-
     @NonNull
     @Override
     public AssessmentAdapter.AssessmentHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,13 +62,10 @@ public class AssessmentAdapter extends ListAdapter<AssessmentEntity, AssessmentA
             super(itemView);
             textViewAssessmentTitle = itemView.findViewById(R.id.text_view_assessment_title);
             textViewAssessmentGoalDate = itemView.findViewById(R.id.text_view_assessment_goal_date);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(position));
-                    }
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(position));
                 }
             });
         }

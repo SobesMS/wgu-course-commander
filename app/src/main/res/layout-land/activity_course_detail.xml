@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:weightSum="2">
         <ScrollView
