@@ -64,20 +64,39 @@
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/text_view_course_start_date"
-                    android:layout_width="200dp"
+                    android:layout_width="150dp"
                     android:layout_height="48dp"
                     android:layout_alignBaseline="@+id/course_start_date_label"
-                    android:layout_marginEnd="16dp"
                     android:layout_toEndOf="@+id/course_start_date_label"
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="set a start date (req)"
+                    android:hint="set start date (req)"
                     android:importantForAutofill="no"
                     android:longClickable="false"
                     android:textColorHint="#757575"
                     android:textSize="17sp"
                     android:textColor="@color/black"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_course_start_alert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/text_view_course_start_date"
+                    android:layout_toEndOf="@id/text_view_course_start_date"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/switch_course_start_alert"
+                    android:layout_toEndOf="@id/text_view_course_start_date"
+                    android:layout_marginTop="-10dp"
+                    android:text="Start Date Alert"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="11sp" />
                 <TextView
                     android:id="@+id/course_end_date_label"
                     android:layout_width="wrap_content"
@@ -92,33 +111,33 @@
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/text_view_course_end_date"
-                    android:layout_width="160dp"
+                    android:layout_width="150dp"
                     android:layout_height="48dp"
                     android:layout_alignBaseline="@+id/course_end_date_label"
                     android:layout_alignStart="@+id/text_view_course_start_date"
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="set an end date (req)"
+                    android:hint="set end date (req)"
                     android:importantForAutofill="no"
                     android:longClickable="false"
                     android:textColorHint="#757575"
                     android:textSize="17sp"
                     android:textColor="@color/black"/>
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_course_alert"
+                    android:id="@+id/switch_course_end_alert"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@id/text_view_course_end_date"
                     android:layout_toEndOf="@id/text_view_course_end_date"
-                    android:layout_marginStart="7dp"
+                    android:layout_marginStart="8dp"
                     android:gravity="center"
                     android:minWidth="48dp"
                     android:minHeight="48dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/switch_course_alert"
+                    android:layout_below="@+id/switch_course_end_alert"
                     android:layout_toEndOf="@id/text_view_course_end_date"
                     android:layout_marginTop="-10dp"
                     android:text="End Date Alert"

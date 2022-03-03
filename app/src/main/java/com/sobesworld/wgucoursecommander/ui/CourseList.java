@@ -51,9 +51,11 @@ public class CourseList extends AppCompatActivity {
             intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
             intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_START_ALERT, courseEntity.isCourseStartAlert());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_START_ALERT_ID, courseEntity.getCourseStartAlertID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_END_DATE, courseEntity.getCourseEndDate());
             intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT, courseEntity.isCourseEndAlert());
-            intent.putExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, courseEntity.getCourseAlertID());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT_ID, courseEntity.getCourseEndAlertID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_STATUS, courseEntity.getCourseStatus());
             intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME, courseEntity.getCourseMentorsName());
             intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE, courseEntity.getCourseMentorsPhone());
@@ -68,21 +70,23 @@ public class CourseList extends AppCompatActivity {
                     Intent intent = result.getData();
                     int resultCode = result.getResultCode();
                     if (intent != null) {
-                        int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
-                        String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
-                        String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
-                        String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
-                        boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
-                        int courseAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, -1);
-                        String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
-                        String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
-                        String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
-                        String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
-                        String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
-                        int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
                         if (resultCode == RESULT_OK) {
-                            CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                    courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                            int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
+                            String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
+                            String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
+                            boolean courseStartAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_START_ALERT, false);
+                            int courseStartAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_START_ALERT_ID, -1);
+                            String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
+                            boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
+                            int courseEndAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_END_ALERT_ID, -1);
+                            String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
+                            String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
+                            String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
+                            String courseMentorsEmail = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_EMAIL);
+                            String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
+                            int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
+                            CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseStartAlert, courseStartAlertID,
+                                    courseEndDate, courseEndAlert, courseEndAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
                                     courseMentorsEmail, courseNotes, courseLinkedTermID);
                             if (courseID == -1) {
                                 courseViewModel.insert(courseEntity);
@@ -93,6 +97,7 @@ public class CourseList extends AppCompatActivity {
                                 Toast.makeText(CourseList.this, "Course updated.", Toast.LENGTH_SHORT).show();
                             }
                         } else if (resultCode == MainActivity.RESULT_DELETE) {
+                            int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
                             if (courseID == -1) {
                                 Toast.makeText(CourseList.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
                             } else {

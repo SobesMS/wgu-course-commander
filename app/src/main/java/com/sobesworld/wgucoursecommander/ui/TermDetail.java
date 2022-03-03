@@ -69,9 +69,11 @@ public class TermDetail extends AppCompatActivity {
             intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
             intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_START_ALERT, courseEntity.isCourseStartAlert());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_START_ALERT_ID, courseEntity.getCourseStartAlertID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_END_DATE, courseEntity.getCourseEndDate());
             intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT, courseEntity.isCourseEndAlert());
-            intent.putExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, courseEntity.getCourseAlertID());
+            intent.putExtra(CourseDetail.EXTRA_COURSE_END_ALERT_ID, courseEntity.getCourseEndAlertID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_STATUS, courseEntity.getCourseStatus());
             intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME, courseEntity.getCourseMentorsName());
             intent.putExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE, courseEntity.getCourseMentorsPhone());
@@ -150,9 +152,11 @@ public class TermDetail extends AppCompatActivity {
                         int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
                         String courseTitle = intent.getStringExtra(CourseDetail.EXTRA_COURSE_TITLE);
                         String courseStartDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_START_DATE);
+                        boolean courseStartAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_START_ALERT, false);
+                        int courseStartAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_START_ALERT_ID, -1);
                         String courseEndDate = intent.getStringExtra(CourseDetail.EXTRA_COURSE_END_DATE);
                         boolean courseEndAlert = intent.getBooleanExtra(CourseDetail.EXTRA_COURSE_END_ALERT, false);
-                        int courseAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ALERT_ID, -1);
+                        int courseEndAlertID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_END_ALERT_ID, -1);
                         String courseStatus = intent.getStringExtra(CourseDetail.EXTRA_COURSE_STATUS);
                         String courseMentorsName = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_NAME);
                         String courseMentorsPhone = intent.getStringExtra(CourseDetail.EXTRA_COURSE_MENTORS_PHONE);
@@ -160,8 +164,8 @@ public class TermDetail extends AppCompatActivity {
                         String courseNotes = intent.getStringExtra(CourseDetail.EXTRA_COURSE_NOTES);
                         int courseLinkedTermID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, -1);
                         if (resultCode == RESULT_OK) {
-                            CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseEndDate,
-                                    courseEndAlert, courseAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
+                            CourseEntity courseEntity = new CourseEntity(courseTitle, courseStartDate, courseStartAlert, courseStartAlertID,
+                                    courseEndDate, courseEndAlert, courseEndAlertID, courseStatus, courseMentorsName, courseMentorsPhone,
                                     courseMentorsEmail, courseNotes, courseLinkedTermID);
                             if (courseID == -1) {
                                 courseViewModel.insert(courseEntity);
@@ -272,7 +276,7 @@ public class TermDetail extends AppCompatActivity {
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("CONFIRM TERM DELETION")
-                        .setMessage("Select CONFIRM to delete the term.\nSelect ABORT to cancel.\n\n(records are not recoverable)")
+                        .setMessage("Select CONFIRM to delete the term. Select ABORT to cancel.\n\n(records are not recoverable)")
                         .setCancelable(false);
                 builder.setNegativeButton("ABORT", (dialogInterface, i) -> {
                 });

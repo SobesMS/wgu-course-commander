@@ -11,9 +11,11 @@ public class CourseEntity {
     private int courseID;
     private final String courseTitle;
     private final String courseStartDate;
+    private final boolean courseStartAlert;
+    private final int courseStartAlertID;
     private final String courseEndDate;
     private final boolean courseEndAlert;
-    private final int courseAlertID;
+    private final int courseEndAlertID;
     private final String courseStatus;
     private final String courseMentorsName;
     private final String courseMentorsPhone;
@@ -21,14 +23,16 @@ public class CourseEntity {
     private final String courseNotes;
     private final int courseLinkedTermID;
 
-    public CourseEntity(@NonNull String courseTitle, String courseStartDate, String courseEndDate,
-                        boolean courseEndAlert, int courseAlertID, String courseStatus, String courseMentorsName,
+    public CourseEntity(String courseTitle, String courseStartDate, boolean courseStartAlert, int courseStartAlertID,
+                        String courseEndDate, boolean courseEndAlert, int courseEndAlertID, String courseStatus, String courseMentorsName,
                         String courseMentorsPhone, String courseMentorsEmail, String courseNotes, int courseLinkedTermID) {
         this.courseTitle = courseTitle;
         this.courseStartDate = courseStartDate;
+        this.courseStartAlert = courseStartAlert;
+        this.courseStartAlertID = courseStartAlertID;
         this.courseEndDate = courseEndDate;
         this.courseEndAlert = courseEndAlert;
-        this.courseAlertID = courseAlertID;
+        this.courseEndAlertID = courseEndAlertID;
         this.courseStatus = courseStatus;
         this.courseMentorsName = courseMentorsName;
         this.courseMentorsPhone = courseMentorsPhone;
@@ -59,6 +63,14 @@ public class CourseEntity {
         return courseStartDate;
     }
 
+    public boolean isCourseStartAlert() {
+        return courseStartAlert;
+    }
+
+    public int getCourseStartAlertID() {
+        return courseStartAlertID;
+    }
+
     public String getCourseEndDate() {
         return courseEndDate;
     }
@@ -67,8 +79,8 @@ public class CourseEntity {
         return courseEndAlert;
     }
 
-    public int getCourseAlertID() {
-        return courseAlertID;
+    public int getCourseEndAlertID() {
+        return courseEndAlertID;
     }
 
     public String getCourseStatus() {

@@ -29,11 +29,12 @@ public class CourseAdapter extends ListAdapter<CourseEntity, CourseAdapter.Cours
         @Override
         public boolean areContentsTheSame(@NonNull CourseEntity oldItem, @NonNull CourseEntity newItem) {
             return newItem.getCourseTitle().equalsIgnoreCase(oldItem.getCourseTitle()) && newItem.getCourseStartDate().equals(oldItem.getCourseStartDate())
+                    && newItem.isCourseStartAlert() == oldItem.isCourseStartAlert() && newItem.getCourseStartAlertID() == oldItem.getCourseStartAlertID()
                     && newItem.getCourseEndDate().equals(oldItem.getCourseEndDate()) && newItem.isCourseEndAlert() == oldItem.isCourseEndAlert()
-                    && newItem.getCourseAlertID() == oldItem.getCourseAlertID() && newItem.getCourseMentorsName().equalsIgnoreCase(oldItem.getCourseMentorsName())
+                    && newItem.getCourseEndAlertID() == oldItem.getCourseEndAlertID() && newItem.getCourseMentorsName().equalsIgnoreCase(oldItem.getCourseMentorsName())
                     && newItem.getCourseMentorsPhone().equalsIgnoreCase(oldItem.getCourseMentorsPhone())
                     && newItem.getCourseMentorsEmail().equalsIgnoreCase(oldItem.getCourseMentorsEmail())
-                    && newItem.getCourseNotes().equalsIgnoreCase(oldItem.getCourseNotes()) && newItem.getCourseLinkedTermID() == oldItem.getCourseLinkedTermID();
+                    && newItem.getCourseLinkedTermID() == oldItem.getCourseLinkedTermID();
         }
     };
 

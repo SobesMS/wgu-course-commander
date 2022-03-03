@@ -47,7 +47,6 @@ public class AssessmentDetail extends AppCompatActivity {
     public static final String EXTRA_ASSESSMENT_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_NOTES";
     public static final String EXTRA_ASSESSMENT_LINKED_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_LINKED_COURSE_ID";
 
-    private SharedPreferences sharedPreferences;
     private DatePickerDialog.OnDateSetListener goalDateSetListener;
 
     private int assessmentID;
@@ -63,7 +62,6 @@ public class AssessmentDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assessment_detail);
-        sharedPreferences = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         editTextAssessmentTitle = findViewById(R.id.edit_text_assessment_title);
         textViewAssessmentGoalDate = findViewById(R.id.text_view_assessment_goal_date_detail);
@@ -77,6 +75,9 @@ public class AssessmentDetail extends AppCompatActivity {
 
         if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == MainActivity.REQUEST_ADD) {
             setTitle("Add Assessment");
+            assessmentGoalAlert = false;
+            assessmentAlertID = -1;
+            assessmentNotes = getIntent().getStringExtra(EXTRA_ASSESSMENT_NOTES);
         } else {
             setTitle("Edit Assessment");
             editTextAssessmentTitle.setText(passedIntent.getStringExtra(EXTRA_ASSESSMENT_TITLE));
@@ -226,32 +227,17 @@ public class AssessmentDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createAlert() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (!sharedPreferences.contains(getResources().getString(R.string.uniqueID))) {
-            editor.putInt(getResources().getString(R.string.uniqueID), 100).apply();
-        }
-        int i = sharedPreferences.getInt(getResources().getString(R.string.uniqueID), -1);
-        if (i != -1) {
-            assessmentAlertID = i + 1;
-            editor.putInt(getResources().getString(R.string.uniqueID), assessmentAlertID).apply();
-            Date endDate = null;
-            try {
-                endDate=MainActivity.sdf.parse(textViewAssessmentGoalDate.getText().toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            String title = editTextAssessmentTitle.getText().toString() + " Completion Goal Today";
-            String text = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today. Finish and submit any remaining work.";
+    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertBody) {
+        if (alertID != -1) {
             long trigger = 0;
-            if (endDate != null) {
-                trigger = endDate.getTime();
+            if (alertDate != null) {
+                trigger = alertDate.getTime();
             }
             Intent intent = new Intent(AssessmentDetail.this, CourseCommReceiver.class);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_ALERT_ID, assessmentAlertID);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_TITLE, title);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_TEXT, text);
-            PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, assessmentAlertID, intent, 0);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_ID, alertID);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TITLE, alertTitle);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_BODY, alertBody);
+            PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, alertID, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
         }
@@ -298,13 +284,6 @@ public class AssessmentDetail extends AppCompatActivity {
     }
 
     private void saveAssessment() {
-        if (assessmentAlertID == -1 && assessmentGoalAlert) {
-            createAlert();
-        } else if (assessmentAlertID > 0 && !assessmentGoalAlert) {
-            deleteAlert(assessmentAlertID);
-            assessmentAlertID = -1;
-        }
-
         String assessmentTitle = editTextAssessmentTitle.getText().toString();
         String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString();
 
@@ -317,6 +296,39 @@ public class AssessmentDetail extends AppCompatActivity {
             }
             Toast.makeText(AssessmentDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
+            SharedPreferences sharedPreferences = this.getSharedPreferences(MainActivity.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            if (assessmentAlertID == -1 && assessmentGoalAlert) {
+                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                assessmentAlertID = i;
+                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewAssessmentGoalDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextAssessmentTitle.getText().toString() + " Completion Goal Today";
+                String alertBody = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today.";
+                createAlert(assessmentAlertID, alertDate, alertTitle, alertBody);
+            } else if (assessmentAlertID > 0 && assessmentGoalAlert &&
+                    !textViewAssessmentGoalDate.toString().equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_GOAL_DATE))) {
+                deleteAlert(assessmentAlertID);
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewAssessmentGoalDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextAssessmentTitle.getText().toString() + " Completion Goal Today";
+                String alertBody = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today.";
+                createAlert(assessmentAlertID, alertDate, alertTitle, alertBody);
+            } else if (assessmentAlertID > 0 && !assessmentGoalAlert) {
+                deleteAlert(assessmentAlertID);
+                assessmentAlertID = -1;
+            }
+
             Intent intent = new Intent();
             intent.putExtra(EXTRA_ASSESSMENT_ID, assessmentID);
             intent.putExtra(EXTRA_ASSESSMENT_TITLE, assessmentTitle);
@@ -340,12 +352,14 @@ public class AssessmentDetail extends AppCompatActivity {
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("CONFIRM ASSESSMENT DELETION")
-                    .setMessage("Select CONFIRM to delete the assessment." +
-                            "\nSelect ABORT to cancel.\n\n(records are not recoverable)")
+                    .setMessage("Select CONFIRM to delete the assessment. Select ABORT to cancel.\n\n(records are not recoverable)")
                     .setCancelable(false);
             builder.setNegativeButton("ABORT", (dialogInterface, i) -> {
             });
             builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
+                if (assessmentGoalAlert && assessmentAlertID != -1) {
+                    deleteAlert(assessmentAlertID);
+                }
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_ASSESSMENT_ID, assessmentID);
                 setResult(MainActivity.RESULT_DELETE, intent);

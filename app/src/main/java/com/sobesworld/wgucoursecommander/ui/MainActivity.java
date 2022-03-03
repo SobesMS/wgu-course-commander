@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,6 +17,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    public static final String SHARED_PREFS_FILENAME = "com.sobesworld.wgucoursecommander.prefs";
+    public static final String SHARED_PREFS_ALERT_ID_COUNTER = "alert_id_counter";
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
     public static final int REQUEST_ADD = 1;
     public static final int REQUEST_EDIT = 2;
@@ -25,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+        SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+        if (!sharedPreferences.contains(SHARED_PREFS_ALERT_ID_COUNTER)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(SHARED_PREFS_ALERT_ID_COUNTER, 101).apply();
+        }
     }
 
     public void goToTermList(View view) {

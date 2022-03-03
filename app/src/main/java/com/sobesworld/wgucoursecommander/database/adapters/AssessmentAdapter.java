@@ -33,7 +33,6 @@ public class AssessmentAdapter extends ListAdapter<AssessmentEntity, AssessmentA
                     && newItem.getAssessmentGoalDate().equals(oldItem.getAssessmentGoalDate())
                     && newItem.isAssessmentGoalAlert() == oldItem.isAssessmentGoalAlert()
                     && newItem.getAssessmentAlertID() == oldItem.getAssessmentAlertID()
-                    && newItem.getAssessmentNotes().equalsIgnoreCase(oldItem.getAssessmentNotes())
                     && newItem.getAssessmentLinkedCourseID() == oldItem.getAssessmentLinkedCourseID();
         }
     };

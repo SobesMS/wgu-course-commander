@@ -49,9 +49,11 @@ public class CourseDetail extends AppCompatActivity {
     public static final String EXTRA_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_ID";
     public static final String EXTRA_COURSE_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_TITLE";
     public static final String EXTRA_COURSE_START_DATE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_START_DATE";
+    public static final String EXTRA_COURSE_START_ALERT = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_START_ALERT";
+    public static final String EXTRA_COURSE_START_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_START_ALERT_ID";
     public static final String EXTRA_COURSE_END_DATE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_END_DATE";
     public static final String EXTRA_COURSE_END_ALERT = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_END_ALERT";
-    public static final String EXTRA_COURSE_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_ALERT_ID";
+    public static final String EXTRA_COURSE_END_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_END_ALERT_ID";
     public static final String EXTRA_COURSE_STATUS = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_STATUS";
     public static final String EXTRA_COURSE_MENTORS_NAME = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_MENTORS_NAME";
     public static final String EXTRA_COURSE_MENTORS_PHONE = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_MENTORS_PHONE";
@@ -60,7 +62,6 @@ public class CourseDetail extends AppCompatActivity {
     public static final String EXTRA_COURSE_LINKED_TERM_ID = "com.sobesworld.wgucoursecommander.EXTRA_COURSE_LINKED_TERM_ID";
     private AssessmentAdapter assessmentAdapter;
     private AssessmentViewModel assessmentViewModel;
-    private SharedPreferences sharedPreferences;
     private ActivityResultLauncher<Intent> activityLauncher;
     private DatePickerDialog.OnDateSetListener startDateSetListener;
     private DatePickerDialog.OnDateSetListener endDateSetListener;
@@ -68,9 +69,11 @@ public class CourseDetail extends AppCompatActivity {
     private int courseID;
     private EditText editTextCourseTitle;
     private TextView textViewCourseStartDate;
+    private boolean courseStartAlert;
+    private int courseStartAlertID;
     private TextView textViewCourseEndDate;
     private boolean courseEndAlert;
-    private int courseAlertID;
+    private int courseEndAlertID;
     private String courseStatus;
     private EditText editTextCourseMentorsName;
     private EditText editTextCourseMentorsPhone;
@@ -82,7 +85,6 @@ public class CourseDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
-        sharedPreferences = getSharedPreferences("com.sobesworld.wgucoursecommander.prefs", Context.MODE_PRIVATE);
 
         editTextCourseTitle = findViewById(R.id.edit_text_course_title);
         textViewCourseStartDate = findViewById(R.id.text_view_course_start_date);
@@ -91,9 +93,8 @@ public class CourseDetail extends AppCompatActivity {
         editTextCourseMentorsPhone = findViewById(R.id.edit_text_course_mentors_phone);
         editTextCourseMentorsEmail = findViewById(R.id.edit_text_course_mentors_email);
 
-        Intent passedIntent = getIntent();
-        courseID = passedIntent.getIntExtra(EXTRA_COURSE_ID, -1);
-        courseLinkedTermID = passedIntent.getIntExtra(EXTRA_COURSE_LINKED_TERM_ID, -1);
+        courseID = getIntent().getIntExtra(EXTRA_COURSE_ID, -1);
+        courseLinkedTermID = getIntent().getIntExtra(EXTRA_COURSE_LINKED_TERM_ID, -1);
 
         RecyclerView recyclerView = findViewById(R.id.course_assessment_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -119,20 +120,27 @@ public class CourseDetail extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD) {
+        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD) {
             setTitle("Add Course");
+            courseStartAlert = false;
+            courseStartAlertID = -1;
+            courseEndAlert = false;
+            courseEndAlertID = -1;
+            courseNotes = getIntent().getStringExtra(EXTRA_COURSE_NOTES);
         } else {
             setTitle("Edit Course");
-            editTextCourseTitle.setText(passedIntent.getStringExtra(EXTRA_COURSE_TITLE));
-            textViewCourseStartDate.setText(passedIntent.getStringExtra(EXTRA_COURSE_START_DATE));
-            textViewCourseEndDate.setText(passedIntent.getStringExtra(EXTRA_COURSE_END_DATE));
-            courseEndAlert = passedIntent.getBooleanExtra(EXTRA_COURSE_END_ALERT, false);
-            courseAlertID = passedIntent.getIntExtra(EXTRA_COURSE_ALERT_ID, -1);
-            courseStatus = passedIntent.getStringExtra(EXTRA_COURSE_STATUS);
-            editTextCourseMentorsName.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_NAME));
-            editTextCourseMentorsPhone.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_PHONE));
-            editTextCourseMentorsEmail.setText(passedIntent.getStringExtra(EXTRA_COURSE_MENTORS_EMAIL));
-            courseNotes = passedIntent.getStringExtra(EXTRA_COURSE_NOTES);
+            editTextCourseTitle.setText(getIntent().getStringExtra(EXTRA_COURSE_TITLE));
+            textViewCourseStartDate.setText(getIntent().getStringExtra(EXTRA_COURSE_START_DATE));
+            courseStartAlert = getIntent().getBooleanExtra(EXTRA_COURSE_START_ALERT, false);
+            courseStartAlertID = getIntent().getIntExtra(EXTRA_COURSE_START_ALERT_ID, -1);
+            textViewCourseEndDate.setText(getIntent().getStringExtra(EXTRA_COURSE_END_DATE));
+            courseEndAlert = getIntent().getBooleanExtra(EXTRA_COURSE_END_ALERT, false);
+            courseEndAlertID = getIntent().getIntExtra(EXTRA_COURSE_END_ALERT_ID, -1);
+            courseStatus = getIntent().getStringExtra(EXTRA_COURSE_STATUS);
+            editTextCourseMentorsName.setText(getIntent().getStringExtra(EXTRA_COURSE_MENTORS_NAME));
+            editTextCourseMentorsPhone.setText(getIntent().getStringExtra(EXTRA_COURSE_MENTORS_PHONE));
+            editTextCourseMentorsEmail.setText(getIntent().getStringExtra(EXTRA_COURSE_MENTORS_EMAIL));
+            courseNotes = getIntent().getStringExtra(EXTRA_COURSE_NOTES);
         }
 
         // sets course start date
@@ -177,13 +185,25 @@ public class CourseDetail extends AppCompatActivity {
             textViewCourseEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
         };
 
-        // alert switch toggle functionality
-        SwitchCompat switchCourseAlert = findViewById(R.id.switch_course_alert);
-        switchCourseAlert.setChecked(courseEndAlert);
-        switchCourseAlert.setOnCheckedChangeListener((compoundButton, b) -> {
+        // start alert switch toggle functionality
+        SwitchCompat switchCourseStartAlert = findViewById(R.id.switch_course_start_alert);
+        switchCourseStartAlert.setChecked(courseStartAlert);
+        switchCourseStartAlert.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (textViewCourseStartDate.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "You must set a start date before turning on alert.", Toast.LENGTH_LONG).show();
+                switchCourseStartAlert.setChecked(courseStartAlert);
+            } else {
+                courseStartAlert = b;
+            }
+        });
+
+        // end alert switch toggle functionality
+        SwitchCompat switchCourseEndAlert = findViewById(R.id.switch_course_end_alert);
+        switchCourseEndAlert.setChecked(courseEndAlert);
+        switchCourseEndAlert.setOnCheckedChangeListener((compoundButton, b) -> {
             if (textViewCourseEndDate.getText().toString().equals("")) {
                 Toast.makeText(getApplicationContext(), "You must set an end date before turning on alert.", Toast.LENGTH_LONG).show();
-                switchCourseAlert.setChecked(courseEndAlert);
+                switchCourseEndAlert.setChecked(courseEndAlert);
             } else {
                 courseEndAlert = b;
             }
@@ -341,32 +361,17 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createAlert() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (!sharedPreferences.contains(getResources().getString(R.string.uniqueID))) {
-            editor.putInt(getResources().getString(R.string.uniqueID), 100).apply();
-        }
-        int i = sharedPreferences.getInt(getResources().getString(R.string.uniqueID), -1);
-        if (i != -1) {
-            courseAlertID = i + 1;
-            editor.putInt(getResources().getString(R.string.uniqueID), courseAlertID).apply();
-            Date endDate = null;
-            try {
-                endDate=MainActivity.sdf.parse(textViewCourseEndDate.getText().toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            String title = editTextCourseTitle.getText().toString() + " Ending Today";
-            String text = editTextCourseTitle.getText().toString() + " was scheduled to be completed today. Finish and submit any remaining assessments.";
+    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertBody) {
+        if (alertID != -1) {
             long trigger = 0;
-            if (endDate != null) {
-                trigger = endDate.getTime();
+            if (alertDate != null) {
+                trigger = alertDate.getTime();
             }
             Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_ALERT_ID, courseAlertID);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_TITLE, title);
-            intent.putExtra(CourseCommReceiver.EXTRA_BROADCAST_TEXT, text);
-            PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, courseAlertID, intent, 0);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_ID, alertID);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TITLE, alertTitle);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_BODY, alertBody);
+            PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, alertID, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
         }
@@ -395,9 +400,11 @@ public class CourseDetail extends AppCompatActivity {
             finish();
         } else if (courseTitle.equals(getIntent().getStringExtra(EXTRA_COURSE_TITLE)) &&
                 courseStartDate.equals(getIntent().getStringExtra(EXTRA_COURSE_START_DATE)) &&
+                courseStartAlert == getIntent().getBooleanExtra(EXTRA_COURSE_START_ALERT, false) &&
+                courseStartAlertID == getIntent().getIntExtra(EXTRA_COURSE_START_ALERT_ID, -1) &&
                 courseEndDate.equals(getIntent().getStringExtra(EXTRA_COURSE_END_DATE)) &&
                 courseEndAlert == getIntent().getBooleanExtra(EXTRA_COURSE_END_ALERT, false) &&
-                courseAlertID == getIntent().getIntExtra(EXTRA_COURSE_ALERT_ID, -1) &&
+                courseEndAlertID == getIntent().getIntExtra(EXTRA_COURSE_END_ALERT_ID, -1) &&
                 courseStatus.equals(getIntent().getStringExtra(EXTRA_COURSE_STATUS)) &&
                 courseMentorsName.equals(getIntent().getStringExtra(EXTRA_COURSE_MENTORS_NAME)) &&
                 courseMentorsPhone.equals(getIntent().getStringExtra(EXTRA_COURSE_MENTORS_PHONE)) &&
@@ -422,13 +429,6 @@ public class CourseDetail extends AppCompatActivity {
     }
 
     private void saveCourse() {
-        if (courseAlertID == -1 && courseEndAlert) {
-            createAlert();
-        } else if (courseAlertID > 0 && !courseEndAlert) {
-            deleteAlert(courseAlertID);
-            courseAlertID = -1;
-        }
-
         String courseTitle = editTextCourseTitle.getText().toString();
         String courseStartDate = textViewCourseStartDate.getText().toString();
         String courseEndDate = textViewCourseEndDate.getText().toString();
@@ -448,13 +448,79 @@ public class CourseDetail extends AppCompatActivity {
             }
             Toast.makeText(CourseDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
+            SharedPreferences sharedPreferences = this.getSharedPreferences(MainActivity.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            // start date alert validation
+            if (courseStartAlertID == -1 && courseStartAlert) {
+                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                courseStartAlertID = i;
+                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewCourseStartDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextCourseTitle.getText().toString() + " Begins Today";
+                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to start today.";
+                createAlert(courseStartAlertID, alertDate, alertTitle, alertBody);
+            } else if (courseStartAlertID > 0 && courseStartAlert && !textViewCourseStartDate.toString().equals(getIntent().getStringExtra(EXTRA_COURSE_START_DATE))) {
+                deleteAlert(courseStartAlertID);
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewCourseStartDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextCourseTitle.getText().toString() + " Begins Today";
+                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to start today.";
+                createAlert(courseStartAlertID, alertDate, alertTitle, alertBody);
+            } else if (courseStartAlertID > 0 && !courseStartAlert) {
+                deleteAlert(courseStartAlertID);
+                courseStartAlertID = -1;
+            }
+
+            // end date alert validation
+            if (courseEndAlertID == -1 && courseEndAlert) {
+                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                courseEndAlertID = i;
+                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewCourseEndDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextCourseTitle.getText().toString() + " Ends Today";
+                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to finish today.";
+                createAlert(courseEndAlertID, alertDate, alertTitle, alertBody);
+            } else if (courseEndAlertID > 0 && courseEndAlert && !textViewCourseEndDate.toString().equals(getIntent().getStringExtra(EXTRA_COURSE_END_DATE))) {
+                deleteAlert(courseEndAlertID);
+                Date alertDate = null;
+                try {
+                    alertDate = MainActivity.sdf.parse(textViewCourseEndDate.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String alertTitle = editTextCourseTitle.getText().toString() + " Ends Today";
+                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to finish today. Finish and submit any remaining assessments.";
+                createAlert(courseEndAlertID, alertDate, alertTitle, alertBody);
+                Toast.makeText(this, "end alert date change successful", Toast.LENGTH_SHORT).show();
+            } else if (courseEndAlertID > 0 && !courseEndAlert) {
+                deleteAlert(courseEndAlertID);
+                courseEndAlertID = -1;
+            }
+
             Intent intent = new Intent();
             intent.putExtra(EXTRA_COURSE_ID, courseID);
             intent.putExtra(EXTRA_COURSE_TITLE, courseTitle);
             intent.putExtra(EXTRA_COURSE_START_DATE, courseStartDate);
+            intent.putExtra(EXTRA_COURSE_START_ALERT, courseStartAlert);
+            intent.putExtra(EXTRA_COURSE_START_ALERT_ID, courseStartAlertID);
             intent.putExtra(EXTRA_COURSE_END_DATE, courseEndDate);
             intent.putExtra(EXTRA_COURSE_END_ALERT, courseEndAlert);
-            intent.putExtra(EXTRA_COURSE_ALERT_ID, courseAlertID);
+            intent.putExtra(EXTRA_COURSE_END_ALERT_ID, courseEndAlertID);
             intent.putExtra(EXTRA_COURSE_STATUS, courseStatus);
             intent.putExtra(EXTRA_COURSE_MENTORS_NAME, courseMentorsName);
             intent.putExtra(EXTRA_COURSE_MENTORS_PHONE, courseMentorsPhone);
@@ -475,12 +541,17 @@ public class CourseDetail extends AppCompatActivity {
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("CONFIRM COURSE DELETION")
-                    .setMessage("Select CONFIRM to delete the course and all related assessments." +
-                            "\nSelect ABORT to cancel.\n\n(records are not recoverable)")
+                    .setMessage("Select CONFIRM to delete the course and all related assessments. Select ABORT to cancel.\n\n(records are not recoverable)")
                     .setCancelable(false);
             builder.setNegativeButton("ABORT", (dialogInterface, i) -> {
             });
             builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
+                if (courseStartAlert && courseStartAlertID != -1) {
+                    deleteAlert(courseStartAlertID);
+                }
+                if (courseEndAlert && courseEndAlertID != -1) {
+                    deleteAlert(courseEndAlertID);
+                }
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_COURSE_ID, courseID);
                 setResult(MainActivity.RESULT_DELETE, intent);
