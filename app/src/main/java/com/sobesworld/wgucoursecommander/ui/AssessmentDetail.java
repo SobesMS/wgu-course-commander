@@ -310,7 +310,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle =  "Assessment Completion Goal Today";
+                String alertTitle = "Assessment Completion Goal Today";
                 String alertBody = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today.";
                 createAlert(assessmentAlertID, alertDate, alertTitle, alertBody);
             } else if (assessmentAlertID > 0 && assessmentGoalAlert &&
