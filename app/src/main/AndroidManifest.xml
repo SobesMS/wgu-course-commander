@@ -10,10 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
-        <receiver android:name=".ui.CourseCommReceiver" android:exported="true">
+        <receiver android:name=".ui.CourseCommReceiver"
+            android:exported="false"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+                <action android:name="com.sobesworld.wgucoursecommander.ACTION_DATE_ALERT" />
             </intent-filter>
         </receiver>
         <activity

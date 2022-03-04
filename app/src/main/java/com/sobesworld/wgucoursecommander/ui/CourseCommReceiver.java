@@ -12,24 +12,27 @@ import androidx.core.app.NotificationCompat;
 import com.sobesworld.wgucoursecommander.R;
 
 public class CourseCommReceiver extends BroadcastReceiver {
-    public static final String CHANNEL_ID = "com.sobesworld.wgucoursecommander";
-    public static final CharSequence CHANNEL_NAME = "WGU Course Commander Alerts";
-    public static final String CHANNEL_DESCRIPTION = "Broadcast receiver for the WGU Course Commander app.";
+    public static final String CHANNEL_ID = "com.sobesworld.wgucoursecommander.DATE_ALERTS";
+    public static final CharSequence CHANNEL_NAME = "WGU Course Commander Date Alerts";
+    public static final String CHANNEL_DESCRIPTION = "Date alerts for the WGU Course Commander app.";
     public static final String EXTRA_NOTIFICATION_ID = "com.sobesworld.wgucoursecommander.EXTRA_NOTIFICATION_ID";
     public static final String EXTRA_NOTIFICATION_TITLE = "com.sobesworld.wgucoursecommander.EXTRA_NOTIFICATION_TITLE";
-    public static final String EXTRA_NOTIFICATION_BODY = "com.sobesworld.wgucoursecommander.EXTRA_NOTIFICATION_BODY";
+    public static final String EXTRA_NOTIFICATION_TEXT = "com.sobesworld.wgucoursecommander.EXTRA_NOTIFICATION_TEXT";
+    public static final String ACTION_DATE_ALERT = "com.sobesworld.wgucoursecommander.ACTION_DATE_ALERT";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int id = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
-        createNotificationChannel(context);
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_school)
-                .setContentTitle(intent.getStringExtra(EXTRA_NOTIFICATION_TITLE))
-                .setContentText(intent.getStringExtra(EXTRA_NOTIFICATION_BODY))
-                .build();
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notification);
+        if (intent.getAction().equals(ACTION_DATE_ALERT)) {
+            int id = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
+            createNotificationChannel(context);
+            Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_school)
+                    .setContentTitle(intent.getStringExtra(EXTRA_NOTIFICATION_TITLE))
+                    .setContentText(intent.getStringExtra(EXTRA_NOTIFICATION_TEXT))
+                    .build();
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(id, notification);
+        }
     }
 
     private void createNotificationChannel(Context context) {

@@ -361,28 +361,29 @@ public class CourseDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertBody) {
+    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertText) {
         if (alertID != -1) {
             long trigger = 0;
             if (alertDate != null) {
                 trigger = alertDate.getTime();
             }
             Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
+            intent.setAction(CourseCommReceiver.ACTION_DATE_ALERT);
             intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_ID, alertID);
             intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TITLE, alertTitle);
-            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_BODY, alertBody);
-            PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, alertID, intent, 0);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TEXT, alertText);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(CourseDetail.this, alertID, intent, PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, pendingIntent);
         }
     }
 
-    private void deleteAlert(int id) {
+    private void deleteAlert(int alertID) {
         Intent intent = new Intent(CourseDetail.this, CourseCommReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(CourseDetail.this, id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(CourseDetail.this, alertID, intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(sender);
-        sender.cancel();
+        alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 
     private void upButtonChangeValidation() {
@@ -458,22 +459,22 @@ public class CourseDetail extends AppCompatActivity {
                 editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewCourseStartDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(courseStartDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextCourseTitle.getText().toString() + " Begins Today";
+                String alertTitle = "Course Starts Today";
                 String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to start today.";
                 createAlert(courseStartAlertID, alertDate, alertTitle, alertBody);
-            } else if (courseStartAlertID > 0 && courseStartAlert && !textViewCourseStartDate.toString().equals(getIntent().getStringExtra(EXTRA_COURSE_START_DATE))) {
+            } else if (courseStartAlertID > 0 && courseStartAlert && !courseStartDate.equals(getIntent().getStringExtra(EXTRA_COURSE_START_DATE))) {
                 deleteAlert(courseStartAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewCourseStartDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(courseStartDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextCourseTitle.getText().toString() + " Begins Today";
+                String alertTitle = "Course Starts Today";
                 String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to start today.";
                 createAlert(courseStartAlertID, alertDate, alertTitle, alertBody);
             } else if (courseStartAlertID > 0 && !courseStartAlert) {
@@ -488,23 +489,23 @@ public class CourseDetail extends AppCompatActivity {
                 editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewCourseEndDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(courseEndDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextCourseTitle.getText().toString() + " Ends Today";
+                String alertTitle = "Course Ends Today";
                 String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to finish today.";
                 createAlert(courseEndAlertID, alertDate, alertTitle, alertBody);
-            } else if (courseEndAlertID > 0 && courseEndAlert && !textViewCourseEndDate.toString().equals(getIntent().getStringExtra(EXTRA_COURSE_END_DATE))) {
+            } else if (courseEndAlertID > 0 && courseEndAlert && !courseEndDate.equals(getIntent().getStringExtra(EXTRA_COURSE_END_DATE))) {
                 deleteAlert(courseEndAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewCourseEndDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(courseEndDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextCourseTitle.getText().toString() + " Ends Today";
-                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to finish today. Finish and submit any remaining assessments.";
+                String alertTitle = "Course Ends Today";
+                String alertBody = editTextCourseTitle.getText().toString() + " is scheduled to finish today.";
                 createAlert(courseEndAlertID, alertDate, alertTitle, alertBody);
                 Toast.makeText(this, "end alert date change successful", Toast.LENGTH_SHORT).show();
             } else if (courseEndAlertID > 0 && !courseEndAlert) {

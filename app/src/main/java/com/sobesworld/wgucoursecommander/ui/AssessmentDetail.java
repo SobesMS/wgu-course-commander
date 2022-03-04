@@ -227,28 +227,29 @@ public class AssessmentDetail extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertBody) {
+    private void createAlert(int alertID, Date alertDate, String alertTitle, String alertText) {
         if (alertID != -1) {
             long trigger = 0;
             if (alertDate != null) {
                 trigger = alertDate.getTime();
             }
             Intent intent = new Intent(AssessmentDetail.this, CourseCommReceiver.class);
+            intent.setAction(CourseCommReceiver.ACTION_DATE_ALERT);
             intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_ID, alertID);
             intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TITLE, alertTitle);
-            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_BODY, alertBody);
-            PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, alertID, intent, 0);
+            intent.putExtra(CourseCommReceiver.EXTRA_NOTIFICATION_TEXT, alertText);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(AssessmentDetail.this, alertID, intent, PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, pendingIntent);
         }
     }
 
-    private void deleteAlert(int id) {
+    private void deleteAlert(int alertID) {
         Intent intent = new Intent(AssessmentDetail.this, CourseCommReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(AssessmentDetail.this, id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(AssessmentDetail.this, alertID, intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(sender);
-        sender.cancel();
+        alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 
     private void upButtonChangeValidation() {
@@ -305,23 +306,23 @@ public class AssessmentDetail extends AppCompatActivity {
                 editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewAssessmentGoalDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextAssessmentTitle.getText().toString() + " Completion Goal Today";
+                String alertTitle =  "Assessment Completion Goal Today";
                 String alertBody = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today.";
                 createAlert(assessmentAlertID, alertDate, alertTitle, alertBody);
             } else if (assessmentAlertID > 0 && assessmentGoalAlert &&
-                    !textViewAssessmentGoalDate.toString().equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_GOAL_DATE))) {
+                    !assessmentGoalDate.equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_GOAL_DATE))) {
                 deleteAlert(assessmentAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(textViewAssessmentGoalDate.getText().toString());
+                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String alertTitle = editTextAssessmentTitle.getText().toString() + " Completion Goal Today";
+                String alertTitle = "Assessment Completion Goal Today";
                 String alertBody = editTextAssessmentTitle.getText().toString() + " was scheduled to be completed today.";
                 createAlert(assessmentAlertID, alertDate, alertTitle, alertBody);
             } else if (assessmentAlertID > 0 && !assessmentGoalAlert) {
