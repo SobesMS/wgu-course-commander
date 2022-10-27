@@ -30,7 +30,7 @@ public abstract class CourseCommDatabase extends RoomDatabase {
 
     public static synchronized CourseCommDatabase getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), CourseCommDatabase.class, "course_comm_database")
+            instance = Room.databaseBuilder(context.getApplicationContext(), CourseCommDatabase.class, "course_comm_database.db")
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallback)
                     .build();

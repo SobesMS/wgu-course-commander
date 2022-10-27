@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.CourseAdapter;
@@ -65,7 +68,7 @@ public class TermDetail extends AppCompatActivity {
 
         courseAdapter.setOnItemClickListener(courseEntity -> {
             Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
             intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
             intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
@@ -86,7 +89,7 @@ public class TermDetail extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD) {
+        if (passedIntent.getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD) {
             setTitle("Add Term");
         } else {
             setTitle("Edit Term");
@@ -100,7 +103,7 @@ public class TermDetail extends AppCompatActivity {
             String date = textViewTermStartDate.getText().toString();
             if (!date.trim().isEmpty()) {
                 try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -112,7 +115,7 @@ public class TermDetail extends AppCompatActivity {
         startDateSetListener = (datePicker, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            textViewTermStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            textViewTermStartDate.setText(NavMenu.sdf.format(calendar.getTime()));
         };
 
         textViewTermEndDate.setOnClickListener(view -> {
@@ -120,7 +123,7 @@ public class TermDetail extends AppCompatActivity {
             String date = textViewTermEndDate.getText().toString();
             if (!date.trim().isEmpty()) {
                 try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -132,14 +135,14 @@ public class TermDetail extends AppCompatActivity {
         endDateSetListener = (datePicker, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            textViewTermEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            textViewTermEndDate.setText(NavMenu.sdf.format(calendar.getTime()));
         };
 
         // add course button
         ImageView imageViewTermAddCourse = findViewById(R.id.image_view_term_add_course);
         imageViewTermAddCourse.setOnClickListener(view -> {
             Intent intent = new Intent(TermDetail.this, CourseDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
             intent.putExtra(CourseDetail.EXTRA_COURSE_LINKED_TERM_ID, termID);
             activityLauncher.launch(intent);
         });
@@ -175,7 +178,7 @@ public class TermDetail extends AppCompatActivity {
                                 courseViewModel.update(courseEntity);
                                 Toast.makeText(TermDetail.this, "Course updated.", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                        } else if (resultCode == NavMenu.RESULT_DELETE) {
                             if (courseID == -1) {
                                 Toast.makeText(TermDetail.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
                             } else {
@@ -187,6 +190,16 @@ public class TermDetail extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(TermDetail.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,7 +225,7 @@ public class TermDetail extends AppCompatActivity {
         String termStartDate = textViewTermStartDate.getText().toString();
         String termEndDate = textViewTermEndDate.getText().toString();
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD
+        if (getIntent().getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD
                 && termTitle.trim().isEmpty() && termStartDate.trim().isEmpty() && termEndDate.trim().isEmpty()) {
             setResult(RESULT_CANCELED);
             finish();
@@ -283,7 +296,7 @@ public class TermDetail extends AppCompatActivity {
                 builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
                     Intent intent = new Intent();
                     intent.putExtra(EXTRA_TERM_ID, termID);
-                    setResult(MainActivity.RESULT_DELETE, intent);
+                    setResult(NavMenu.RESULT_DELETE, intent);
                     finish();
                 });
                 AlertDialog alert = builder.create();

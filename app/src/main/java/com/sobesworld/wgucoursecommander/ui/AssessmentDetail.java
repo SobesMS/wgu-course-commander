@@ -26,6 +26,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
@@ -73,7 +76,7 @@ public class AssessmentDetail extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == MainActivity.REQUEST_ADD) {
+        if (passedIntent.getIntExtra(NavMenu.EXTRA_REQUEST_ID, -1) == NavMenu.REQUEST_ADD) {
             setTitle("Add Assessment");
             assessmentGoalAlert = false;
             assessmentAlertID = -1;
@@ -94,7 +97,7 @@ public class AssessmentDetail extends AppCompatActivity {
             String date = textViewAssessmentGoalDate.getText().toString();
             if (!date.trim().isEmpty()) {
                 try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -106,7 +109,7 @@ public class AssessmentDetail extends AppCompatActivity {
         goalDateSetListener = (datePicker, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            textViewAssessmentGoalDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            textViewAssessmentGoalDate.setText(NavMenu.sdf.format(calendar.getTime()));
         };
 
         // alert switch toggle functionality
@@ -171,6 +174,16 @@ public class AssessmentDetail extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(AssessmentDetail.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -256,7 +269,7 @@ public class AssessmentDetail extends AppCompatActivity {
         String assessmentTitle = editTextAssessmentTitle.getText().toString();
         String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString();
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD &&
+        if (getIntent().getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD &&
                 assessmentTitle.trim().isEmpty() && assessmentGoalDate.trim().isEmpty()) {
             setResult(RESULT_CANCELED);
             finish();
@@ -297,16 +310,16 @@ public class AssessmentDetail extends AppCompatActivity {
             }
             Toast.makeText(AssessmentDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
-            SharedPreferences sharedPreferences = this.getSharedPreferences(MainActivity.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = this.getSharedPreferences(NavMenu.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
             if (assessmentAlertID == -1 && assessmentGoalAlert) {
-                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                int i = sharedPreferences.getInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, -1);
                 assessmentAlertID = i;
-                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                editor.putInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
+                    alertDate = NavMenu.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -318,7 +331,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 deleteAlert(assessmentAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
+                    alertDate = NavMenu.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -363,7 +376,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 }
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_ASSESSMENT_ID, assessmentID);
-                setResult(MainActivity.RESULT_DELETE, intent);
+                setResult(NavMenu.RESULT_DELETE, intent);
                 finish();
             });
             AlertDialog alert = builder.create();

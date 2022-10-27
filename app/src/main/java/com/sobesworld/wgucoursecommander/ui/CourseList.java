@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
@@ -31,7 +34,7 @@ public class CourseList extends AppCompatActivity {
         FloatingActionButton addCourseFab = findViewById(R.id.add_course_fab);
         addCourseFab.setOnClickListener(view -> {
             Intent intent = new Intent(CourseList.this, CourseDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
             activityLauncher.launch(intent);
         });
 
@@ -47,7 +50,7 @@ public class CourseList extends AppCompatActivity {
 
         adapter.setOnItemClickListener(courseEntity -> {
             Intent intent = new Intent(CourseList.this, CourseDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
             intent.putExtra(CourseDetail.EXTRA_COURSE_ID, courseEntity.getCourseID());
             intent.putExtra(CourseDetail.EXTRA_COURSE_TITLE, courseEntity.getCourseTitle());
             intent.putExtra(CourseDetail.EXTRA_COURSE_START_DATE, courseEntity.getCourseStartDate());
@@ -96,7 +99,7 @@ public class CourseList extends AppCompatActivity {
                                 courseViewModel.update(courseEntity);
                                 Toast.makeText(CourseList.this, "Course updated.", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                        } else if (resultCode == NavMenu.RESULT_DELETE) {
                             int courseID = intent.getIntExtra(CourseDetail.EXTRA_COURSE_ID, -1);
                             if (courseID == -1) {
                                 Toast.makeText(CourseList.this, "Course does not exist.", Toast.LENGTH_SHORT).show();
@@ -110,5 +113,15 @@ public class CourseList extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(CourseList.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

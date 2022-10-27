@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.TermAdapter;
@@ -29,7 +32,7 @@ public class TermList extends AppCompatActivity {
         FloatingActionButton addTermFab = findViewById(R.id.add_term_fab);
         addTermFab.setOnClickListener(view -> {
             Intent intent = new Intent(TermList.this, TermDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
             activityLauncher.launch(intent);
         });
 
@@ -44,7 +47,7 @@ public class TermList extends AppCompatActivity {
 
         adapter.setOnItemClickListener(termEntity -> {
             Intent intent = new Intent(TermList.this, TermDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
             intent.putExtra(TermDetail.EXTRA_TERM_ID, termEntity.getTermID());
             intent.putExtra(TermDetail.EXTRA_TERM_TITLE, termEntity.getTermTitle());
             intent.putExtra(TermDetail.EXTRA_TERM_START_DATE, termEntity.getTermStartDate());
@@ -71,7 +74,7 @@ public class TermList extends AppCompatActivity {
                                 termViewModel.update(termEntity);
                                 Toast.makeText(TermList.this, "Term updated.", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                        } else if (resultCode == NavMenu.RESULT_DELETE) {
                             if (termID == -1) {
                                 Toast.makeText(TermList.this, "Term does not exist.", Toast.LENGTH_SHORT).show();
                             } else {
@@ -83,5 +86,15 @@ public class TermList extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(TermList.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

@@ -31,6 +31,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.TermViewModel;
@@ -105,7 +108,7 @@ public class CourseDetail extends AppCompatActivity {
 
         assessmentAdapter.setOnItemClickListener(assessmentEntity -> {
             Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, assessmentEntity.getAssessmentID());
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE, assessmentEntity.getAssessmentTitle());
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE, assessmentEntity.getAssessmentType());
@@ -120,7 +123,7 @@ public class CourseDetail extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD) {
+        if (getIntent().getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD) {
             setTitle("Add Course");
             courseStartAlert = false;
             courseStartAlertID = -1;
@@ -149,7 +152,7 @@ public class CourseDetail extends AppCompatActivity {
             String date = textViewCourseStartDate.getText().toString();
             if (!date.trim().isEmpty()) {
                 try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -161,7 +164,7 @@ public class CourseDetail extends AppCompatActivity {
         startDateSetListener = (datePicker, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            textViewCourseStartDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            textViewCourseStartDate.setText(NavMenu.sdf.format(calendar.getTime()));
         };
 
         // sets course end date
@@ -170,7 +173,7 @@ public class CourseDetail extends AppCompatActivity {
             String date = textViewCourseEndDate.getText().toString();
             if (!date.trim().isEmpty()) {
                 try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
+                    calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -182,7 +185,7 @@ public class CourseDetail extends AppCompatActivity {
         endDateSetListener = (datePicker, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            textViewCourseEndDate.setText(MainActivity.sdf.format(calendar.getTime()));
+            textViewCourseEndDate.setText(NavMenu.sdf.format(calendar.getTime()));
         };
 
         // start alert switch toggle functionality
@@ -266,7 +269,7 @@ public class CourseDetail extends AppCompatActivity {
         ImageView imageViewCourseAddAssessment = findViewById(R.id.image_view_course_add_assessment);
         imageViewCourseAddAssessment.setOnClickListener(view -> {
             Intent intent = new Intent(CourseDetail.this, AssessmentDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
             activityLauncher.launch(intent);
         });
 
@@ -294,7 +297,7 @@ public class CourseDetail extends AppCompatActivity {
                                 assessmentViewModel.update(assessmentEntity);
                                 Toast.makeText(CourseDetail.this, "Assessment updated.", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                        } else if (resultCode == NavMenu.RESULT_DELETE) {
                             if (assessmentID == -1) {
                                 Toast.makeText(CourseDetail.this, "Assessment does not exist.", Toast.LENGTH_SHORT).show();
                             } else {
@@ -305,6 +308,16 @@ public class CourseDetail extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(CourseDetail.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -394,7 +407,7 @@ public class CourseDetail extends AppCompatActivity {
         String courseMentorsPhone = editTextCourseMentorsPhone.getText().toString();
         String courseMentorsEmail = editTextCourseMentorsEmail.getText().toString();
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD &&
+        if (getIntent().getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD &&
                 courseTitle.trim().isEmpty() && courseStartDate.trim().isEmpty() && courseEndDate.trim().isEmpty() &&
                 courseMentorsName.trim().isEmpty() && courseMentorsPhone.trim().isEmpty() && courseMentorsEmail.trim().isEmpty()) {
             setResult(RESULT_CANCELED);
@@ -449,17 +462,17 @@ public class CourseDetail extends AppCompatActivity {
             }
             Toast.makeText(CourseDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
-            SharedPreferences sharedPreferences = this.getSharedPreferences(MainActivity.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = this.getSharedPreferences(NavMenu.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
             // start date alert validation
             if (courseStartAlertID == -1 && courseStartAlert) {
-                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                int i = sharedPreferences.getInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, -1);
                 courseStartAlertID = i;
-                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                editor.putInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(courseStartDate);
+                    alertDate = NavMenu.sdf.parse(courseStartDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -470,7 +483,7 @@ public class CourseDetail extends AppCompatActivity {
                 deleteAlert(courseStartAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(courseStartDate);
+                    alertDate = NavMenu.sdf.parse(courseStartDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -484,12 +497,12 @@ public class CourseDetail extends AppCompatActivity {
 
             // end date alert validation
             if (courseEndAlertID == -1 && courseEndAlert) {
-                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                int i = sharedPreferences.getInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, -1);
                 courseEndAlertID = i;
-                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                editor.putInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(courseEndDate);
+                    alertDate = NavMenu.sdf.parse(courseEndDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -500,7 +513,7 @@ public class CourseDetail extends AppCompatActivity {
                 deleteAlert(courseEndAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(courseEndDate);
+                    alertDate = NavMenu.sdf.parse(courseEndDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -555,7 +568,7 @@ public class CourseDetail extends AppCompatActivity {
                 }
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_COURSE_ID, courseID);
-                setResult(MainActivity.RESULT_DELETE, intent);
+                setResult(NavMenu.RESULT_DELETE, intent);
                 finish();
             });
             AlertDialog alert = builder.create();

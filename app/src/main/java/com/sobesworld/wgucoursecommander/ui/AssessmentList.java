@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
 import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.adapters.AssessmentAdapter;
@@ -29,7 +32,7 @@ public class AssessmentList extends AppCompatActivity {
         FloatingActionButton addAssessmentFab = findViewById(R.id.add_assessments_fab);
         addAssessmentFab.setOnClickListener(view -> {
             Intent intent = new Intent(AssessmentList.this, AssessmentDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_ADD);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
             activityLauncher.launch(intent);
         });
 
@@ -44,7 +47,7 @@ public class AssessmentList extends AppCompatActivity {
 
         adapter.setOnItemClickListener(assessmentEntity -> {
             Intent intent = new Intent(AssessmentList.this, AssessmentDetail.class);
-            intent.putExtra(MainActivity.EXTRA_REQUEST_ID, MainActivity.REQUEST_EDIT);
+            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_ID, assessmentEntity.getAssessmentID());
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TITLE, assessmentEntity.getAssessmentTitle());
             intent.putExtra(AssessmentDetail.EXTRA_ASSESSMENT_TYPE, assessmentEntity.getAssessmentType());
@@ -80,7 +83,7 @@ public class AssessmentList extends AppCompatActivity {
                                 assessmentViewModel.update(assessmentEntity);
                                 Toast.makeText(AssessmentList.this, "Assessment updated.", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (resultCode == MainActivity.RESULT_DELETE) {
+                        } else if (resultCode == NavMenu.RESULT_DELETE) {
                             if (assessmentID == -1) {
                                 Toast.makeText(AssessmentList.this, "Assessment does not exist.", Toast.LENGTH_SHORT).show();
                             } else {
@@ -92,5 +95,15 @@ public class AssessmentList extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent intent = new Intent(AssessmentList.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

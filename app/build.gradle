@@ -1,14 +1,15 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.sobesworld.wgucoursecommander"
         minSdk 27
-        targetSdk 30
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -28,14 +29,23 @@ android {
 }
 
 dependencies {
+    // Google Login
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
+
     // Dependencies for working with Architecture components
     // You'll probably have to update the version numbers in build.gradle (Project)
 
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    //implementation 'com.google.firebase:firebase-auth:21.1.0'
     annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
+    // Firebase components
+    implementation platform('com.google.firebase:firebase-bom:31.0.1')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-database'
 
     // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
