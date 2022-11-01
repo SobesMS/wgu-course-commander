@@ -27,34 +27,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_activity);
 
+        // retrieves login authorization reference
         mAuth = FirebaseAuth.getInstance();
+
+        // UI elements
         editTextEmail = findViewById(R.id.email_login);
         editTextPassword = findViewById(R.id.password_login);
+
         progressBar = findViewById(R.id.login_progress);
 
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(view -> login());
 
         TextView forgotPassword = findViewById(R.id.forgot_password);
-        forgotPassword.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ForgotPassword.class);
-            startActivity(intent);
-        });
+        forgotPassword.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ForgotPassword.class)));
 
         TextView register = findViewById(R.id.register);
-        register.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, RegisterUser.class);
-            startActivity(intent);
-        });
+        register.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, RegisterUser.class)));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        // confirms a user is currently logged in and will bypass login if true
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null) {
-            Intent intent = new Intent(MainActivity.this, NavMenu.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, NavMenu.class));
         }
     }
 
@@ -63,41 +62,38 @@ public class MainActivity extends AppCompatActivity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        // validates editText fields
         if(email.isEmpty()) {
             editTextEmail.setError("Email address is required.");
             editTextEmail.requestFocus();
             return;
         }
-
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please provide valid email address.");
             editTextEmail.requestFocus();
             return;
         }
-
         if(password.isEmpty()) {
             editTextPassword.setError("Password is required.");
             editTextPassword.requestFocus();
             return;
         }
-
         if(password.length() < 6) {
             editTextPassword.setError("Password must be 6 or more characters.");
             editTextPassword.requestFocus();
             return;
         }
 
+        // authenticates user login
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
                         assert firebaseUser != null;
                         if(firebaseUser.isEmailVerified()) {
                             Toast.makeText(MainActivity.this, "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(MainActivity.this, NavMenu.class);
-                            startActivity(intent);
+                            startActivity(new Intent(MainActivity.this, NavMenu.class));
                         } else {
                             firebaseUser.sendEmailVerification();
                             Toast.makeText(MainActivity.this, "Check your email to verify your account.", Toast.LENGTH_LONG).show();
@@ -108,20 +104,5 @@ public class MainActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
-    }
-
-    private String randomString(int length) {
-        StringBuilder sb = new StringBuilder(length);
-        String characterChoices = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "0123456789"
-                + "abcdefghijklmnopqrstuvwxyz"
-                + "!@#$%^&*()";
-
-        for (int i = 0; i < length; i++) {
-            int index = (int)(characterChoices.length() * Math.random());
-            sb.append(characterChoices.charAt(index));
-        }
-
-        return sb.toString();
     }
 }

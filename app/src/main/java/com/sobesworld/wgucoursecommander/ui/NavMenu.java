@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,15 +34,19 @@ public class NavMenu extends AppCompatActivity {
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
     public static final int REQUEST_ADD = 1;
     public static final int REQUEST_EDIT = 2;
+    public static final int RESULT_INSERT = 97;
+    public static final int RESULT_UPDATE = 98;
     public static final int RESULT_DELETE = 99;
 
     private DatabaseReference database;
-    TextView greeting, logoutButton;
+    private TextView greeting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_menu);
+
+        // creates notification channel for course and assessment alerts
         createNotificationChannel();
         SharedPreferences sharedPreferences = this.getSharedPreferences(SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
         if (!sharedPreferences.contains(SHARED_PREFS_ALERT_ID_COUNTER)) {
@@ -50,19 +54,34 @@ public class NavMenu extends AppCompatActivity {
             editor.putInt(SHARED_PREFS_ALERT_ID_COUNTER, 101).apply();
         }
 
+        // retrieves user database reference
         database = FirebaseDatabase.getInstance().getReference();
+
+        // UI elements
         greeting = findViewById(R.id.greeting);
-        logoutButton = findViewById(R.id.logout);
+
+        Button termListBtn = findViewById(R.id.main_terms_button);
+        termListBtn.setOnClickListener(view -> goToTermList());
+
+        Button courseListBtn = findViewById(R.id.main_courses_button);
+        courseListBtn.setOnClickListener(view -> goToCourseList());
+
+        Button assessmentListBtn = findViewById(R.id.main_assessments_button);
+        assessmentListBtn.setOnClickListener(view -> goToAssessmentList());
+
+        TextView logoutButton = findViewById(R.id.logout);
         logoutButton.setOnClickListener(view -> logout());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        // confirms a user is currently logged in and personalizes the greeting
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null) {
-            Intent intent = new Intent(NavMenu.this, MainActivity.class);
-            startActivity(intent);
+            Toast.makeText(NavMenu.this, "User logged out. Please try again.", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(NavMenu.this, MainActivity.class));
         } else {
             database.child("Users").child(user.getUid()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -87,17 +106,25 @@ public class NavMenu extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.view_profile_btn) {
-            viewProfile();
+            startActivity(new Intent(NavMenu.this, ViewEditProfile.class));
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void viewProfile() {
-        Intent intent = new Intent(NavMenu.this, ViewEditProfile.class);
-        startActivity(intent);
+    // methods for navigation buttons
+    private void goToTermList() {
+        startActivity(new Intent(NavMenu.this, TermList.class));
     }
 
-    public void logout() {
+    private void goToCourseList() {
+        startActivity(new Intent(NavMenu.this, CourseList.class));
+    }
+
+    private void goToAssessmentList() {
+        startActivity(new Intent(NavMenu.this, AssessmentList.class));
+    }
+
+    private void logout() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(NavMenu.this);
         dialog.setTitle("LOGOUT CONFIRMATION")
                 .setMessage("Do you really want to log out of WGU Course Commander?")
@@ -109,21 +136,6 @@ public class NavMenu extends AppCompatActivity {
                     startActivity(intent);
                 })
                 .show();
-    }
-
-    public void goToTermList(View view) {
-        Intent intent= new Intent(NavMenu.this, TermList.class);
-        startActivity(intent);
-    }
-
-    public void goToCourseList(View view) {
-        Intent intent= new Intent(NavMenu.this, CourseList.class);
-        startActivity(intent);
-    }
-
-    public void goToAssessmentList(View view) {
-        Intent intent= new Intent(NavMenu.this, AssessmentList.class);
-        startActivity(intent);
     }
 
     private void createNotificationChannel() {
