@@ -29,4 +29,6 @@ public class TermViewModel extends AndroidViewModel {
     public void deleteUsingTermID(int i) { termRepository.deleteUsingTermID(i); }
 
     public LiveData<List<TermEntity>> getAllTerms() { return allTerms; }
+
+    public LiveData<List<TermEntity>> getAllTermsByUserID(String s) { return termRepository.getAllTermsByUserID(s); }
 }

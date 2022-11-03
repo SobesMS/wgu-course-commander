@@ -22,43 +22,46 @@ public class TermList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
-
-        // UI elements
-        FloatingActionButton addTermFab = findViewById(R.id.add_term_fab);
-        addTermFab.setOnClickListener(view -> {
-            Intent intent = new Intent(TermList.this, TermDetail.class);
-            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
-            startActivity(intent);
-        });
-
-        RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        TermAdapter adapter = new TermAdapter();
-        recyclerView.setAdapter(adapter);
-
-        TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        termViewModel.getAllTerms().observe(this, adapter::submitList);
-
-        adapter.setOnItemClickListener(termEntity -> {
-            Intent intent = new Intent(TermList.this, TermDetail.class);
-            intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
-            intent.putExtra(TermDetail.EXTRA_TERM_ID, termEntity.getTermID());
-            intent.putExtra(TermDetail.EXTRA_TERM_TITLE, termEntity.getTermTitle());
-            intent.putExtra(TermDetail.EXTRA_TERM_START_DATE, termEntity.getTermStartDate());
-            intent.putExtra(TermDetail.EXTRA_TERM_END_DATE, termEntity.getTermEndDate());
-            startActivity(intent);
-        });
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
-        // confirms a user is currently logged in
+        // confirms a user is currently logged and displays term list
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null) {
             startActivity(new Intent(TermList.this, MainActivity.class));
+        } else {
+            String userID = user.getUid();
+
+            // UI elements
+            FloatingActionButton addTermFab = findViewById(R.id.add_term_fab);
+            addTermFab.setOnClickListener(view -> {
+                Intent intent = new Intent(TermList.this, TermDetail.class);
+                intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_ADD);
+                startActivity(intent);
+            });
+
+            RecyclerView recyclerView = findViewById(R.id.terms_recyclerview);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            TermAdapter adapter = new TermAdapter();
+            recyclerView.setAdapter(adapter);
+
+            TermViewModel termViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+            termViewModel.getAllTermsByUserID(userID).observe(this, adapter::submitList);
+
+            adapter.setOnItemClickListener(termEntity -> {
+                Intent intent = new Intent(TermList.this, TermDetail.class);
+                intent.putExtra(NavMenu.EXTRA_REQUEST_ID, NavMenu.REQUEST_EDIT);
+                intent.putExtra(TermDetail.EXTRA_TERM_ID, termEntity.getTermID());
+                intent.putExtra(TermDetail.EXTRA_TERM_TITLE, termEntity.getTermTitle());
+                intent.putExtra(TermDetail.EXTRA_TERM_START_DATE, termEntity.getTermStartDate());
+                intent.putExtra(TermDetail.EXTRA_TERM_END_DATE, termEntity.getTermEndDate());
+                intent.putExtra(TermDetail.EXTRA_TERM_USER_ID, termEntity.getTermUserID());
+                startActivity(intent);
+            });
         }
     }
 }

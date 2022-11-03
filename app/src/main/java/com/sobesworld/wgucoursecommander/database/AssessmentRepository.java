@@ -41,5 +41,7 @@ public class AssessmentRepository {
 
     public LiveData<List<AssessmentEntity>> getAllAssessments() { return allAssessments; }
 
+    public LiveData<List<AssessmentEntity>> getAllAssessmentsByUserID(String s) { return assessmentDAO.getAllAssessmentsByUserID(s); }
+
     public LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) { return assessmentDAO.getLinkedAssessments(i); }
 }

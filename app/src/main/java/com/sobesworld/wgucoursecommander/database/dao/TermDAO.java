@@ -29,4 +29,7 @@ public interface TermDAO {
 
     @Query("SELECT * FROM term_table ORDER BY termID ASC")
     LiveData<List<TermEntity>> getAllTerms();
+
+    @Query("SELECT * FROM term_table WHERE termUserID = :s ORDER BY termID ASC")
+    LiveData<List<TermEntity>> getAllTermsByUserID(String s);
 }

@@ -27,9 +27,18 @@ public interface CourseDAO {
     @Query("DELETE FROM course_table WHERE courseID = :i")
     void deleteUsingCourseID(int i);
 
+    @Query("DELETE FROM course_table WHERE courseLinkedTermID = :i")
+    void deleteLinkedCourses(int i);
+
     @Query("SELECT * FROM course_table ORDER BY courseID ASC")
     LiveData<List<CourseEntity>> getAllCourses();
 
+    @Query("SELECT * FROM course_table WHERE courseUserID = :s ORDER BY courseID ASC")
+    LiveData<List<CourseEntity>> getAllCoursesByUserID(String s);
+
     @Query("SELECT * FROM course_table WHERE courseLinkedTermID = :i ORDER BY courseID ASC")
     LiveData<List<CourseEntity>> getLinkedCourses(int i);
+
+    @Query("SELECT * FROM course_table WHERE courseLinkedTermID = :i ORDER BY courseLinkedTermID ASC")
+    List<CourseEntity> deleteLinkedAssessments(int i);
 }

@@ -36,4 +36,6 @@ public class TermRepository {
     }
 
     public LiveData<List<TermEntity>> getAllTerms() { return allTerms; }
+
+    public LiveData<List<TermEntity>> getAllTermsByUserID(String s) { return termDAO.getAllTermsByUserID(s); }
 }
