@@ -30,7 +30,7 @@ public class CourseViewModel extends AndroidViewModel {
 
     public void deleteLinkedCourses(int i) { courseRepository.deleteLinkedCourses(i); }
 
-    public void deleteLinkedAssessments(int i) { courseRepository.deleteLinkedAssessments(i); }
+    public void deleteLinkedAssessments(int i) { courseRepository.deleteLinkedCoursesAndAssessments(i); }
 
     public LiveData<List<CourseEntity>> getAllCourses() { return allCourses; }
 

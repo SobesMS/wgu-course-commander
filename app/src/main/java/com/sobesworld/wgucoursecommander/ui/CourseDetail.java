@@ -103,6 +103,10 @@ public class CourseDetail extends AppCompatActivity {
             Intent passedIntent = getIntent();
 
             assessmentAdapter = new AssessmentAdapter();
+            RecyclerView recyclerView = findViewById(R.id.course_assessment_list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(assessmentAdapter);
+
             courseLinkedTermID = getIntent().getIntExtra(EXTRA_COURSE_LINKED_TERM_ID, -1);
 
             // determines whether adding a new assessment or editing an existing and sets UI appropriately
@@ -146,10 +150,7 @@ public class CourseDetail extends AppCompatActivity {
                         startActivity(intent);
                     });
 
-                    RecyclerView recyclerView = findViewById(R.id.course_assessment_list);
                     recyclerView.setVisibility(View.VISIBLE);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                    recyclerView.setAdapter(assessmentAdapter);
                     AssessmentViewModel assessmentViewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
                     assessmentViewModel.getLinkedAssessments(courseID).observe(this, assessmentEntities -> assessmentAdapter.submitList(assessmentEntities));
 
@@ -532,7 +533,7 @@ public class CourseDetail extends AppCompatActivity {
                         }
                         courseViewModel.deleteUsingCourseID(courseID);
                         assessmentViewModel.deleteLinkedAssessments(courseID);
-                        Toast.makeText(CourseDetail.this, "Course and assessments deleted.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CourseDetail.this, "Course and related assessments have been deleted.", Toast.LENGTH_LONG).show();
                         finish();
                     })
                     .show();

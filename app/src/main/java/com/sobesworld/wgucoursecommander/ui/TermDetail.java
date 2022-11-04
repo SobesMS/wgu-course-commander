@@ -72,6 +72,9 @@ public class TermDetail extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             courseAdapter = new CourseAdapter();
+            RecyclerView recyclerView = findViewById(R.id.term_course_list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(courseAdapter);
 
             // contains data passed from terms list
             Intent passedIntent = getIntent();
@@ -104,10 +107,7 @@ public class TermDetail extends AppCompatActivity {
                         startActivity(intent);
                     });
 
-                    RecyclerView recyclerView = findViewById(R.id.term_course_list);
                     recyclerView.setVisibility(View.VISIBLE);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                    recyclerView.setAdapter(courseAdapter);
                     CourseViewModel courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
                     courseViewModel.getLinkedCourses(termID).observe(this, courseEntities -> courseAdapter.submitList(courseEntities));
 
@@ -257,7 +257,6 @@ public class TermDetail extends AppCompatActivity {
             Toast.makeText(TermDetail.this, "New term creation cancelled.", Toast.LENGTH_LONG).show();
             finish();
         } else {
-            //CourseDAO courseDAO =
             TermViewModel termViewModel = new ViewModelProvider(TermDetail.this).get(TermViewModel.class);
             CourseViewModel courseViewModel = new ViewModelProvider(TermDetail.this).get(CourseViewModel.class);
             AlertDialog.Builder dialog = new AlertDialog.Builder(TermDetail.this);
@@ -268,9 +267,8 @@ public class TermDetail extends AppCompatActivity {
                     })
                     .setPositiveButton("CONFIRM", (dialogInterface, i) -> {
                         courseViewModel.deleteLinkedAssessments(termID);
-                        courseViewModel.deleteLinkedCourses(termID);
                         termViewModel.deleteUsingTermID(termID);
-                        Toast.makeText(TermDetail.this, "Term and courses deleted.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(TermDetail.this, "Term, and related courses and assessments, have been deleted.", Toast.LENGTH_LONG).show();
                         finish();
                     })
                     .show();

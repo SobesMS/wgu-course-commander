@@ -48,7 +48,7 @@ public class CourseRepository {
 
     public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return courseDAO.getLinkedCourses(i); }
 
-    public void deleteLinkedAssessments(int i) {
+    public void deleteLinkedCoursesAndAssessments(int i) {
         CourseCommDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -57,6 +57,7 @@ public class CourseRepository {
                     CourseEntity course = courseList.get(id);
                     assessmentDAO.deleteLinkedAssessments(course.getCourseID());
                 }
+                courseDAO.deleteLinkedCourses(i);
             }
         });
     }
