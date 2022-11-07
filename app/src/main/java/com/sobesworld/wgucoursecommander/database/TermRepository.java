@@ -38,4 +38,10 @@ public class TermRepository {
     public LiveData<List<TermEntity>> getAllTerms() { return allTerms; }
 
     public LiveData<List<TermEntity>> getAllTermsByUserID(String s) { return termDAO.getAllTermsByUserID(s); }
+
+    public void deleteAllTermsByUserID(String s) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> termDAO.deleteAllTermsByUserID(s));
+    }
+
+    public LiveData<List<TermEntity>> termSearch(String s, String id) { return termDAO.termSearch(s, id); }
 }

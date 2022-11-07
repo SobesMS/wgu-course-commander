@@ -9,7 +9,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
-import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.util.List;
 
@@ -37,6 +36,17 @@ public interface AssessmentDAO {
     @Query("SELECT * FROM assessment_table WHERE assessmentUserID = :s ORDER BY assessmentID ASC")
     LiveData<List<AssessmentEntity>> getAllAssessmentsByUserID(String s);
 
+    @Query("DELETE FROM assessment_table WHERE assessmentUserID = :s")
+    void deleteAllAssessmentsByUserID(String s);
+
     @Query("SELECT * FROM assessment_table WHERE assessmentLinkedCourseID = :i ORDER BY assessmentID ASC")
     LiveData<List<AssessmentEntity>> getLinkedAssessments(int i);
+
+    @Query("SELECT * FROM assessment_table WHERE assessmentTitle LIKE :s " +
+            "OR assessmentType LIKE :s " +
+            "OR assessmentGoalDate LIKE :s " +
+            "OR assessmentNotes LIKE :s " +
+            "AND assessmentUserID = :id " +
+            "ORDER BY assessmentID ASC")
+    LiveData<List<AssessmentEntity>> assessmentSearch(String s, String id);
 }

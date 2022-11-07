@@ -43,5 +43,11 @@ public class AssessmentRepository {
 
     public LiveData<List<AssessmentEntity>> getAllAssessmentsByUserID(String s) { return assessmentDAO.getAllAssessmentsByUserID(s); }
 
+    public void deleteAllAssessmentsByUserID(String s) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> assessmentDAO.deleteAllAssessmentsByUserID(s));
+    }
+
     public LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) { return assessmentDAO.getLinkedAssessments(i); }
+
+    public LiveData<List<AssessmentEntity>> assessmentSearch(String s, String id) { return assessmentDAO.assessmentSearch(s, id); }
 }

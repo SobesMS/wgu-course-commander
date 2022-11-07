@@ -32,4 +32,14 @@ public interface TermDAO {
 
     @Query("SELECT * FROM term_table WHERE termUserID = :s ORDER BY termID ASC")
     LiveData<List<TermEntity>> getAllTermsByUserID(String s);
+
+    @Query("DELETE FROM term_table WHERE termUserID = :s")
+    void deleteAllTermsByUserID(String s);
+
+    @Query("SELECT * FROM term_table WHERE termTitle LIKE :s " +
+            "OR termStartDate LIKE :s " +
+            "OR termEndDate LIKE :s " +
+            "AND termUserID = :id " +
+            "ORDER BY termID ASC")
+    LiveData<List<TermEntity>> termSearch(String s, String id);
 }

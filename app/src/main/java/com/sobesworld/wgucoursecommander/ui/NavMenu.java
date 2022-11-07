@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.SearchActivity;
 import com.sobesworld.wgucoursecommander.User;
 import com.sobesworld.wgucoursecommander.ViewEditProfile;
 
@@ -34,9 +35,6 @@ public class NavMenu extends AppCompatActivity {
     public static final String EXTRA_REQUEST_ID = "com.sobesworld.wgucoursecommander.EXTRA_REQUEST_ID";
     public static final int REQUEST_ADD = 1;
     public static final int REQUEST_EDIT = 2;
-    public static final int RESULT_INSERT = 97;
-    public static final int RESULT_UPDATE = 98;
-    public static final int RESULT_DELETE = 99;
 
     private DatabaseReference database;
     private TextView greeting;
@@ -74,8 +72,8 @@ public class NavMenu extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         // confirms a user is currently logged in and personalizes the greeting
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -89,7 +87,7 @@ public class NavMenu extends AppCompatActivity {
                     if (userProfile == null) {
                         greeting.setText(R.string.welcome);
                     } else {
-                        String firstNameGreeting = ("Welcome, " + userProfile.firstName + "!");
+                        String firstNameGreeting = ("Welcome, " + userProfile.getFirstName() + "!");
                         greeting.setText(firstNameGreeting);
                     }
                 } else {
@@ -107,6 +105,9 @@ public class NavMenu extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.view_profile_btn) {
             startActivity(new Intent(NavMenu.this, ViewEditProfile.class));
+        }
+        if (item.getItemId() == R.id.search) {
+            startActivity(new Intent(NavMenu.this, SearchActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

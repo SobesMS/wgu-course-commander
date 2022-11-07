@@ -119,7 +119,7 @@ public class CourseDetail extends AppCompatActivity {
                 courseEndAlert = false;
                 courseEndAlertID = -1;
             } else {
-                setTitle("Edit Course");
+                setTitle("View/Edit Course");
                 courseID = getIntent().getIntExtra(EXTRA_COURSE_ID, -1);
                 if (courseID == -1) {
                     Toast.makeText(CourseDetail.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();

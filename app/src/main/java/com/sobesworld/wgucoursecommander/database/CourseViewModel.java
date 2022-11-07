@@ -36,5 +36,9 @@ public class CourseViewModel extends AndroidViewModel {
 
     public LiveData<List<CourseEntity>> getAllCoursesByUserID(String s) { return courseRepository.getAllCoursesByUserID(s); }
 
+    public void deleteAllCoursesByUserID(String s) { courseRepository.deleteAllCoursesByUserID(s); }
+
     public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return courseRepository.getLinkedCourses(i); }
+
+    public LiveData<List<CourseEntity>> courseSearch(String s, String id) { return courseRepository.courseSearch(s, id); }
 }

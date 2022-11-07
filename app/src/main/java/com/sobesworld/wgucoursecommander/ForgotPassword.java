@@ -63,7 +63,7 @@ public class ForgotPassword extends AppCompatActivity {
                 Intent intent = new Intent(ForgotPassword.this, MainActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(ForgotPassword.this, "Password reset failed. Please try again.", Toast.LENGTH_LONG).show(); // TODO: verify account doesn't exist
+                Toast.makeText(ForgotPassword.this, "Password reset failed. Please try again.", Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });

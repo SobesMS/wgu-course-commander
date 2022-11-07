@@ -11,7 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -76,6 +75,11 @@
             android:name=".ViewEditProfile"
             android:exported="false"
             android:label="View/Edit Profile"
+            android:parentActivityName=".ui.NavMenu" />
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false"
+            android:label="Search"
             android:parentActivityName=".ui.NavMenu" />
     </application>
 

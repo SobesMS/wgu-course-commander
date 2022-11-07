@@ -84,7 +84,7 @@ public class TermDetail extends AppCompatActivity {
                 setTitle("Add Term");
                 termID = 0;
             } else {
-                setTitle("Edit Term");
+                setTitle("View/Edit Term");
                 termID = passedIntent.getIntExtra(EXTRA_TERM_ID, -1);
                 if (termID == -1) {
                     Toast.makeText(TermDetail.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();

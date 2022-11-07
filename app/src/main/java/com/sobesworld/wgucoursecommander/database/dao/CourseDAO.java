@@ -36,9 +36,24 @@ public interface CourseDAO {
     @Query("SELECT * FROM course_table WHERE courseUserID = :s ORDER BY courseID ASC")
     LiveData<List<CourseEntity>> getAllCoursesByUserID(String s);
 
+    @Query("DELETE FROM course_table WHERE courseUserID = :s")
+    void deleteAllCoursesByUserID(String s);
+
     @Query("SELECT * FROM course_table WHERE courseLinkedTermID = :i ORDER BY courseID ASC")
     LiveData<List<CourseEntity>> getLinkedCourses(int i);
 
     @Query("SELECT * FROM course_table WHERE courseLinkedTermID = :i ORDER BY courseLinkedTermID ASC")
     List<CourseEntity> deleteLinkedAssessments(int i);
+
+    @Query ("SELECT * FROM course_table WHERE courseTitle LIKE :s " +
+            "OR courseStartDate LIKE :s " +
+            "OR courseEndDate LIKE :s " +
+            "OR courseStatus LIKE :s " +
+            "OR courseMentorsName LIKE :s " +
+            "OR courseMentorsPhone LIKE :s " +
+            "OR courseMentorsEmail LIKE :s " +
+            "OR courseNotes LIKE :s " +
+            "AND courseUserID = :id " +
+            "ORDER BY courseID ASC")
+    LiveData<List<CourseEntity>> courseSearch(String s, String id);
 }

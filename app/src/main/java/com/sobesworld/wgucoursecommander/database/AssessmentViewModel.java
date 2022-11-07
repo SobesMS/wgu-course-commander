@@ -34,5 +34,9 @@ public class AssessmentViewModel extends AndroidViewModel {
 
     public LiveData<List<AssessmentEntity>> getAllAssessmentsByUserID(String s) { return assessmentRepository.getAllAssessmentsByUserID(s); }
 
+    public void deleteAllAssessmentsByUserID(String s) { assessmentRepository.deleteAllAssessmentsByUserID(s); }
+
     public LiveData<List<AssessmentEntity>> getLinkedAssessments(int i) { return assessmentRepository.getLinkedAssessments(i); }
+
+    public LiveData<List<AssessmentEntity>> assessmentSearch(String s, String id) { return assessmentRepository.assessmentSearch(s, id); }
 }

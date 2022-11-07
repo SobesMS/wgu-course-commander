@@ -55,7 +55,7 @@ public class AssessmentDetail extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener goalDateSetListener;
 
-    private int assessmentID, assessmentAlertID, assessmentLinkedCourseID, assessmentLinkedTermID;
+    private int assessmentID, assessmentAlertID, assessmentLinkedCourseID;
     private EditText editTextAssessmentTitle;
     private String assessmentType, assessmentNotes, userID;
     private TextView textViewAssessmentGoalDate;
@@ -94,7 +94,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 assessmentAlertID = -1;
                 assessmentNotes = getIntent().getStringExtra(EXTRA_ASSESSMENT_NOTES);
             } else {
-                setTitle("Edit Assessment");
+                setTitle("View/Edit Assessment");
                 assessmentID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_ID, -1);
                 if (assessmentID == -1) {
                     Toast.makeText(AssessmentDetail.this, "Something went wrong.", Toast.LENGTH_LONG).show();
@@ -186,7 +186,6 @@ public class AssessmentDetail extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     CourseEntity course = (CourseEntity) adapterView.getSelectedItem();
                     assessmentLinkedCourseID = course.getCourseID();
-                    assessmentLinkedTermID = course.getCourseLinkedTermID();
                 }
 
                 @Override

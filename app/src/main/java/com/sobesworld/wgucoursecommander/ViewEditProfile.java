@@ -1,7 +1,8 @@
 package com.sobesworld.wgucoursecommander;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,20 +13,22 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
+import com.sobesworld.wgucoursecommander.database.CourseViewModel;
+import com.sobesworld.wgucoursecommander.database.TermViewModel;
 import com.sobesworld.wgucoursecommander.ui.NavMenu;
 
 public class ViewEditProfile extends AppCompatActivity {
 
     private EditText editTextFirstName, editTextLastName, editTextEmail;
-    private FirebaseUser user;
+    private FirebaseUser firebaseUser;
     private DatabaseReference database;
+    private User dbUserRecord;
+    private String userID;
     private ProgressBar progressBar;
 
     @Override
@@ -49,23 +52,25 @@ public class ViewEditProfile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user == null) {
+        if (firebaseUser == null) {
             Intent intent = new Intent(ViewEditProfile.this, MainActivity.class);
             startActivity(intent);
         } else {
-            database.child("Users").child(user.getUid()).get().addOnCompleteListener(task -> {
+            userID = firebaseUser.getUid();
+
+            database.child("Users").child(userID).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    User userProfile = task.getResult().getValue(User.class);
-                    if (userProfile == null) {
+                    dbUserRecord = task.getResult().getValue(User.class);
+                    if (dbUserRecord == null) {
                         Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
                         startActivity(intent);
                     } else {
-                        editTextFirstName.setText(userProfile.firstName);
-                        editTextLastName.setText(userProfile.lastName);
-                        editTextEmail.setText(userProfile.email);
+                        editTextFirstName.setText(dbUserRecord.getFirstName());
+                        editTextLastName.setText(dbUserRecord.getLastName());
+                        editTextEmail.setText(dbUserRecord.getEmail());
                     }
                 } else {
                     Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
@@ -82,90 +87,102 @@ public class ViewEditProfile extends AppCompatActivity {
         String lastName = editTextLastName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
 
-        database.child("Users").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    User userProfile = task.getResult().getValue(User.class);
-                    if (userProfile == null) {
-                        Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
+        if (firstName.isEmpty()) {
+            editTextFirstName.setError("First name was left blank. Re-adding from database.");
+            editTextFirstName.setText(dbUserRecord.getFirstName());
+            return;
+        }
+
+        if (lastName.isEmpty()) {
+            editTextLastName.setError("Last name was left blank. Re-adding from database");
+            editTextLastName.setText(dbUserRecord.getLastName());
+            return;
+        }
+
+        if (email.isEmpty()) {
+            editTextEmail.setError("Email was left blank. Re-adding from database.");
+            editTextEmail.setText(dbUserRecord.getEmail());
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Invalid email format.");
+            return;
+        }
+
+        User newProfile = new User(firstName, lastName, email);
+
+        if (firstName.equalsIgnoreCase(dbUserRecord.getFirstName()) && lastName.equalsIgnoreCase(dbUserRecord.getLastName())
+                && email.equalsIgnoreCase(dbUserRecord.getEmail())) {
+            progressBar.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
+            startActivity(intent);
+        } else {
+            if (email.equalsIgnoreCase(dbUserRecord.getEmail())) {
+                database.child("Users").child(userID).setValue(newProfile).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
                         progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ViewEditProfile.this, "Profile edit successful.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
+                        startActivity(intent);
                     } else {
-                        String dbFirstName = userProfile.firstName;
-                        String dbLastName = userProfile.lastName;
-                        String dbEmail = userProfile.email;
-
-                        if (firstName.equals(dbFirstName) && lastName.equals(dbLastName) && email.equalsIgnoreCase(dbEmail)) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
-                            startActivity(intent);
-                        } else {
-                            if (!firstName.equals(dbFirstName)) {
-                                if (firstName.isEmpty()) {
-                                    editTextFirstName.setError("First name was left blank.");
-                                    editTextFirstName.setText(dbFirstName);
-                                    return;
-                                } else {
-                                    userProfile.setFirstName(firstName);
-                                }
-                            }
-
-                            if (!lastName.equals(dbLastName)) {
-                                if (lastName.isEmpty()) {
-                                    editTextLastName.setError("Last name was left blank.");
-                                    editTextLastName.setText(dbLastName);
-                                    return;
-                                } else {
-                                    userProfile.setLastName(lastName);
-                                }
-                            }
-
-                            if (!email.equalsIgnoreCase(dbEmail) && !email.isEmpty()) {
-                                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    editTextEmail.setError("Invalid email format.");
-                                    editTextEmail.requestFocus();
-                                    return;
-                                } else {
-                                    // TODO: update db and account email address
-                                    userProfile.setEmail(email);
-                                }
-                            }
-
-                            database.child("Users").child(user.getUid()).setValue(userProfile).addOnCompleteListener(task1 -> {
-                                Toast.makeText(ViewEditProfile.this, "Profile edit successful.", Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                database.child("Users").child(userID).setValue(newProfile).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        firebaseUser.updateEmail(newProfile.getEmail()).addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
                                 progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(ViewEditProfile.this, "Profile edit successful.", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
                                 startActivity(intent);
-                            });
-                        }
+                            } else {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(ViewEditProfile.this, "An error occurred while updating email. Please notify admin.", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ViewEditProfile.this, NavMenu.class);
+                                startActivity(intent);
+                            }
+                        });
+                    } else {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                     }
-                }
+                });
             }
-        });
+        }
     }
 
     private void deleteAccount() {
         progressBar.setVisibility(View.VISIBLE);
 
-        if (user == null) {
-            Toast.makeText(ViewEditProfile.this, "Unable to delete account. Please try again later.", Toast.LENGTH_LONG).show();
-            progressBar.setVisibility(View.INVISIBLE);
-        } else {
-            user.delete()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            database.child("Users").child(user.getUid()).removeValue().addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    FirebaseAuth.getInstance().signOut();
-                                    Toast.makeText(ViewEditProfile.this, "Account deletion successful.", Toast.LENGTH_LONG).show();
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    Intent intent = new Intent(ViewEditProfile.this, MainActivity.class);
-                                    startActivity(intent);
-                                } // TODO: else logic - account deleted but db record is not
-                            });
-                        }
-                    });
-        }
+        TermViewModel termViewModel = new ViewModelProvider(ViewEditProfile.this).get(TermViewModel.class);
+        CourseViewModel courseViewModel = new ViewModelProvider(ViewEditProfile.this).get(CourseViewModel.class);
+        AssessmentViewModel assessmentViewModel = new ViewModelProvider(ViewEditProfile.this).get(AssessmentViewModel.class);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ViewEditProfile.this);
+        dialog.setTitle("CONFIRM ACCOUNT DELETION")
+                .setMessage("Select CONFIRM to delete your user account and all related records. Select ABORT to cancel.\n\n(records are not recoverable)")
+                .setCancelable(false)
+                .setNegativeButton("ABORT", (dialogInterface, i) -> {
+                })
+                .setPositiveButton("CONFIRM", (dialogInterface, i) -> firebaseUser.delete().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        termViewModel.deleteAllTermsByUserID(userID);
+                        courseViewModel.deleteAllCoursesByUserID(userID);
+                        assessmentViewModel.deleteAllAssessmentsByUserID(userID);
+                        database.child("Users").child(userID).removeValue();
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ViewEditProfile.this, "User has been deleted.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(ViewEditProfile.this, MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ViewEditProfile.this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                }))
+                .show();
     }
 }

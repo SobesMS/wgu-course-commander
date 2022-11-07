@@ -5,6 +5,12 @@
     <item
         android:title="Profile"
         android:id="@+id/view_profile_btn"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:icon="@drawable/ic_profile" />
+
+    <item
+        android:title="Search"
+        android:id="@+id/search"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_search_24" />
 </menu>

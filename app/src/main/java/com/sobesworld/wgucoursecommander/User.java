@@ -2,7 +2,7 @@ package com.sobesworld.wgucoursecommander;
 
 public class User {
 
-    public String firstName, lastName, email;
+    private String firstName, lastName, email;
 
     public User() {
     }
