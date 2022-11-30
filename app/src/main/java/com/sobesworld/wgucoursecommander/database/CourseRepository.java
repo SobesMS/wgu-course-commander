@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.sobesworld.wgucoursecommander.database.dao.AssessmentDAO;
 import com.sobesworld.wgucoursecommander.database.dao.CourseDAO;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
@@ -11,11 +12,13 @@ import java.util.List;
 
 public class CourseRepository {
     private final CourseDAO courseDAO;
+    private final AssessmentDAO assessmentDAO;
     private final LiveData<List<CourseEntity>> allCourses;
 
     public CourseRepository(Application application) {
         CourseCommDatabase database = CourseCommDatabase.getInstance(application);
         courseDAO = database.courseDAO();
+        assessmentDAO = database.assessmentDAO();
         allCourses = courseDAO.getAllCourses();
     }
 
@@ -35,7 +38,30 @@ public class CourseRepository {
         CourseCommDatabase.databaseWriteExecutor.execute(() -> courseDAO.deleteUsingCourseID(i));
     }
 
+    public void deleteLinkedCourses(int i) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> courseDAO.deleteLinkedCourses(i));
+    }
+
     public LiveData<List<CourseEntity>> getAllCourses() { return allCourses; }
 
+    public LiveData<List<CourseEntity>> getAllCoursesByUserID(String s) { return courseDAO.getAllCoursesByUserID(s); }
+
+    public void deleteAllCoursesByUserID(String s) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> courseDAO.deleteAllCoursesByUserID(s));
+    }
+
     public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return courseDAO.getLinkedCourses(i); }
+
+    public LiveData<List<CourseEntity>> courseSearch(String s, String id) { return courseDAO.courseSearch(s, id); }
+
+    public void deleteLinkedCoursesAndAssessments(int i) {
+        CourseCommDatabase.databaseWriteExecutor.execute(() -> {
+            List<CourseEntity> courseList = courseDAO.deleteLinkedAssessments(i);
+            for (int id = 0; id < courseList.size(); id++) {
+                CourseEntity course = courseList.get(id);
+                assessmentDAO.deleteLinkedAssessments(course.getCourseID());
+            }
+            courseDAO.deleteLinkedCourses(i);
+        });
+    }
 }

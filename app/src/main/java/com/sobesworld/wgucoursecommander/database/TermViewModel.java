@@ -20,6 +20,7 @@ public class TermViewModel extends AndroidViewModel {
         allTerms = termRepository.getAllTerms();
     }
 
+
     public void insert(TermEntity termEntity) { termRepository.insert(termEntity); }
 
     public void update(TermEntity termEntity) { termRepository.update(termEntity); }
@@ -29,4 +30,10 @@ public class TermViewModel extends AndroidViewModel {
     public void deleteUsingTermID(int i) { termRepository.deleteUsingTermID(i); }
 
     public LiveData<List<TermEntity>> getAllTerms() { return allTerms; }
+
+    public LiveData<List<TermEntity>> getAllTermsByUserID(String s) { return termRepository.getAllTermsByUserID(s); }
+
+    public void deleteAllTermsByUserID(String s) { termRepository.deleteAllTermsByUserID(s); }
+
+    public LiveData<List<TermEntity>> termSearch(String s, String id) { return termRepository.termSearch(s, id); }
 }

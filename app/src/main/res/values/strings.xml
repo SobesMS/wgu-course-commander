@@ -6,10 +6,11 @@
     <string name="assessments">Assessments</string>
     <string name="uniqueID">uniqueID</string>
 
-    <string name="assessment_list">Assessment List</string>
-    <string name="course_list">Course List</string>
-    <string name="term_list">Term List</string>
+    <string name="assessment_list">Assessment List Report</string>
+    <string name="course_list">Course List Report</string>
+    <string name="term_list">Term List Report</string>
     <string name="assessment_detail">Assessment Detail</string>
     <string name="course_detail">Course Detail</string>
     <string name="term_detail">Term Detail</string>
+    <string name="welcome">Welcome!</string>
 </resources>

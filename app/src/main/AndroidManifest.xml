@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sobesworld.wgucoursecommander">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -10,13 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUCourseCommander">
-        <receiver android:name=".ui.CourseCommReceiver"
-            android:exported="false"
-            android:enabled="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".ui.CourseCommReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.sobesworld.wgucoursecommander.ACTION_DATE_ALERT" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".ui.AssessmentDetail"
             android:exported="false"
@@ -33,26 +46,41 @@
             android:name=".ui.AssessmentList"
             android:exported="false"
             android:label="@string/assessment_list"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.NavMenu" />
         <activity
             android:name=".ui.CourseList"
             android:exported="false"
             android:label="@string/course_list"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.NavMenu" />
         <activity
             android:name=".ui.TermList"
             android:exported="false"
             android:label="@string/term_list"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.NavMenu" />
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".ui.NavMenu"
+            android:exported="true"
+            android:label="Main Menu" />
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false"
+            android:label="Password Reset"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".RegisterUser"
+            android:exported="false"
+            android:label="User Registration"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ViewEditProfile"
+            android:exported="false"
+            android:label="View/Edit Profile"
+            android:parentActivityName=".ui.NavMenu" />
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false"
+            android:label="Search Report"
+            android:parentActivityName=".ui.NavMenu" />
     </application>
 
 </manifest>

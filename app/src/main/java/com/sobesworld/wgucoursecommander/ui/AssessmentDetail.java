@@ -26,8 +26,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sobesworld.wgucoursecommander.MainActivity;
 import com.sobesworld.wgucoursecommander.R;
+import com.sobesworld.wgucoursecommander.database.AssessmentViewModel;
 import com.sobesworld.wgucoursecommander.database.CourseViewModel;
+import com.sobesworld.wgucoursecommander.database.entity.AssessmentEntity;
 import com.sobesworld.wgucoursecommander.database.entity.CourseEntity;
 
 import java.text.ParseException;
@@ -46,131 +51,148 @@ public class AssessmentDetail extends AppCompatActivity {
     public static final String EXTRA_ASSESSMENT_ALERT_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_ID";
     public static final String EXTRA_ASSESSMENT_NOTES = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_ALERT_NOTES";
     public static final String EXTRA_ASSESSMENT_LINKED_COURSE_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_LINKED_COURSE_ID";
+    public static final String EXTRA_ASSESSMENT_USER_ID = "com.sobesworld.wgucoursecommander.EXTRA_ASSESSMENT_USER_ID";
 
     private DatePickerDialog.OnDateSetListener goalDateSetListener;
 
-    private int assessmentID;
+    private int assessmentID, assessmentAlertID, assessmentLinkedCourseID;
     private EditText editTextAssessmentTitle;
-    private String assessmentType;
+    private String assessmentType, assessmentNotes, userID;
     private TextView textViewAssessmentGoalDate;
     private boolean assessmentGoalAlert;
-    private int assessmentAlertID;
-    private String assessmentNotes;
-    private int assessmentLinkedCourseID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assessment_detail);
+    }
 
-        editTextAssessmentTitle = findViewById(R.id.edit_text_assessment_title);
-        textViewAssessmentGoalDate = findViewById(R.id.text_view_assessment_goal_date_detail);
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        Intent passedIntent = getIntent();
-        assessmentID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_ID, -1);
-        assessmentLinkedCourseID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1);
-
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (passedIntent.getIntExtra(MainActivity.EXTRA_REQUEST_ID, -1) == MainActivity.REQUEST_ADD) {
-            setTitle("Add Assessment");
-            assessmentGoalAlert = false;
-            assessmentAlertID = -1;
-            assessmentNotes = getIntent().getStringExtra(EXTRA_ASSESSMENT_NOTES);
+        // confirms a user is currently logged in
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            startActivity(new Intent(AssessmentDetail.this, MainActivity.class));
         } else {
-            setTitle("Edit Assessment");
-            editTextAssessmentTitle.setText(passedIntent.getStringExtra(EXTRA_ASSESSMENT_TITLE));
-            assessmentType = passedIntent.getStringExtra(EXTRA_ASSESSMENT_TYPE);
-            textViewAssessmentGoalDate.setText(passedIntent.getStringExtra(EXTRA_ASSESSMENT_GOAL_DATE));
-            assessmentGoalAlert = passedIntent.getBooleanExtra(EXTRA_ASSESSMENT_GOAL_ALERT, false);
-            assessmentAlertID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_ALERT_ID, -1);
-            assessmentNotes = passedIntent.getStringExtra(EXTRA_ASSESSMENT_NOTES);
-        }
+            userID = user.getUid();
 
-        // sets assessment goal date
-        textViewAssessmentGoalDate.setOnClickListener(view -> {
-            Calendar calendar = Calendar.getInstance();
-            String date = textViewAssessmentGoalDate.getText().toString();
-            if (!date.trim().isEmpty()) {
-                try {
-                    calendar.setTime(Objects.requireNonNull(MainActivity.sdf.parse(date)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            new DatePickerDialog(AssessmentDetail.this, goalDateSetListener, calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+            editTextAssessmentTitle = findViewById(R.id.edit_text_assessment_title);
+            textViewAssessmentGoalDate = findViewById(R.id.text_view_assessment_goal_date_detail);
 
-        goalDateSetListener = (datePicker, year, month, dayOfMonth) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, dayOfMonth);
-            textViewAssessmentGoalDate.setText(MainActivity.sdf.format(calendar.getTime()));
-        };
+            Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // alert switch toggle functionality
-        SwitchCompat switchAssessmentGoalAlert = findViewById(R.id.switch_assessment_alert);
-        switchAssessmentGoalAlert.setChecked(assessmentGoalAlert);
-        switchAssessmentGoalAlert.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (textViewAssessmentGoalDate.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(), "You must set a goal date before turning on alert.", Toast.LENGTH_LONG).show();
-                switchAssessmentGoalAlert.setChecked(assessmentGoalAlert);
+            Intent passedIntent = getIntent();
+            assessmentLinkedCourseID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1);
+
+            if (passedIntent.getIntExtra(NavMenu.EXTRA_REQUEST_ID, -1) == NavMenu.REQUEST_ADD) {
+                setTitle("Add Assessment");
+                assessmentID = 0;
+                assessmentGoalAlert = false;
+                assessmentAlertID = -1;
+                assessmentNotes = getIntent().getStringExtra(EXTRA_ASSESSMENT_NOTES);
             } else {
-                assessmentGoalAlert = b;
-            }
-        });
-
-        // set type spinner data
-        Spinner spinnerAssessmentType = findViewById(R.id.spinner_assessment_type);
-        List<String> typeOptions = new ArrayList<>();
-        typeOptions.add("Performance");
-        typeOptions.add("Objective");
-        ArrayAdapter<String> typeSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeOptions);
-        typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAssessmentType.setAdapter(typeSpinnerAdapter);
-        for (int i = 0; i < typeSpinnerAdapter.getCount(); i++) {
-            String item = typeSpinnerAdapter.getItem(i);
-            if (item.equals(assessmentType)) {
-                spinnerAssessmentType.setSelection(i);
-            }
-        }
-        spinnerAssessmentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                assessmentType = adapterView.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        // set course spinner data
-        Spinner spinnerLinkedCourse = findViewById(R.id.spinner_assessment_linked_course);
-        CourseViewModel courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-        courseViewModel.getAllCourses().observe(this, courseEntities -> {
-            ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<>(AssessmentDetail.this,
-                    android.R.layout.simple_spinner_item, courseEntities);
-            courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerLinkedCourse.setAdapter(courseSpinnerAdapter);
-            for (int i = 0; i < courseSpinnerAdapter.getCount(); i++) {
-                if (courseSpinnerAdapter.getItem(i).getCourseID() == assessmentLinkedCourseID) {
-                    spinnerLinkedCourse.setSelection(i);
+                setTitle("View/Edit Assessment");
+                assessmentID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_ID, -1);
+                if (assessmentID == -1) {
+                    Toast.makeText(AssessmentDetail.this, "Something went wrong.", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    editTextAssessmentTitle.setText(passedIntent.getStringExtra(EXTRA_ASSESSMENT_TITLE));
+                    assessmentType = passedIntent.getStringExtra(EXTRA_ASSESSMENT_TYPE);
+                    textViewAssessmentGoalDate.setText(passedIntent.getStringExtra(EXTRA_ASSESSMENT_GOAL_DATE));
+                    assessmentGoalAlert = passedIntent.getBooleanExtra(EXTRA_ASSESSMENT_GOAL_ALERT, false);
+                    assessmentAlertID = passedIntent.getIntExtra(EXTRA_ASSESSMENT_ALERT_ID, -1);
+                    assessmentNotes = passedIntent.getStringExtra(EXTRA_ASSESSMENT_NOTES);
                 }
             }
-        });
-        spinnerLinkedCourse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                CourseEntity course = (CourseEntity) adapterView.getSelectedItem();
-                assessmentLinkedCourseID = course.getCourseID();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            // sets assessment goal date
+            textViewAssessmentGoalDate.setOnClickListener(view -> {
+                Calendar calendar = Calendar.getInstance();
+                String date = textViewAssessmentGoalDate.getText().toString();
+                if (!date.trim().isEmpty()) {
+                    try {
+                        calendar.setTime(Objects.requireNonNull(NavMenu.sdf.parse(date)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                new DatePickerDialog(AssessmentDetail.this, goalDateSetListener, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            });
+
+            goalDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                textViewAssessmentGoalDate.setText(NavMenu.sdf.format(calendar.getTime()));
+            };
+
+            // alert switch toggle functionality
+            SwitchCompat switchAssessmentGoalAlert = findViewById(R.id.switch_assessment_alert);
+            switchAssessmentGoalAlert.setChecked(assessmentGoalAlert);
+            switchAssessmentGoalAlert.setOnCheckedChangeListener((compoundButton, b) -> {
+                if (textViewAssessmentGoalDate.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "You must set a goal date before turning on alert.", Toast.LENGTH_LONG).show();
+                    switchAssessmentGoalAlert.setChecked(assessmentGoalAlert);
+                } else {
+                    assessmentGoalAlert = b;
+                }
+            });
+
+            // set type spinner data
+            Spinner spinnerAssessmentType = findViewById(R.id.spinner_assessment_type);
+            List<String> typeOptions = new ArrayList<>();
+            typeOptions.add("Performance");
+            typeOptions.add("Objective");
+            ArrayAdapter<String> typeSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeOptions);
+            typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerAssessmentType.setAdapter(typeSpinnerAdapter);
+            for (int i = 0; i < typeSpinnerAdapter.getCount(); i++) {
+                String item = typeSpinnerAdapter.getItem(i);
+                if (item.equals(assessmentType)) {
+                    spinnerAssessmentType.setSelection(i);
+                }
             }
-        });
+            spinnerAssessmentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    assessmentType = adapterView.getSelectedItem().toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+
+            // set course spinner data
+            Spinner spinnerLinkedCourse = findViewById(R.id.spinner_assessment_linked_course);
+            CourseViewModel courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
+            courseViewModel.getAllCoursesByUserID(userID).observe(this, courseEntities -> {
+                ArrayAdapter<CourseEntity> courseSpinnerAdapter = new ArrayAdapter<>(AssessmentDetail.this,
+                        android.R.layout.simple_spinner_item, courseEntities);
+                courseSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerLinkedCourse.setAdapter(courseSpinnerAdapter);
+                for (int i = 0; i < courseSpinnerAdapter.getCount(); i++) {
+                    if (courseSpinnerAdapter.getItem(i).getCourseID() == assessmentLinkedCourseID) {
+                        spinnerLinkedCourse.setSelection(i);
+                    }
+                }
+            });
+            spinnerLinkedCourse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    CourseEntity course = (CourseEntity) adapterView.getSelectedItem();
+                    assessmentLinkedCourseID = course.getCourseID();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -196,6 +218,10 @@ public class AssessmentDetail extends AppCompatActivity {
 
     // handles editing and sharing of notes
     void showNoteDialog() {
+        if (assessmentNotes == null) {
+            assessmentNotes = "";
+        }
+
         final Dialog dialog = new Dialog(AssessmentDetail.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -253,12 +279,11 @@ public class AssessmentDetail extends AppCompatActivity {
     }
 
     private void upButtonChangeValidation() {
-        String assessmentTitle = editTextAssessmentTitle.getText().toString();
-        String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString();
+        String assessmentTitle = editTextAssessmentTitle.getText().toString().trim();
+        String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString().trim();
 
-        if (getIntent().getIntExtra(MainActivity.EXTRA_REQUEST_ID, 1) == MainActivity.REQUEST_ADD &&
-                assessmentTitle.trim().isEmpty() && assessmentGoalDate.trim().isEmpty()) {
-            setResult(RESULT_CANCELED);
+        if (getIntent().getIntExtra(NavMenu.EXTRA_REQUEST_ID, 1) == NavMenu.REQUEST_ADD &&
+                assessmentTitle.isEmpty() && assessmentGoalDate.isEmpty()) {
             finish();
         } else if (assessmentTitle.equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_TITLE)) &&
                 assessmentType.equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_TYPE)) &&
@@ -267,46 +292,43 @@ public class AssessmentDetail extends AppCompatActivity {
                 assessmentAlertID == getIntent().getIntExtra(EXTRA_ASSESSMENT_ALERT_ID, -1) &&
                 assessmentNotes.equals(getIntent().getStringExtra(EXTRA_ASSESSMENT_NOTES)) &&
                 assessmentLinkedCourseID == getIntent().getIntExtra(EXTRA_ASSESSMENT_LINKED_COURSE_ID, -1)) {
-            setResult(RESULT_CANCELED);
             finish();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("WARNING: UNSAVED CHANGES")
                     .setMessage("You have unsaved changes. Click SAVE to save and close. Click CANCEL to close without saving.")
-                    .setCancelable(false);
-            builder.setNegativeButton("CANCEL", (dialogInterface, i) -> {
-                setResult(RESULT_CANCELED);
-                finish();
-            });
-            builder.setPositiveButton("SAVE", (dialogInterface, i) -> saveAssessment());
-            AlertDialog alert = builder.create();
-            alert.show();
+                    .setCancelable(false)
+                    .setNegativeButton("CANCEL", (dialogInterface, i) -> finish())
+                    .setPositiveButton("SAVE", (dialogInterface, i) -> saveAssessment())
+                    .show();
         }
     }
 
     private void saveAssessment() {
-        String assessmentTitle = editTextAssessmentTitle.getText().toString();
-        String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString();
+        String assessmentTitle = editTextAssessmentTitle.getText().toString().trim();
+        String assessmentGoalDate = textViewAssessmentGoalDate.getText().toString().trim();
+        AssessmentViewModel assessmentViewModel = new ViewModelProvider(AssessmentDetail.this).get(AssessmentViewModel.class);
 
-        if (assessmentTitle.trim().isEmpty() || assessmentGoalDate.trim().isEmpty()) {
-            if (assessmentTitle.trim().isEmpty()) {
+        if (assessmentTitle.isEmpty() || assessmentGoalDate.isEmpty()) {
+            if (assessmentTitle.isEmpty()) {
+                editTextAssessmentTitle.setError("Title is required.");
                 editTextAssessmentTitle.setHintTextColor(ContextCompat.getColor(AssessmentDetail.this, R.color.red));
             }
-            if (assessmentGoalDate.trim().isEmpty()) {
+            if (assessmentGoalDate.isEmpty()) {
+                textViewAssessmentGoalDate.setError("Goal date is required.");
                 textViewAssessmentGoalDate.setHintTextColor(ContextCompat.getColor(AssessmentDetail.this, R.color.red));
             }
-            Toast.makeText(AssessmentDetail.this, "A required field is empty.", Toast.LENGTH_LONG).show();
         } else {
-            SharedPreferences sharedPreferences = this.getSharedPreferences(MainActivity.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = this.getSharedPreferences(NavMenu.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
             if (assessmentAlertID == -1 && assessmentGoalAlert) {
-                int i = sharedPreferences.getInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, -1);
+                int i = sharedPreferences.getInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, -1);
                 assessmentAlertID = i;
-                editor.putInt(MainActivity.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
+                editor.putInt(NavMenu.SHARED_PREFS_ALERT_ID_COUNTER, i + 1).apply();
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
+                    alertDate = NavMenu.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -318,7 +340,7 @@ public class AssessmentDetail extends AppCompatActivity {
                 deleteAlert(assessmentAlertID);
                 Date alertDate = null;
                 try {
-                    alertDate = MainActivity.sdf.parse(assessmentGoalDate);
+                    alertDate = NavMenu.sdf.parse(assessmentGoalDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -330,44 +352,43 @@ public class AssessmentDetail extends AppCompatActivity {
                 assessmentAlertID = -1;
             }
 
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_ASSESSMENT_ID, assessmentID);
-            intent.putExtra(EXTRA_ASSESSMENT_TITLE, assessmentTitle);
-            intent.putExtra(EXTRA_ASSESSMENT_TYPE, assessmentType);
-            intent.putExtra(EXTRA_ASSESSMENT_GOAL_DATE, assessmentGoalDate);
-            intent.putExtra(EXTRA_ASSESSMENT_GOAL_ALERT, assessmentGoalAlert);
-            intent.putExtra(EXTRA_ASSESSMENT_ALERT_ID, assessmentAlertID);
-            intent.putExtra(EXTRA_ASSESSMENT_NOTES, assessmentNotes);
-            intent.putExtra(EXTRA_ASSESSMENT_LINKED_COURSE_ID, assessmentLinkedCourseID);
-            setResult(RESULT_OK, intent);
-            finish();
+            AssessmentEntity assessment = new AssessmentEntity(assessmentTitle, assessmentType, assessmentGoalDate, assessmentGoalAlert,
+                    assessmentAlertID, assessmentNotes, assessmentLinkedCourseID, userID);
+            if (assessmentID == 0) {
+                assessmentViewModel.insert(assessment);
+                Toast.makeText(AssessmentDetail.this, "New assessment added.", Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                assessment.setAssessmentID(assessmentID);
+                assessmentViewModel.update(assessment);
+                Toast.makeText(AssessmentDetail.this, "Assessment updated.", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
     }
 
     // creates a delete confirmation dialog and deletes course if confirmed
     private void deleteAssessment() {
-        if (assessmentID == -1) {
-            setResult(RESULT_CANCELED);
+        if (assessmentID == 0) {
+            Toast.makeText(this, "New assessment creation cancelled.", Toast.LENGTH_LONG).show();
             finish();
-            Toast.makeText(this, "New assessment creation cancelled.", Toast.LENGTH_SHORT).show();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AssessmentViewModel assessmentViewModel = new ViewModelProvider(AssessmentDetail.this).get(AssessmentViewModel.class);
+            AlertDialog.Builder builder = new AlertDialog.Builder(AssessmentDetail.this);
             builder.setTitle("CONFIRM ASSESSMENT DELETION")
                     .setMessage("Select CONFIRM to delete the assessment. Select ABORT to cancel.\n\n(records are not recoverable)")
-                    .setCancelable(false);
-            builder.setNegativeButton("ABORT", (dialogInterface, i) -> {
-            });
-            builder.setPositiveButton("CONFIRM", (dialogInterface, i) -> {
-                if (assessmentGoalAlert && assessmentAlertID != -1) {
-                    deleteAlert(assessmentAlertID);
-                }
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_ASSESSMENT_ID, assessmentID);
-                setResult(MainActivity.RESULT_DELETE, intent);
-                finish();
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
+                    .setCancelable(false)
+                    .setNegativeButton("ABORT", (dialogInterface, i) -> {
+                    })
+                    .setPositiveButton("CONFIRM", (dialogInterface, i) -> {
+                        if (assessmentGoalAlert && assessmentAlertID != -1) {
+                            deleteAlert(assessmentAlertID);
+                        }
+                        assessmentViewModel.deleteUsingAssessmentID(assessmentID);
+                        Toast.makeText(AssessmentDetail.this, "Assessment deleted.", Toast.LENGTH_LONG).show();
+                        finish();
+                    })
+                    .show();
         }
     }
 }

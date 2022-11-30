@@ -30,7 +30,7 @@ public abstract class CourseCommDatabase extends RoomDatabase {
 
     public static synchronized CourseCommDatabase getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), CourseCommDatabase.class, "course_comm_database")
+            instance = Room.databaseBuilder(context.getApplicationContext(), CourseCommDatabase.class, "course_comm_database.db")
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallback)
                     .build();
@@ -46,24 +46,24 @@ public abstract class CourseCommDatabase extends RoomDatabase {
             CourseDAO courseDAO = instance.courseDAO();
             AssessmentDAO assessmentDAO = instance.assessmentDAO();
             databaseWriteExecutor.execute(() -> {
-                termDAO.insert(new TermEntity("Term Tatooine", "01/01/22","04/30/22"));
-                termDAO.insert(new TermEntity("Term Coruscant", "05/01/22","08/31/22"));
-                termDAO.insert(new TermEntity("Term Mustafar", "09/01/22","12/31/22"));
+                termDAO.insert(new TermEntity("Term Tatooine", "01/01/22","04/30/22", "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
+                termDAO.insert(new TermEntity("Term Coruscant", "05/01/22","08/31/22", "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
+                termDAO.insert(new TermEntity("Term Mustafar", "09/01/22","12/31/22", "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 courseDAO.insert(new CourseEntity("Jedi 101", "01/01/22", false, -1,
                         "04/30/22", false, -1, "plan to take","Luke Skywalker",
-                        "555-555-5555", "lskywalker@starwars.com","These are course notes.",1));
+                        "555-555-5555", "lskywalker@starwars.com","These are course notes.",1, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 courseDAO.insert(new CourseEntity("Becoming a Jedi Master", "05/01/22", false, -1,
                         "08/31/22", false, -1, "in progress","Obi Wan Kenobi",
-                        "555-555-6666", "owkenobi@starwars.com","These are course notes.",2));
+                        "555-555-6666", "owkenobi@starwars.com","These are course notes.",2, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 courseDAO.insert(new CourseEntity("History of the Empire", "09/01/22", false, -1,
                         "12/31/22", false, -1, "completed","Darth Vader",
-                        "555-555-7777", "dvader@starwars.com","These are course notes.",3));
+                        "555-555-7777", "dvader@starwars.com","These are course notes.",3, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 assessmentDAO.insert(new AssessmentEntity("Path of the Jedi quiz","Objective", "04/15/22",
-                        false, -1, "These are assessment notes.",1));
+                        false, -1, "These are assessment notes.",1, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 assessmentDAO.insert(new AssessmentEntity("Train a Padawan","Performance", "08/15/22",
-                        false, -1, "These are assessment notes.",2));
+                        false, -1, "These are assessment notes.",2, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
                 assessmentDAO.insert(new AssessmentEntity("Famous Sith exam","Objective", "12/15/22",
-                        false, -1, "These are assessment notes.",3));
+                        false, -1, "These are assessment notes.",3, "yAcrMrt7PvSXZFGsK17MrkHwElu1"));
             });
         }
     };

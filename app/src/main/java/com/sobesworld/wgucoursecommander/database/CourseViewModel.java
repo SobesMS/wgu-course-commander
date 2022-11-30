@@ -28,7 +28,17 @@ public class CourseViewModel extends AndroidViewModel {
 
     public void deleteUsingCourseID(int i) { courseRepository.deleteUsingCourseID(i); }
 
+    public void deleteLinkedCourses(int i) { courseRepository.deleteLinkedCourses(i); }
+
+    public void deleteLinkedAssessments(int i) { courseRepository.deleteLinkedCoursesAndAssessments(i); }
+
     public LiveData<List<CourseEntity>> getAllCourses() { return allCourses; }
 
+    public LiveData<List<CourseEntity>> getAllCoursesByUserID(String s) { return courseRepository.getAllCoursesByUserID(s); }
+
+    public void deleteAllCoursesByUserID(String s) { courseRepository.deleteAllCoursesByUserID(s); }
+
     public LiveData<List<CourseEntity>> getLinkedCourses(int i) { return courseRepository.getLinkedCourses(i); }
+
+    public LiveData<List<CourseEntity>> courseSearch(String s, String id) { return courseRepository.courseSearch(s, id); }
 }
