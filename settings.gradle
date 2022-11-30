@@ -5,5 +5,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "WGU Course Commander"
+rootProject.name = "wgu-course-commander"
 include ':app'
